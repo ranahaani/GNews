@@ -1,0 +1,1 @@
+from GNews import GNews
