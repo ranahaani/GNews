@@ -40,7 +40,12 @@ google_news = GNews(language='en', country='US', period='7d', size=10)
 On the bottom left side of the Google News page you may find a `Language & region` section where you can find all of the supported combinations.
 
 ### Getting full article
-##### you can use newspaper3k to scrap full article, you can also get full article using `get_full_article` by passing url i.e
+##### you can use newspaper3k to scrap full article, you can also get full article using `get_full_article` by passing url.
+
+**make sure you already install newspaper3k**
+
+`pip3 install newspaper3k`
+
 ```python
 
 from GNews import GNews
