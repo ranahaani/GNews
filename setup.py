@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='gnews',
-    version='0.0.1',
+    version='0.0.2',
     author="Muhammad Abdullah",
     author_email="ranahaani@gmail.com",
     description='Search Google News RSS Feed and returns a usable JSON response',
