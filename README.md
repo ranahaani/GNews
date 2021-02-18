@@ -3,7 +3,7 @@
 🚩 A Python Package (with CLI support) that searches Google News RSS Feed and returns a usable JSON response \
 🚩 As well as you can fetch full article
 
-![Usage](imgs/img.png)
+![Usage](https://github.com/ranahaani/GNews/raw/main/imgs/img.png)
 
 <p align="center">Coverts ⬇️</p>
 
