@@ -32,6 +32,8 @@ google_news = GNews()
 news = google_news.get_news('Pakistan')
 
 ```
+- Get news will return the list, `[{'title': '...', 'published date': '...', 'description': '...', 'url': '...', 'publisher': '...'}]`
+
 **We can set country, language, period and size during initialization**
 
 ```python
@@ -54,6 +56,7 @@ news = google_news.get_news('Pakistan')
 article = google_news.get_full_article(news[0]['url'])
 
 ```
+
 ```python
 article.title 
 ```
