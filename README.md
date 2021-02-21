@@ -1,6 +1,7 @@
-# GNews [![Travis branch](https://img.shields.io/travis/brh55/google-news-rss/master.svg?style=flat-square)](https://travis-ci.org/brh55/google-news-rss) [![Coveralls branch](https://img.shields.io/coveralls/brh55/google-news-rss/master.svg?style=flat-square)](https://coveralls.io/github/brh55/google-news-rss) 
+[![GNews](https://img.shields.io/github/license/ranahaani/GNews)](https://github.com/ranahaani/GNews) [![Google News](https://img.shields.io/github/stars/ranahaani/GNews)](https://github.com/ranahaani/GNews) 
+# GNews 
 
-🚩 A Python Package (with CLI support) that searches Google News RSS Feed and returns a usable JSON response \
+🚩 A Happy and lightweight Python Package (with CLI support) that searches Google News RSS Feed and returns a usable JSON response \
 🚩 As well as you can fetch full article
 
 ![Usage](https://github.com/ranahaani/GNews/raw/main/imgs/img.png)
@@ -20,7 +21,7 @@
 
 ## Install
 
-``` 
+``` shell
 pip install gnews
 ```
 
@@ -54,7 +55,6 @@ from GNews import GNews
 google_news = GNews()
 news = google_news.get_news('Pakistan')
 article = google_news.get_full_article(news[0]['url'])
-
 ```
 
 ```python
