@@ -1,8 +1,8 @@
 [![GNews](https://img.shields.io/github/license/ranahaani/GNews)](https://github.com/ranahaani/GNews) [![Google News](https://img.shields.io/github/stars/ranahaani/GNews)](https://github.com/ranahaani/GNews) 
 # GNews 
 
-🚩 A Happy and lightweight Python Package (with CLI support) that searches Google News RSS Feed and returns a usable JSON response \
-🚩 As well as you can fetch full article
+🚩 A Happy and lightweight Python Package that searches Google News RSS Feed and returns a usable JSON response \
+🚩 As well as you can fetch full article (**No need to write scrappers for articles fetching anymore**)
 
 ![Usage](https://github.com/ranahaani/GNews/raw/main/imgs/img.png)
 
@@ -28,33 +28,53 @@ pip install gnews
 ## Usage
 
 ```python
-from GNews import GNews
+from gnews import GNews
+
 google_news = GNews()
-news = google_news.get_news('Pakistan')
+json_resp = google_news.get_news('Pakistan')
 
 ```
 - Get news will return the list, `[{'title': '...', 'published date': '...', 'description': '...', 'url': '...', 'publisher': '...'}]`
 
-**We can set country, language, period and size during initialization**
+#### We can set country, language, period and size during initialization
 
 ```python
 google_news = GNews(language='en', country='US', period='7d', size=10)
 ```
+#### Others methods to set country, language, period and size
+```python
+set_period('7d') # News from last 7 days
+set_country('US') # News from a specific country 
+set_language('en') # News in a sepcific language
+```
+Google News cover across **141+ countries** with **41+ languages**.
 On the bottom left side of the Google News page you may find a `Language & region` section where you can find all of the supported combinations.
+## Article Properties
+| Properties   | Description                                    | Example                                                                                                                                                                                                                                                                             |
+|--------------|------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| title        | Title of the article                           | IMF Staff and Pakistan Reach Staff-Level Agreement on the Pending Reviews Under the Extended Fund Facility                                                                                                                                                                                                   |
+| url         | Google news link to article                    | [Article Link](http://news.google.com/news/url?sa=t&fd=R&ct2=us&usg=AFQjCNGNR4Qg8LGbjszT1yt2s2lMXvvufQ&clid=c3a7d30bb8a4878e06b80cf16b898331&cid=52779522121279&ei=VQU7WYjiFoLEhQHIs4HQCQ&url=https://www.theguardian.com/commentisfree/2017/jun/07/why-dont-unicorns-exist-google) |
+| published date      | Published date                                 | Wed, 07 Jun 2017 07:01:30 GMT                                                                                                                                                                                                                                                       |
+| description  | Short description of article                   | IMF Staff and Pakistan Reach Staff-Level Agreement on the Pending Reviews Under the Extended Fund Facility ...                                                                                                                                                                                                                  |
+| publisher    | Publisher of article                           | The Guardian                                                                                                                                                                                                                                                                        |                                                                                                                                                        |
 
-### Getting full article
-##### you can use newspaper3k to scrap full article, you can also get full article using `get_full_article` by passing url.
 
-**make sure you already install newspaper3k**
+## Getting full article
+ > you can use newspaper3k to scrap full article, you can also get full article using `get_full_article` by passing url.
+
+> Make sure you already install newspaper3k
+
+##### _Install newspaper3k_
 
 `pip3 install newspaper3k`
 
 ```python
 
-from GNews import GNews
+from gnews import GNews
+
 google_news = GNews()
-news = google_news.get_news('Pakistan')
-article = google_news.get_full_article(news[0]['url'])
+json_resp = google_news.get_news('Pakistan')
+article = google_news.get_full_article(json_resp[0]['url']) # newspaper3k instance, you can access newspaper3k all attributes in article
 ```
 
 ```python
@@ -83,14 +103,6 @@ article.authors
 Read full documentation for `newspaper3k`
 [newspaper3k](https://newspaper.readthedocs.io/en/latest/user_guide/quickstart.html#parsing-an-article)
 
-## Article Properties
-| Properties   | Description                                    | Example                                                                                                                                                                                                                                                                             |
-|--------------|------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| title        | Title of the article                           | IMF Staff and Pakistan Reach Staff-Level Agreement on the Pending Reviews Under the Extended Fund Facility                                                                                                                                                                                                   |
-| url         | Google news link to article                    | [Article Link](http://news.google.com/news/url?sa=t&fd=R&ct2=us&usg=AFQjCNGNR4Qg8LGbjszT1yt2s2lMXvvufQ&clid=c3a7d30bb8a4878e06b80cf16b898331&cid=52779522121279&ei=VQU7WYjiFoLEhQHIs4HQCQ&url=https://www.theguardian.com/commentisfree/2017/jun/07/why-dont-unicorns-exist-google) |
-| published date      | Published date                                 | Wed, 07 Jun 2017 07:01:30 GMT                                                                                                                                                                                                                                                       |
-| description  | Short description of article                   | IMF Staff and Pakistan Reach Staff-Level Agreement on the Pending Reviews Under the Extended Fund Facility ...                                                                                                                                                                                                                  |
-| publisher    | Publisher of article                           | The Guardian                                                                                                                                                                                                                                                                        |                                                                                                                                                        |
 
 ## License
 
