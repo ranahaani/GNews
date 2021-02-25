@@ -1,4 +1,8 @@
+
 [![GNews](https://img.shields.io/github/license/ranahaani/GNews)](https://github.com/ranahaani/GNews) [![Google News](https://img.shields.io/github/stars/ranahaani/GNews)](https://github.com/ranahaani/GNews) 
+
+![Gnews](https://github.com/ranahaani/GNews/raw/main/imgs/gnews.gif)
+
 # GNews 
 
 🚩 A Happy and lightweight Python Package that searches Google News RSS Feed and returns a usable JSON response \
