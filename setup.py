@@ -23,8 +23,6 @@ setup(
         'Development Status :: 5 - Production/Stable',
 
         'Intended Audience :: Developers',
-        'Topic :: Scraper :: Newsfeed',
-        'License :: MIT License',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
