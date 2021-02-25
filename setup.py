@@ -1,12 +1,11 @@
 from setuptools import setup, find_packages
 
-
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
     name='gnews',
-    version='0.0.4',
+    version='0.0.5',
     author="Muhammad Abdullah",
     author_email="ranahaani@gmail.com",
     description='Search Google News RSS Feed and returns a usable JSON response',
@@ -14,8 +13,24 @@ setup(
     long_description_content_type="text/markdown",
     packages=find_packages(),
     project_urls={
+        'Homepage': 'https://github.com/ranahaani/GNews/',
         'Documentation': 'https://github.com/ranahaani/GNews/blob/master/README.md',
         'Source': 'https://github.com/ranahaani/GNews/',
         'Tracker': 'https://github.com/ranahaani/GNews/issues',
     },
+    classifiers=[
+
+        'Development Status :: 5 - Production/Stable',
+
+        'Intended Audience :: Developers',
+        'Topic :: Scraper :: Newsfeed',
+        'License :: MIT License',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.2',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+    ],
 )

@@ -5,11 +5,6 @@
 [![PyPI](https://img.shields.io/pypi/v/gnews)](https://pypi.org/project/gnews/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/gnews)](https://pypistats.org/packages/gnews)
 
-
-[comment]: <> (![PyPI - Python Version]&#40;https://img.shields.io/pypi/pyversions/gnews&#41;)
-[comment]: <> (![PyPI - Wheel]&#40;https://img.shields.io/pypi/wheel/gnews&#41;)
-[comment]: <> (![GitHub Action]&#40;https://github.com/ranahaani/gnews/workflows/GitHub%20Action/badge.svg&#41;)
-
 # GNews 
 
 🚩 A Happy and lightweight Python Package that searches Google News RSS Feed and returns a usable JSON response \
