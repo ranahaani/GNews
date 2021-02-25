@@ -19,6 +19,9 @@ class GNews:
     def set_language(self, language):
         self.__language = language
 
+    def set_size(self, size):
+        self.__size = size
+
     def set_period(self, period):
         self.__period = period
 

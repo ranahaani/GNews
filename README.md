@@ -7,20 +7,7 @@
 🚩 A Happy and lightweight Python Package that searches Google News RSS Feed and returns a usable JSON response \
 🚩 As well as you can fetch full article (**No need to write scrappers for articles fetching anymore**)
 
-![Usage](https://github.com/ranahaani/GNews/raw/main/imgs/img.png)
-
-<p align="center">Coverts ⬇️</p>
-
-```
-{'publisher': 'Aljazeera.com',
- 'description': 'Pakistan accuses India of stoking conflict in Indian Ocean  '
-                'Aljazeera.com',
- 'published date': 'Tue, 16 Feb 2021 11:50:43 GMT',
- 'title': 'Pakistan accuses India of stoking conflict in Indian Ocean - '
-          'Aljazeera.com',
- 'url': 'https://www.aljazeera.com/news/2021/2/16/pakistan-accuses-india-of-nuclearizing-indian-ocean'}
-```
-
+![Gnews](https://github.com/ranahaani/GNews/blob/master/imgs/gnews.gif)
 
 ## Install
 
@@ -35,6 +22,20 @@ from gnews import GNews
 
 google_news = GNews()
 json_resp = google_news.get_news('Pakistan')
+print(json_resp[0])
+
+
+```
+```
+{
+'publisher': 'Aljazeera.com',
+ 'description': 'Pakistan accuses India of stoking conflict in Indian Ocean  '
+                'Aljazeera.com',
+ 'published date': 'Tue, 16 Feb 2021 11:50:43 GMT',
+ 'title': 'Pakistan accuses India of stoking conflict in Indian Ocean - '
+          'Aljazeera.com',
+ 'url': 'https://www.aljazeera.com/news/2021/2/16/pakistan-accuses-india-of-nuclearizing-indian-ocean'
+ }
 
 ```
 - Get news will return the list, `[{'title': '...', 'published date': '...', 'description': '...', 'url': '...', 'publisher': '...'}]`
@@ -47,6 +48,7 @@ google_news = GNews(language='en', country='US', period='7d', size=10)
 #### Others methods to set country, language, period and size
 ```python
 set_period('7d') # News from last 7 days
+set_size(10) # number of responses across a keyword
 set_country('US') # News from a specific country 
 set_language('en') # News in a sepcific language
 ```
