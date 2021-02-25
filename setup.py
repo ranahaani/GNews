@@ -13,4 +13,9 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(),
+    project_urls={
+        'Documentation': 'https://github.com/ranahaani/GNews/blob/master/README.md',
+        'Source': 'https://github.com/ranahaani/GNews/',
+        'Tracker': 'https://github.com/ranahaani/GNews/issues',
+    },
 )

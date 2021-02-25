@@ -1,6 +1,14 @@
+![GitHub contributors](https://img.shields.io/github/contributors/ranahaani/gnews)
+![GitHub issues](https://img.shields.io/github/issues-raw/ranahaani/gnews)
+[![GNews license](https://img.shields.io/github/license/ranahaani/GNews)](https://github.com/ranahaani/GNews)
+[![GNews stars](https://img.shields.io/github/stars/ranahaani/GNews)](https://github.com/ranahaani/GNews) 
+[![PyPI](https://img.shields.io/pypi/v/gnews)](https://pypi.org/project/gnews/)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/gnews)](https://pypistats.org/packages/gnews)
 
-[![GNews](https://img.shields.io/github/license/ranahaani/GNews)](https://github.com/ranahaani/GNews) [![Google News](https://img.shields.io/github/stars/ranahaani/GNews)](https://github.com/ranahaani/GNews) 
 
+[comment]: <> (![PyPI - Python Version]&#40;https://img.shields.io/pypi/pyversions/gnews&#41;)
+[comment]: <> (![PyPI - Wheel]&#40;https://img.shields.io/pypi/wheel/gnews&#41;)
+[comment]: <> (![GitHub Action]&#40;https://github.com/ranahaani/gnews/workflows/GitHub%20Action/badge.svg&#41;)
 
 # GNews 
 
