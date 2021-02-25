@@ -5,15 +5,15 @@ with open("README.md", "r") as fh:
 
 setup(
     name='gnews',
-    version='0.0.5',
+    version='0.0.6',
     author="Muhammad Abdullah",
     author_email="ranahaani@gmail.com",
     description='Search Google News RSS Feed and returns a usable JSON response',
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(),
+    url='https://github.com/ranahaani/GNews/',
     project_urls={
-        'Homepage': 'https://github.com/ranahaani/GNews/',
         'Documentation': 'https://github.com/ranahaani/GNews/blob/master/README.md',
         'Source': 'https://github.com/ranahaani/GNews/',
         'Tracker': 'https://github.com/ranahaani/GNews/issues',
