@@ -12,7 +12,7 @@
 
 ![Gnews](https://github.com/ranahaani/GNews/blob/master/imgs/gnews.gif)
 
-## Install
+## Installation
 
 ``` shell
 pip install gnews
