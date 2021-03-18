@@ -42,18 +42,41 @@ print(json_resp[0])
 
 ```
 - Get news will return the list, `[{'title': '...', 'published date': '...', 'description': '...', 'url': '...', 'publisher': '...'}]`
+#### Available locations and languages
 
+```python
+print(google_news.countries)
+
+'Australia', 'Botswana', 'Canada ', 'Ethiopia', 'Ghana', 'India ', 'Indonesia', 'Ireland', 'Israel ', 'Kenya', 'Latvia',
+'Malaysia', 'Namibia', 'New Zealand', 'Nigeria', 'Pakistan', 'Philippines', 'Singapore', 'South Africa', 'Tanzania',
+'Uganda', 'United Kingdom', 'United States', 'Zimbabwe', 'Czech Republic', 'Germany', 'Austria', 'Switzerland', 'Argentina',
+'Chile', 'Colombia', 'Cuba', 'Mexico', 'Peru', 'Venezuela', 'Belgium ', 'France', 'Morocco', 'Senegal', 'Italy', 'Lithuania',
+'Hungary', 'Netherlands', 'Norway', 'Poland', 'Brazil', 'Portugal', 'Romania', 'Slovakia', 'Slovenia', 'Sweden',
+'Vietnam', 'Turkey', 'Greece', 'Bulgaria', 'Russia', 'Ukraine ', 'Serbia', 'United Arab Emirates', 'Saudi Arabia', 'Lebanon',
+'Egypt', 'Bangladesh', 'Thailand', 'China', 'Taiwan', 'Hong Kong', 'Japan', 'Republic of Korea'
+```
+
+```python
+print(google_news.languages)
+
+'english', 'indonesian', 'czech', 'german', 'spanish', 'french', 'italian', 'latvian', 'lithuanian', 'hungarian',
+'dutch', 'norwegian', 'polish', 'portuguese brasil', 'portuguese portugal', 'romanian', 'slovak', 'slovenian', 'swedish',
+'vietnamese', 'turkish', 'greek', 'bulgarian', 'russian', 'serbian', 'ukrainian', 'hebrew', 'arabic', 'marathi', 'hindi', 'bengali',
+'tamil', 'telugu', 'malyalam', 'thai', 'chinese simplified', 'chinese traditional', 'japanese', 'korean'
+```
 #### We can set country, language, period and size during initialization
 
 ```python
-google_news = GNews(language='en', country='US', period='7d', size=10)
+google_news = GNews(language='english', country='United States', period='7d', max_results=10)
 ```
+
+
 #### Others methods to set country, language, period and size
 ```python
 set_period('7d') # News from last 7 days
-set_size(10) # number of responses across a keyword
-set_country('US') # News from a specific country 
-set_language('en') # News in a sepcific language
+max_results(10) # number of responses across a keyword
+set_country('United States') # News from a specific country 
+set_language('english') # News in a sepcific language
 ```
 Google News cover across **141+ countries** with **41+ languages**.
 On the bottom left side of the Google News page you may find a `Language & region` section where you can find all of the supported combinations.
@@ -111,6 +134,9 @@ article.authors
 Read full documentation for `newspaper3k`
 [newspaper3k](https://newspaper.readthedocs.io/en/latest/user_guide/quickstart.html#parsing-an-article)
 
+## Todo
+- Save to MongoDB
+- Save to MySQL
 
 ## License
 
