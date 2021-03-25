@@ -136,8 +136,9 @@ Read full documentation for `newspaper3k`
 
 ## Todo
 - Save to MongoDB
-- Save to MySQL
-
+- Save to SQLite
+- Save to JSON
+- Save to .CSV file
 ## License
 
 MIT © 
