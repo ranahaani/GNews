@@ -4,7 +4,7 @@
 [![GNews stars](https://img.shields.io/github/stars/ranahaani/GNews)](https://github.com/ranahaani/GNews) 
 [![PyPI](https://img.shields.io/pypi/v/gnews)](https://pypi.org/project/gnews/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/gnews)](https://pypistats.org/packages/gnews)
-[![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](mailto:ranahaani@gmail.com)✉️
+[![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](mailto:ranahaani@gmail.com)
 
 
 # GNews 
@@ -141,6 +141,9 @@ Read full documentation for `newspaper3k`
 - Save to SQLite
 - Save to JSON
 - Save to .CSV file
+
+## Contact
+> If you want to contact with me, just ✉️ me at ranahaani@gmail.com
 ## License
 
 MIT © 
