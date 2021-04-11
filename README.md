@@ -1,24 +1,105 @@
-![GitHub contributors](https://img.shields.io/github/contributors/ranahaani/gnews)
-![GitHub issues](https://img.shields.io/github/issues-raw/ranahaani/gnews)
-[![GNews license](https://img.shields.io/github/license/ranahaani/GNews)](https://github.com/ranahaani/GNews)
-[![GNews stars](https://img.shields.io/github/stars/ranahaani/GNews)](https://github.com/ranahaani/GNews) 
-[![PyPI](https://img.shields.io/pypi/v/gnews)](https://pypi.org/project/gnews/)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/gnews)](https://pypistats.org/packages/gnews)
-[![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](mailto:ranahaani@gmail.com)
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
+[![Download][download-sheild]][download-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
+
+<!-- PROJECT LOGO -->
+<br />
+<p align="center">
+  <a href="https://github.com/ranahaani/GNews">
+    <img src="imgs/logo.png" alt="GNews">
+  </a>
+
+<h3 align="center">GNews</h3>
+
+  <p align="center">
+    A Happy and lightweight Python Package that Provide an API to search for articles on Google News and returns a usable JSON response!
+    <br />
+    <a href="https://github.com/ranahaani/GNews"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/ranahaani/GNews/blob/master/README.md">View Demo</a>
+    ·
+    <a href="https://github.com/ranahaani/GNews/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/ranahaani/GNews/issues">Request Feature</a>
+  </p>
+</p>
+
+<!-- TABLE OF CONTENTS -->
+<details open="open">
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-gnews">About</a>
+      <ul>
+        <li><a href="#demo">Demo</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li>
+    <a href="#usage">Usage</a>
+        <ul>
+           <li> <a href="supported-langauges"> Supported Languages </a> </li>
+        </ul>
+        <ul>
+         <li>   <a href="supported-countries"> Supported Countries </a> </li>
+        </ul>
+        <ul>
+         <li>   <a href="articles-properties"> Article Properties </a> </li>
+        </ul>
+        <ul>
+         <li>   <a href="getting-full-article"> Getting Full Article </a> </li>
+        </ul>
+    </li>
+    <li><a href="#todo">ToDo</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgements">Acknowledgements</a></li>
+  </ol>
+</details>
 
 
-# GNews 
 
-🚩 A Happy and lightweight Python Package that searches Google News RSS Feed and returns a usable JSON response \
+<!-- ABOUT GNews -->
+
+## About GNews
+
+🚩 GNews is A Happy and lightweight Python Package that searches Google News RSS Feed and returns a usable JSON
+response \
 🚩 As well as you can fetch full article (**No need to write scrappers for articles fetching anymore**)
 
-![Gnews](https://github.com/ranahaani/GNews/blob/master/imgs/gnews.gif)
+Google News cover across **141+ countries** with **41+ languages**. On the bottom left side of the Google News page you
+may find a `Language & region` section where you can find all of the supported combinations.
 
-## Installation
+### Demo
+
+[![GNews Demo][demo-gif]](https://github.com/ranahaani/GNews)
+
+<!-- GETTING STARTED -->
+
+## Getting Started
+
+This is an example of how you may give instructions on setting up your project locally. To get a local copy up and
+running follow these simple example steps.
+
+### Installation
 
 ``` shell
 pip install gnews
 ```
+
+<!-- USAGE EXAMPLES -->
 
 ## Usage
 
@@ -31,6 +112,7 @@ print(json_resp[0])
 
 
 ```
+
 ```
 {
 'publisher': 'Aljazeera.com',
@@ -43,8 +125,11 @@ print(json_resp[0])
  }
 
 ```
-- Get news will return the list, `[{'title': '...', 'published date': '...', 'description': '...', 'url': '...', 'publisher': '...'}]`
-#### Available locations and languages
+
+- Get news will return the
+  list, `[{'title': '...', 'published date': '...', 'description': '...', 'url': '...', 'publisher': '...'}]`
+
+#### supported-countries
 
 ```python
 print(google_news.countries)
@@ -58,6 +143,8 @@ print(google_news.countries)
 'Egypt', 'Bangladesh', 'Thailand', 'China', 'Taiwan', 'Hong Kong', 'Japan', 'Republic of Korea'
 ```
 
+#### supported-languages
+
 ```python
 print(google_news.languages)
 
@@ -66,23 +153,9 @@ print(google_news.languages)
 'vietnamese', 'turkish', 'greek', 'bulgarian', 'russian', 'serbian', 'ukrainian', 'hebrew', 'arabic', 'marathi', 'hindi', 'bengali',
 'tamil', 'telugu', 'malyalam', 'thai', 'chinese simplified', 'chinese traditional', 'japanese', 'korean'
 ```
-#### We can set country, language, period and size during initialization
 
-```python
-google_news = GNews(language='english', country='United States', period='7d', max_results=10)
-```
+### Article Properties
 
-
-#### Others methods to set country, language, period and size
-```python
-set_period('7d') # News from last 7 days
-max_results(10) # number of responses across a keyword
-set_country('United States') # News from a specific country 
-set_language('english') # News in a sepcific language
-```
-Google News cover across **141+ countries** with **41+ languages**.
-On the bottom left side of the Google News page you may find a `Language & region` section where you can find all of the supported combinations.
-## Article Properties
 | Properties   | Description                                    | Example                                                                                                                                                                                                                                                                             |
 |--------------|------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | title        | Title of the article                           | IMF Staff and Pakistan Reach Staff-Level Agreement on the Pending Reviews Under the Extended Fund Facility                                                                                                                                                                                                   |
@@ -135,15 +208,78 @@ article.authors
 
 Read full documentation for `newspaper3k`
 [newspaper3k](https://newspaper.readthedocs.io/en/latest/user_guide/quickstart.html#parsing-an-article)
+<!-- ToDo -->
 
 ## Todo
 - Save to MongoDB
 - Save to SQLite
 - Save to JSON
 - Save to .CSV file
+- More than 100 articles
+<!-- ROADMAP -->
 
-## Contact
-> If you want to contact with me, just ✉️ me at ranahaani@gmail.com
+
+## Roadmap
+
+See the [open issues](https://github.com/ranahaani/GNews/issues) for a list of proposed features (and known issues).
+
+
+
+<!-- CONTRIBUTING -->
+
+## Contributing
+
+Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any
+contributions you make are **greatly appreciated**.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+<!-- LICENSE -->
+
 ## License
 
-MIT © 
+Distributed under the MIT License. See `LICENSE` for more information.
+
+
+
+<!-- CONTACT -->
+
+## Contact
+
+Muhammad Abdullah - [@ranahaani](https://twitter.com/ranahaani) - ranahaani@gmail.com
+
+Project Link: [https://github.com/ranahaani/GNews](https://github.com/ranahaani/GNews)
+
+[contributors-shield]: https://img.shields.io/github/contributors/ranahaani/GNews.svg?style=for-the-badge
+
+[contributors-url]: https://github.com/ranahaani/GNews/graphs/contributors
+
+[forks-shield]: https://img.shields.io/github/forks/ranahaani/GNews.svg?style=for-the-badge
+
+[forks-url]: https://github.com/ranahaani/GNews/network/members
+
+[stars-shield]: https://img.shields.io/github/stars/ranahaani/GNews.svg?style=for-the-badge
+
+[stars-url]: https://github.com/ranahaani/GNews/stargazers
+
+[issues-shield]: https://img.shields.io/github/issues/ranahaani/GNews.svg?style=for-the-badge
+
+[issues-url]: https://github.com/ranahaani/GNews/issues
+
+[license-shield]: https://img.shields.io/github/license/ranahaani/GNews.svg?style=for-the-badge
+
+[license-url]: https://github.com/ranahaani/GNews/blob/master/LICENSE.txt
+
+[download-sheild]: https://img.shields.io/pypi/dm/GNews.svg?style=for-the-badge
+
+[download-url]: https://pypistats.org/packages/gnews
+
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+
+[linkedin-url]: https://linkedin.com/in/ranahaani
+
+[demo-gif]: imgs/gnews.gif
