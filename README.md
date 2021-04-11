@@ -10,7 +10,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/ranahaani/GNews">
-    <img src="imgs/logo.png" alt="GNews">
+    <img src="https://github.com/ranahaani/GNews/raw/master/imgs/logo.png" alt="GNews">
   </a>
 
 <h3 align="center">GNews</h3>
@@ -48,19 +48,19 @@
     <li>
     <a href="#usage">Usage</a>
         <ul>
-           <li> <a href="supported-langauges"> Supported Languages </a> </li>
+         <li>   <a href="https://github.com/ranahaani/GNews#supported-countries"> Supported Countries </a> </li>
+        </ul>
+<ul>
+           <li> <a href="https://github.com/ranahaani/GNews#supported-languages"> Supported Languages </a> </li>
         </ul>
         <ul>
-         <li>   <a href="supported-countries"> Supported Countries </a> </li>
+         <li>   <a href="https://github.com/ranahaani/GNews#article-properties"> Article Properties </a> </li>
         </ul>
         <ul>
-         <li>   <a href="articles-properties"> Article Properties </a> </li>
-        </ul>
-        <ul>
-         <li>   <a href="getting-full-article"> Getting Full Article </a> </li>
+         <li>   <a href="https://github.com/ranahaani/GNews#getting-full-article"> Getting Full Article </a> </li>
         </ul>
     </li>
-    <li><a href="#todo">ToDo</a></li>
+    <li><a href="#todo">To do</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -282,4 +282,4 @@ Project Link: [https://github.com/ranahaani/GNews](https://github.com/ranahaani/
 
 [linkedin-url]: https://linkedin.com/in/ranahaani
 
-[demo-gif]: imgs/gnews.gif
+[demo-gif]: https://github.com/ranahaani/GNews/raw/master/imgs/gnews.gif
