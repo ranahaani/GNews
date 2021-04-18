@@ -5,14 +5,14 @@ with open("README.md", "r") as fh:
 
 setup(
     name='gnews',
-    version='0.1.2',
+    version='0.1.3',
     author="Muhammad Abdullah",
     author_email="ranahaani@gmail.com",
     description=' Provide an API to search for articles on Google News and returns a usable JSON response.',
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(),
-    install_requires=['beautifulsoup4', 'dateparser'],
+    install_requires=['beautifulsoup4', 'feedparser'],
     url='https://github.com/ranahaani/GNews/',
     project_urls={
         'Documentation': 'https://github.com/ranahaani/GNews/blob/master/README.md',

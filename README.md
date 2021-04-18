@@ -48,16 +48,16 @@
     <li>
     <a href="#usage">Usage</a>
         <ul>
-         <li>   <a href="https://github.com/ranahaani/GNews#supported-countries"> Supported Countries </a> </li>
+         <li>   <a href="#supported-countries"> Supported Countries </a> </li>
         </ul>
 <ul>
-           <li> <a href="https://github.com/ranahaani/GNews#supported-languages"> Supported Languages </a> </li>
+           <li> <a href="#supported-languages"> Supported Languages </a> </li>
         </ul>
         <ul>
-         <li>   <a href="https://github.com/ranahaani/GNews#article-properties"> Article Properties </a> </li>
+         <li>   <a href="#article-properties"> Article Properties </a> </li>
         </ul>
         <ul>
-         <li>   <a href="https://github.com/ranahaani/GNews#getting-full-article"> Getting Full Article </a> </li>
+         <li>   <a href="#getting-full-article"> Getting Full Article </a> </li>
         </ul>
     </li>
     <li><a href="#todo">To do</a></li>
@@ -114,7 +114,7 @@ print(json_resp[0])
 ```
 
 ```
-{
+[{
 'publisher': 'Aljazeera.com',
  'description': 'Pakistan accuses India of stoking conflict in Indian Ocean  '
                 'Aljazeera.com',
@@ -122,36 +122,68 @@ print(json_resp[0])
  'title': 'Pakistan accuses India of stoking conflict in Indian Ocean - '
           'Aljazeera.com',
  'url': 'https://www.aljazeera.com/news/2021/2/16/pakistan-accuses-india-of-nuclearizing-indian-ocean'
- }
+ },
+ ...]
 
 ```
 
 - Get news will return the
   list, `[{'title': '...', 'published date': '...', 'description': '...', 'url': '...', 'publisher': '...'}]`
+  
 
-#### supported-countries
+#### We can set country, language, period and size during initialization
+
+```python
+google_news = GNews(language='en', country='US', period='7d', max_results=10)
+```
+
+
+#### Others methods to set country, language, period and size
+```python
+set_period('7d') # News from last 7 days
+max_results(10) # number of responses across a keyword
+set_country('United States') # News from a specific country 
+set_language('english') # News in a sepcific language
+```
+
+  The format of the timeframe is a string comprised of a number, followed by a letter prepresenting the time operator. For example 1y would signify 1 year. Full list of operators below:
+
+ - h = hours (eg: 12h)
+ - d = days (eg: 7d)
+ - m = months (eg: 6m)
+ - y = years (eg: 1y)
+
+#### Supported Countries
 
 ```python
 print(google_news.countries)
 
-'Australia', 'Botswana', 'Canada ', 'Ethiopia', 'Ghana', 'India ', 'Indonesia', 'Ireland', 'Israel ', 'Kenya', 'Latvia',
-'Malaysia', 'Namibia', 'New Zealand', 'Nigeria', 'Pakistan', 'Philippines', 'Singapore', 'South Africa', 'Tanzania',
-'Uganda', 'United Kingdom', 'United States', 'Zimbabwe', 'Czech Republic', 'Germany', 'Austria', 'Switzerland', 'Argentina',
-'Chile', 'Colombia', 'Cuba', 'Mexico', 'Peru', 'Venezuela', 'Belgium ', 'France', 'Morocco', 'Senegal', 'Italy', 'Lithuania',
-'Hungary', 'Netherlands', 'Norway', 'Poland', 'Brazil', 'Portugal', 'Romania', 'Slovakia', 'Slovenia', 'Sweden',
-'Vietnam', 'Turkey', 'Greece', 'Bulgaria', 'Russia', 'Ukraine ', 'Serbia', 'United Arab Emirates', 'Saudi Arabia', 'Lebanon',
-'Egypt', 'Bangladesh', 'Thailand', 'China', 'Taiwan', 'Hong Kong', 'Japan', 'Republic of Korea'
+{'Australia': 'AU', 'Botswana': 'BW', 'Canada ': 'CA', 'Ethiopia': 'ET', 'Ghana': 'GH', 'India ': 'IN',
+  'Indonesia': 'ID', 'Ireland': 'IE', 'Israel ': 'IL', 'Kenya': 'KE', 'Latvia': 'LV', 'Malaysia': 'MY', 'Namibia': 'NA',
+  'New Zealand': 'NZ', 'Nigeria': 'NG', 'Pakistan': 'PK', 'Philippines': 'PH', 'Singapore': 'SG', 'South Africa': 'ZA',
+  'Tanzania': 'TZ', 'Uganda': 'UG', 'United Kingdom': 'GB', 'United States': 'US', 'Zimbabwe': 'ZW',
+  'Czech Republic': 'CZ', 'Germany': 'DE', 'Austria': 'AT', 'Switzerland': 'CH', 'Argentina': 'AR', 'Chile': 'CL',
+  'Colombia': 'CO', 'Cuba': 'CU', 'Mexico': 'MX', 'Peru': 'PE', 'Venezuela': 'VE', 'Belgium ': 'BE', 'France': 'FR',
+  'Morocco': 'MA', 'Senegal': 'SN', 'Italy': 'IT', 'Lithuania': 'LT', 'Hungary': 'HU', 'Netherlands': 'NL',
+  'Norway': 'NO', 'Poland': 'PL', 'Brazil': 'BR', 'Portugal': 'PT', 'Romania': 'RO', 'Slovakia': 'SK', 'Slovenia': 'SI',
+  'Sweden': 'SE', 'Vietnam': 'VN', 'Turkey': 'TR', 'Greece': 'GR', 'Bulgaria': 'BG', 'Russia': 'RU', 'Ukraine ': 'UA',
+  'Serbia': 'RS', 'United Arab Emirates': 'AE', 'Saudi Arabia': 'SA', 'Lebanon': 'LB', 'Egypt': 'EG',
+  'Bangladesh': 'BD', 'Thailand': 'TH', 'China': 'CN', 'Taiwan': 'TW', 'Hong Kong': 'HK', 'Japan': 'JP',
+  'Republic of Korea': 'KR'}
 ```
 
-#### supported-languages
+#### Supported Languages
 
 ```python
 print(google_news.languages)
 
-'english', 'indonesian', 'czech', 'german', 'spanish', 'french', 'italian', 'latvian', 'lithuanian', 'hungarian',
-'dutch', 'norwegian', 'polish', 'portuguese brasil', 'portuguese portugal', 'romanian', 'slovak', 'slovenian', 'swedish',
-'vietnamese', 'turkish', 'greek', 'bulgarian', 'russian', 'serbian', 'ukrainian', 'hebrew', 'arabic', 'marathi', 'hindi', 'bengali',
-'tamil', 'telugu', 'malyalam', 'thai', 'chinese simplified', 'chinese traditional', 'japanese', 'korean'
+{'english': 'en', 'indonesian': 'id', 'czech': 'cs', 'german': 'de', 'spanish': 'es-419', 'french': 'fr',
+  'italian': 'it', 'latvian': 'lv', 'lithuanian': 'lt', 'hungarian': 'hu', 'dutch': 'nl', 'norwegian': 'no',
+  'polish': 'pl', 'portuguese brasil': 'pt-419', 'portuguese portugal': 'pt-150', 'romanian': 'ro', 'slovak': 'sk',
+  'slovenian': 'sl', 'swedish': 'sv', 'vietnamese': 'vi', 'turkish': 'tr', 'greek': 'el', 'bulgarian': 'bg',
+  'russian': 'ru', 'serbian': 'sr', 'ukrainian': 'uk', 'hebrew': 'he', 'arabic': 'ar', 'marathi': 'mr', 'hindi': 'hi',
+  'bengali': 'bn', 'tamil': 'ta', 'telugu': 'te', 'malyalam': 'ml', 'thai': 'th', 'chinese simplified': 'zh-Hans',
+  'chinese traditional': 'zh-Hant', 'japanese': 'ja', 'korean': 'ko'}
 ```
 
 ### Article Properties

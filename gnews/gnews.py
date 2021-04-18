@@ -2,7 +2,7 @@ import feedparser
 from bs4 import BeautifulSoup as Soup
 
 from gnews.utils.constants import countries, languages
-from gnews.utils.utils import lang_mapping, country_mapping
+from gnews.utils.utils import lang_mapping, country_mapping, import_or_install
 
 
 class GNews:
@@ -10,12 +10,12 @@ class GNews:
     GNews initialization
     """
 
-    def __init__(self, language="english", country="United States", max_results=5, period=None):
-        self.countries = *countries,
-        self.languages = *languages,
+    def __init__(self, language="en", country="US", max_results=100, period=None):
+        self.countries = countries,
+        self.languages = languages,
         self._max_results = max_results
-        self._language = lang_mapping(language)
-        self._country = country_mapping(country)
+        self._language = language
+        self._country = country
 
         self._period = period
         self.BASE_URL = 'https://news.google.com/rss'
@@ -46,6 +46,7 @@ class GNews:
 
     def get_full_article(self, url):
         try:
+            import_or_install('newspaper')
             from newspaper import Article
             article = Article(url="%s" % url, language=self._language)
             article.download()
@@ -56,7 +57,7 @@ class GNews:
         return article
 
     def _clean(self, html):
-        soup = Soup(html, features="lxml")
+        soup = Soup(html, features="html.parser")
         text = soup.get_text()
         text = text.replace('\xa0', ' ')
         return text
@@ -67,7 +68,7 @@ class GNews:
             'description': self._clean(item.get("description", "")),
             'published date': item.get("published", ""),
             'url': item.get("link", ""),
-            'publisher': item.get("source", " ").get("title", " ")
+            'publisher': item.get("source", " ")
         }
         return item
 
