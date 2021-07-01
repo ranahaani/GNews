@@ -107,7 +107,7 @@ pip install gnews
 from gnews import GNews
 
 google_news = GNews()
-json_resp = google_news.get_news('Pakistan')
+json_resp = google_news.get_news('Yahoo')
 print(json_resp[0])
 
 
@@ -140,10 +140,10 @@ google_news = GNews(language='en', country='US', period='7d', max_results=10)
 
 #### Others methods to set country, language, period and size
 ```python
-set_period('7d') # News from last 7 days
-max_results(10) # number of responses across a keyword
-set_country('United States') # News from a specific country 
-set_language('english') # News in a sepcific language
+google_news.period = '7d' # News from last 7 days
+google_news.results = 10 # number of responses across a keyword
+google_news.country = 'United States' # News from a specific country 
+google_news.language = 'english' # News in a specific language
 ```
 
   The format of the timeframe is a string comprised of a number, followed by a letter prepresenting the time operator. For example 1y would signify 1 year. Full list of operators below:
