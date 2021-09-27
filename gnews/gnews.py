@@ -1,8 +1,12 @@
+import os
+
 import feedparser
 from bs4 import BeautifulSoup as Soup
+from dotenv import load_dotenv
 
 from gnews.utils.constants import countries, languages
-from gnews.utils.utils import lang_mapping, country_mapping, import_or_install
+from gnews.utils.utils import connect_database, post_database
+from gnews.utils.utils import import_or_install
 
 
 class GNews:
@@ -96,3 +100,15 @@ class GNews:
             key = "%20".join(key.split(" "))
             url = self.BASE_URL + '/search?q={}'.format(key) + self._ceid()
             return list(map(self._process, feedparser.parse(url).entries[:self._max_results]))
+
+    def store_in_mongodb(self, news):
+        """MongoDB cluster needs to be created first - https://www.mongodb.com/cloud/atlas/register"""
+        load_dotenv()
+
+        db_user = os.getenv("DB_USER")
+        db_pw = os.getenv("DB_PW")
+        db_name = os.getenv("DB_NAME")
+        collection_name = os.getenv("COLLECTION_NAME")
+
+        collection = connect_database(db_user, db_pw, db_name, collection_name)
+        post_database(collection, news)
