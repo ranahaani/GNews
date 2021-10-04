@@ -109,8 +109,6 @@ from gnews import GNews
 google_news = GNews()
 json_resp = google_news.get_news('Yahoo')
 print(json_resp[0])
-
-
 ```
 
 ```
@@ -198,22 +196,23 @@ print(google_news.languages)
 
 
 ## Getting full article
- > you can use newspaper3k to scrap full article, you can also get full article using `get_full_article` by passing url.
+* To read a full article you can either:
+  * Navigate to the url directly in your browser, or
+  * Use `newspaper3k` library to scrape the article
+* The article url, needed for both methods, is accessed as `article['url']`.
 
-> Make sure you already install newspaper3k
-
-##### _Install newspaper3k_
-
-`pip3 install newspaper3k`
-
+#### Using newspaper3k
+1. Install the library - `pip3 install newspaper3k`.
+2. Use `get_full_article` method from `GNews`, that creates an `newspaper.article.Article` object from the url.
 ```python
-
 from gnews import GNews
 
 google_news = GNews()
 json_resp = google_news.get_news('Pakistan')
 article = google_news.get_full_article(json_resp[0]['url']) # newspaper3k instance, you can access newspaper3k all attributes in article
 ```
+This new object contains `title`, `text` (full article) or `images` attributes.
+Examples:
 
 ```python
 article.title 
@@ -223,7 +222,6 @@ article.title
 ```python
 article.text 
 ```
-
 
 > End-of-Mission press releases include statements of IMF staff teams that convey preliminary findings after a mission. The views expressed are those of the IMF staff and do not necessarily represent the views of the IMF’s Executive Board.\n\nIMF staff and the Pakistani authorities have reached an agreement on a package of measures to complete second to fifth reviews of the authorities’ reform program supported by the IMF Extended Fund Facility (EFF) ..... (full article)
 ```python
