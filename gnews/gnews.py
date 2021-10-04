@@ -101,6 +101,10 @@ class GNews:
             url = self.BASE_URL + '/search?q={}'.format(key) + self._ceid()
             return list(map(self._process, feedparser.parse(url).entries[:self._max_results]))
 
+    def get_top_news(self):
+        url = self.BASE_URL + "?" + self._ceid()
+        return list(map(self._process, feedparser.parse(url).entries[:self._max_results]))
+
     def store_in_mongodb(self, news):
         """MongoDB cluster needs to be created first - https://www.mongodb.com/cloud/atlas/register"""
         load_dotenv()
