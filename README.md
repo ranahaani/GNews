@@ -103,40 +103,19 @@ pip install gnews
 
 ## Usage
 
-```python
-from gnews import GNews
+### Get news by keyword
+* `GNews.get_news(keyword)` 
 
-google_news = GNews()
-json_resp = google_news.get_news('Yahoo')
-print(json_resp[0])
-```
+### Get top news
+* `GNews.get_top_news()`
 
-```
-[{
-'publisher': 'Aljazeera.com',
- 'description': 'Pakistan accuses India of stoking conflict in Indian Ocean  '
-                'Aljazeera.com',
- 'published date': 'Tue, 16 Feb 2021 11:50:43 GMT',
- 'title': 'Pakistan accuses India of stoking conflict in Indian Ocean - '
-          'Aljazeera.com',
- 'url': 'https://www.aljazeera.com/news/2021/2/16/pakistan-accuses-india-of-nuclearizing-indian-ocean'
- },
- ...]
 
-```
-
-- Get news will return the
-  list, `[{'title': '...', 'published date': '...', 'description': '...', 'url': '...', 'publisher': '...'}]`
-  
-
-#### We can set country, language, period and size during initialization
-
+### Results specification  
+* It's possible to set country, language, period and size during initialization
 ```python
 google_news = GNews(language='en', country='US', period='7d', max_results=10)
 ```
-
-
-#### Others methods to set country, language, period and size
+* Or change it to an existing object
 ```python
 google_news.period = '7d' # News from last 7 days
 google_news.results = 10 # number of responses across a keyword
@@ -144,12 +123,14 @@ google_news.country = 'United States' # News from a specific country
 google_news.language = 'english' # News in a specific language
 ```
 
-  The format of the timeframe is a string comprised of a number, followed by a letter prepresenting the time operator. For example 1y would signify 1 year. Full list of operators below:
+  The format of the timeframe is a string comprised of a number, followed by a letter representing the time operator. For example 1y would signify 1 year. Full list of operators below:
 
+```
  - h = hours (eg: 12h)
  - d = days (eg: 7d)
  - m = months (eg: 6m)
  - y = years (eg: 1y)
+ ```
 
 #### Supported Countries
 
@@ -186,6 +167,8 @@ print(google_news.languages)
 
 ### Article Properties
 
+- Get news returns the list with following keys: `title`, `published_date`, `description`, `url`, `publisher`.
+ 
 | Properties   | Description                                    | Example                                                                                                                                                                                                                                                                             |
 |--------------|------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | title        | Title of the article                           | IMF Staff and Pakistan Reach Staff-Level Agreement on the Pending Reviews Under the Extended Fund Facility                                                                                                                                                                                                   |
@@ -194,6 +177,29 @@ print(google_news.languages)
 | description  | Short description of article                   | IMF Staff and Pakistan Reach Staff-Level Agreement on the Pending Reviews Under the Extended Fund Facility ...                                                                                                                                                                                                                  |
 | publisher    | Publisher of article                           | The Guardian                                                                                                                                                                                                                                                                        |                                                                                                                                                        |
 
+
+### Example usage
+
+```python
+from gnews import GNews
+
+google_news = GNews()
+pakistan_news = google_news.get_news('Pakistan')
+print(pakistan_news[0])
+```
+
+```
+[{
+'publisher': 'Aljazeera.com',
+ 'description': 'Pakistan accuses India of stoking conflict in Indian Ocean  '
+                'Aljazeera.com',
+ 'published date': 'Tue, 16 Feb 2021 11:50:43 GMT',
+ 'title': 'Pakistan accuses India of stoking conflict in Indian Ocean - '
+          'Aljazeera.com',
+ 'url': 'https://www.aljazeera.com/news/2021/2/16/pakistan-accuses-india-of-nuclearizing-indian-ocean'
+ },
+ ...]
+```
 
 ## Getting full article
 * To read a full article you can either:
