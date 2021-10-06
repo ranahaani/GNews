@@ -8,6 +8,8 @@ from gnews.utils.constants import countries, languages
 from gnews.utils.utils import connect_database, post_database
 from gnews.utils.utils import import_or_install
 
+TOPICS = ["WORLD", "NATION", "BUSINESS", "TECHNOLOGY", "ENTERTAINMENT", "SPORTS", "SCIENCE", "HEALTH"]
+
 
 class GNews:
     """
@@ -35,6 +37,7 @@ class GNews:
                                                 self._language,
                                                 self._language,
                                                 self._country)
+
     @property
     def language(self):
         return self._language
@@ -103,6 +106,15 @@ class GNews:
 
     def get_top_news(self):
         url = self.BASE_URL + "?" + self._ceid()
+        return list(map(self._process, feedparser.parse(url).entries[:self._max_results]))
+
+    def get_news_by_topic(self, topic: str):
+        topic = topic.upper()
+        if topic not in TOPICS:
+            print(f"Invalid topic. Available topics: {', '.join(TOPICS)}.")
+            return []
+
+        url = self.BASE_URL + '/headlines/section/topic/' + topic + '?' + self._ceid()
         return list(map(self._process, feedparser.parse(url).entries[:self._max_results]))
 
     def store_in_mongodb(self, news):
