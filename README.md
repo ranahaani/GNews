@@ -109,6 +109,10 @@ pip install gnews
 ### Get top news
 * `GNews.get_top_news()`
 
+### Get news by major topic
+* `GNews.get_news_by_topic(topic)`
+* Available topics: WORLD, NATION, BUSINESS, TECHNOLOGY, ENTERTAINMENT, SPORTS, SCIENCE, HEALTH.
+
 
 ### Results specification  
 * It's possible to set country, language, period and size during initialization
