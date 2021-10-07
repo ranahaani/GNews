@@ -103,8 +103,8 @@ pip install gnews
 
 ## Usage
 
-### Get news by keyword
-* `GNews.get_news(keyword)` 
+### Get news by keywords
+* `GNews.get_news(*keywords)` 
 
 ### Get top news
 * `GNews.get_top_news()`
