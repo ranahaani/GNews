@@ -115,7 +115,7 @@ pip install gnews
 
 ### Get news by geo location
 * `GNews.get_news_by_location(location)`
-* location can be city/state/country name
+* location can be name of city/state/country
 
 ### Results specification  
 * It's possible to set country, language, period and size during initialization
