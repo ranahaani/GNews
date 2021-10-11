@@ -251,7 +251,7 @@ Read full documentation for `newspaper3k`
 <!-- ToDo -->
 
 ## Todo
-- Save to MongoDB
+- Save to MongoDB ✔️
 - Save to SQLite
 - Save to JSON
 - Save to .CSV file
