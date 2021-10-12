@@ -1,18 +1,21 @@
 from setuptools import setup, find_packages
 
+with open('requirements.txt') as f:
+    requirements = f.read().splitlines()
+
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
     name='gnews',
-    version='0.2.0',
+    version='0.2.3',
     author="Muhammad Abdullah",
     author_email="ranahaani@gmail.com",
     description=' Provide an API to search for articles on Google News and returns a usable JSON response.',
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(),
-    install_requires=['beautifulsoup4', 'feedparser'],
+    install_requires=requirements,
     url='https://github.com/ranahaani/GNews/',
     project_urls={
         'Documentation': 'https://github.com/ranahaani/GNews/blob/master/README.md',

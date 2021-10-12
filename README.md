@@ -113,6 +113,9 @@ pip install gnews
 * `GNews.get_news_by_topic(topic)`
 * Available topics: WORLD, NATION, BUSINESS, TECHNOLOGY, ENTERTAINMENT, SPORTS, SCIENCE, HEALTH.
 
+### Get news by geo location
+* `GNews.get_news_by_location(location)`
+* location can be name of city/state/country
 
 ### Results specification  
 * It's possible to set country, language, period and size during initialization

@@ -1,6 +1,7 @@
 import os
 
 import feedparser
+import requests
 from bs4 import BeautifulSoup as Soup
 from dotenv import load_dotenv
 
@@ -89,24 +90,23 @@ class GNews:
         return text
 
     def _process(self, item):
+        url = item.get("link", "")
+        url = requests.head(url).headers.get('location', url)
         item = {
             'title': item.get("title", ""),
             'description': self._clean(item.get("description", "")),
             'published date': item.get("published", ""),
-            'url': item.get("link", ""),
+            'url': url,
             'publisher': item.get("source", " ")
         }
         return item
 
-    def get_news(self, *keywords):
-        query = " ".join(keywords)
-        if len(query) == 0:
-            print("Enter at least one keyword.")
-            return []
 
-        query = query.replace(" ", "%20")
-        url = self.BASE_URL + '/search?q={}'.format(query) + self._ceid()
-        return list(map(self._process, feedparser.parse(url).entries[:self._max_results]))
+    def get_news(self, key):
+        if key:
+            key = "%20".join(key.split(" "))
+            url = self.BASE_URL + '/search?q={}'.format(key) + self._ceid()
+            return list(map(self._process, feedparser.parse(url).entries[:self._max_results]))
 
     def get_top_news(self):
         url = self.BASE_URL + "?" + self._ceid()
@@ -120,6 +120,14 @@ class GNews:
 
         url = self.BASE_URL + '/headlines/section/topic/' + topic + '?' + self._ceid()
         return list(map(self._process, feedparser.parse(url).entries[:self._max_results]))
+
+    def get_news_by_location(self, location: str):
+        if location:
+            url = self.BASE_URL + '/headlines/section/geo/' + location + '?' + self._ceid()
+            return list(map(self._process, feedparser.parse(url).entries[:self._max_results]))
+        else:
+            print("Enter a valid location.")
+            return []
 
     def store_in_mongodb(self, news):
         """MongoDB cluster needs to be created first - https://www.mongodb.com/cloud/atlas/register"""
