@@ -101,7 +101,6 @@ class GNews:
         }
         return item
 
-
     def get_news(self, key):
         if key:
             key = "%20".join(key.split(" "))
@@ -128,6 +127,12 @@ class GNews:
         else:
             print("Enter a valid location.")
             return []
+
+    def get_multiple_news(self, queries):
+        data = []
+        for query in queries:
+            data.append(self.get_news(query))
+        return data
 
     def store_in_mongodb(self, news):
         """MongoDB cluster needs to be created first - https://www.mongodb.com/cloud/atlas/register"""
