@@ -1,5 +1,8 @@
 from setuptools import setup, find_packages
 
+with open('requirements.txt') as f:
+    requirements = f.read().splitlines()
+
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
@@ -12,7 +15,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(),
-    install_requires=['beautifulsoup4', 'feedparser', 'pymongo', 'dnspython', 'python-dotenv'],
+    install_requires=requirements,
     url='https://github.com/ranahaani/GNews/',
     project_urls={
         'Documentation': 'https://github.com/ranahaani/GNews/blob/master/README.md',
