@@ -117,6 +117,14 @@ class GNews:
         url = self.BASE_URL + '/headlines/section/topic/' + topic + '?' + self._ceid()
         return list(map(self._process, feedparser.parse(url).entries[:self._max_results]))
 
+    def get_news_by_location(self, location: str):
+        if not location:
+            print("Enter a valid location.")
+            return []
+
+        url = self.BASE_URL + '/headlines/section/geo/' + location + '?' + self._ceid()
+        return list(map(self._process, feedparser.parse(url).entries[:self._max_results]))
+
     def store_in_mongodb(self, news):
         """MongoDB cluster needs to be created first - https://www.mongodb.com/cloud/atlas/register"""
         load_dotenv()
