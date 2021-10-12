@@ -118,7 +118,7 @@ class GNews:
         return list(map(self._process, feedparser.parse(url).entries[:self._max_results]))
 
     def get_news_by_location(self, location: str):
-        if len(location) == 0:
+        if not location:
             print("Enter a valid location.")
             return []
 
