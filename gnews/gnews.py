@@ -1,4 +1,5 @@
 import os
+import re
 
 import feedparser
 import requests
@@ -101,29 +102,48 @@ class GNews:
         }
         return item
 
-    def get_news(self, key):
+    @staticmethod
+    def filter_out_news_from_blacklisted_websites(news, blacklisted_websites):
+        news = list(news)
+        if not blacklisted_websites or len(blacklisted_websites) == 0:
+            return news
+
+        blacklisted_websites = [f'^http(s)?://(www.)?{website.lower()}.*' for website in blacklisted_websites]
+
+        def is_allowed_website(url):
+            return all([not re.match(website, url) for website in blacklisted_websites])
+
+        return list(filter(lambda item: is_allowed_website(item['url']), news))
+
+    def _get_news(self, url, blacklisted_websites=None):
+        return self.filter_out_news_from_blacklisted_websites(
+            map(self._process, feedparser.parse(url).entries[:self._max_results]),
+            blacklisted_websites
+        )
+
+    def get_news(self, key, blacklisted_websites=None):
         if key:
             key = "%20".join(key.split(" "))
             url = self.BASE_URL + '/search?q={}'.format(key) + self._ceid()
-            return list(map(self._process, feedparser.parse(url).entries[:self._max_results]))
+            return self._get_news(url, blacklisted_websites)
 
-    def get_top_news(self):
+    def get_top_news(self, blacklisted_websites=None):
         url = self.BASE_URL + "?" + self._ceid()
-        return list(map(self._process, feedparser.parse(url).entries[:self._max_results]))
+        return self._get_news(url, blacklisted_websites)
 
-    def get_news_by_topic(self, topic: str):
+    def get_news_by_topic(self, topic: str, blacklisted_websites=None):
         topic = topic.upper()
         if topic not in TOPICS:
             print(f"Invalid topic. Available topics: {', '.join(TOPICS)}.")
             return []
 
         url = self.BASE_URL + '/headlines/section/topic/' + topic + '?' + self._ceid()
-        return list(map(self._process, feedparser.parse(url).entries[:self._max_results]))
+        return self._get_news(url, blacklisted_websites)
 
-    def get_news_by_location(self, location: str):
+    def get_news_by_location(self, location: str, blacklisted_websites=None):
         if location:
             url = self.BASE_URL + '/headlines/section/geo/' + location + '?' + self._ceid()
-            return list(map(self._process, feedparser.parse(url).entries[:self._max_results]))
+            return self._get_news(url, blacklisted_websites)
         else:
             print("Enter a valid location.")
             return []
