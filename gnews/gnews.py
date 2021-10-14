@@ -18,12 +18,15 @@ class GNews:
     GNews initialization
     """
 
-    def __init__(self, language="en", country="US", max_results=100, period=None):
+    def __init__(self, language="en", country="US", max_results=100, period=None, exclude_websites=None):
+        if exclude_websites is None:
+            exclude_websites = []
         self.countries = tuple(countries),
         self.languages = tuple(languages),
         self._max_results = max_results
         self._language = language
         self._country = country
+        self._exclude_websites = exclude_websites
 
         self._period = period
         self.BASE_URL = 'https://news.google.com/rss'
@@ -115,35 +118,35 @@ class GNews:
 
         return list(filter(lambda item: is_allowed_website(item['url']), news))
 
-    def _get_news(self, url, blacklisted_websites=None):
+    def _get_news(self, url):
         return self.filter_out_news_from_blacklisted_websites(
             map(self._process, feedparser.parse(url).entries[:self._max_results]),
-            blacklisted_websites
+            self._exclude_websites
         )
 
-    def get_news(self, key, blacklisted_websites=None):
+    def get_news(self, key):
         if key:
             key = "%20".join(key.split(" "))
             url = self.BASE_URL + '/search?q={}'.format(key) + self._ceid()
-            return self._get_news(url, blacklisted_websites)
+            return self._get_news(url)
 
-    def get_top_news(self, blacklisted_websites=None):
+    def get_top_news(self):
         url = self.BASE_URL + "?" + self._ceid()
-        return self._get_news(url, blacklisted_websites)
+        return self._get_news(url)
 
-    def get_news_by_topic(self, topic: str, blacklisted_websites=None):
+    def get_news_by_topic(self, topic: str):
         topic = topic.upper()
         if topic not in TOPICS:
             print(f"Invalid topic. Available topics: {', '.join(TOPICS)}.")
             return []
 
         url = self.BASE_URL + '/headlines/section/topic/' + topic + '?' + self._ceid()
-        return self._get_news(url, blacklisted_websites)
+        return self._get_news(url)
 
-    def get_news_by_location(self, location: str, blacklisted_websites=None):
+    def get_news_by_location(self, location: str):
         if location:
             url = self.BASE_URL + '/headlines/section/geo/' + location + '?' + self._ceid()
-            return self._get_news(url, blacklisted_websites)
+            return self._get_news(url)
         else:
             print("Enter a valid location.")
             return []
