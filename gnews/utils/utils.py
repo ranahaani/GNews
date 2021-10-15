@@ -6,15 +6,15 @@ import pip
 import pymongo
 from pymongo import MongoClient
 
-from gnews.utils.constants import languages, countries
+from gnews.utils.constants import AVAILABLE_LANGUAGES, AVAILABLE_COUNTRIES
 
 
 def lang_mapping(lang):
-    return languages.get(lang)
+    return AVAILABLE_LANGUAGES.get(lang)
 
 
 def country_mapping(country):
-    return countries.get(country)
+    return AVAILABLE_COUNTRIES.get(country)
 
 
 def import_or_install(package):
