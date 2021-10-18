@@ -46,7 +46,7 @@
       </ul>
     </li>
     <li>
-    <a href="#usage">Usage</a>
+    <a href="#example-usage">Usage</a>
         <ul>
          <li>   <a href="#supported-countries"> Supported Countries </a> </li>
         </ul>
