@@ -119,19 +119,6 @@ class GNews:
     def is_allowed_website(url, blacklisted_websites):
         return all([not re.match(website, url) for website in blacklisted_websites])
 
-    # @staticmethod
-    # def filter_out_news_from_blacklisted_websites(news, blacklisted_websites):
-    #     news = list(news)
-    #     if not blacklisted_websites or len(blacklisted_websites) == 0:
-    #         return news
-    #
-    #     blacklisted_websites = [f'^http(s)?://(www.)?{website.lower()}.*' for website in blacklisted_websites]
-    #
-    #     def is_allowed_website(url):
-    #         return all([not re.match(website, url) for website in blacklisted_websites])
-    #
-    #     return list(filter(lambda item: is_allowed_website(item['url']), news))
-
     def _get_news(self, url):
         news = []
         for entry in feedparser.parse(url).entries:
