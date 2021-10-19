@@ -24,12 +24,16 @@ class GNews:
     """
 
     def __init__(self, language="en", country="US", max_results=100, period=None, exclude_websites=None):
+        if exclude_websites is None:
+            exclude_websites = []
         self.countries = tuple(AVAILABLE_COUNTRIES),
         self.languages = tuple(AVAILABLE_LANGUAGES),
         self._max_results = max_results
         self._language = language
         self._country = country
-        self._exclude_websites = exclude_websites
+
+        exclude_websites = exclude_websites if exclude_websites else []
+        self._exclude_website_regexes = [f'^http(s)?://(www.)?{website.lower()}.*' for website in exclude_websites]
 
         self._period = period
         self._BASE_URL = 'https://news.google.com/rss'
@@ -96,11 +100,13 @@ class GNews:
         text = text.replace('\xa0', ' ')
         return text
 
-    def _process(self, item):
-
+    def _get_url(self, item):
         url = item.get("link", "")
         if 'news.google.com' in url:
             url = requests.head(url).headers.get('location', url)
+        return url
+
+    def _process(self, item, url):
         title = item.get("title", "")
         item = {
             'title': title,
@@ -112,23 +118,29 @@ class GNews:
         return item
 
     @staticmethod
-    def filter_out_news_from_blacklisted_websites(news, blacklisted_websites):
-        news = list(news)
-        if not blacklisted_websites or len(blacklisted_websites) == 0:
-            return news
+    def is_allowed_website(url, blacklisted_websites):
+        return all([not re.match(website, url) for website in blacklisted_websites])
 
-        blacklisted_websites = [f'^http(s)?://(www.)?{website.lower()}.*' for website in blacklisted_websites]
-
-        def is_allowed_website(url):
-            return all([not re.match(website, url) for website in blacklisted_websites])
-
-        return list(filter(lambda item: is_allowed_website(item['url']), news))
+    # @staticmethod
+    # def filter_out_news_from_blacklisted_websites(news, blacklisted_websites):
+    #     news = list(news)
+    #     if not blacklisted_websites or len(blacklisted_websites) == 0:
+    #         return news
+    #
+    #     blacklisted_websites = [f'^http(s)?://(www.)?{website.lower()}.*' for website in blacklisted_websites]
+    #
+    #     def is_allowed_website(url):
+    #         return all([not re.match(website, url) for website in blacklisted_websites])
+    #
+    #     return list(filter(lambda item: is_allowed_website(item['url']), news))
 
     def _get_news(self, url):
-        return self.filter_out_news_from_blacklisted_websites(
-            map(self._process, feedparser.parse(url).entries[:self._max_results]),
-            self._exclude_websites
-        )
+        news = []
+        for entry in feedparser.parse(url).entries:
+            url = self._get_url(entry)
+            if self.is_allowed_website(url, self._exclude_website_regexes):
+                news.append(self._process(entry, url))
+        return news
 
     def get_news(self, key):
         if key:
