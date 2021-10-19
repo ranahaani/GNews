@@ -31,8 +31,6 @@ class GNews:
         self._max_results = max_results
         self._language = language
         self._country = country
-
-        exclude_websites = exclude_websites if exclude_websites else []
         self._exclude_website_regexes = [f'^http(s)?://(www.)?{website.lower()}.*' for website in exclude_websites]
 
         self._period = period
