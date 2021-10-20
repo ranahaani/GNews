@@ -2,13 +2,12 @@ import logging
 import os
 
 import feedparser
-import requests
 from bs4 import BeautifulSoup as Soup
 from dotenv import load_dotenv
 
 from gnews.utils.constants import AVAILABLE_COUNTRIES, AVAILABLE_LANGUAGES
 from gnews.utils.utils import connect_database, post_database
-from gnews.utils.utils import import_or_install
+from gnews.utils.utils import import_or_install, process_url
 
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO,
                     datefmt='%m/%d/%Y %I:%M:%S %p')
@@ -22,14 +21,14 @@ class GNews:
     GNews initialization
     """
 
-    def __init__(self, language="en", country="US", max_results=100, period=None):
+    def __init__(self, language="en", country="US", max_results=100, period=None, exclude_websites=None):
         self.countries = tuple(AVAILABLE_COUNTRIES),
         self.languages = tuple(AVAILABLE_LANGUAGES),
         self._max_results = max_results
         self._language = language
         self._country = country
-
         self._period = period
+        self._exclude_websites = exclude_websites if exclude_websites and isinstance(exclude_websites, list) else []
         self._BASE_URL = 'https://news.google.com/rss'
 
     def _ceid(self):
@@ -51,6 +50,14 @@ class GNews:
     @language.setter
     def language(self, language):
         self._language = AVAILABLE_LANGUAGES.get(language, language)
+
+    @property
+    def exclude_websites(self):
+        return self._exclude_websites
+
+    @exclude_websites.setter
+    def exclude_websites(self, exclude_websites):
+        self._exclude_websites = exclude_websites
 
     @property
     def max_results(self):
@@ -95,35 +102,33 @@ class GNews:
         return text
 
     def _process(self, item):
-
-        url = item.get("link", "")
-        if 'news.google.com' in url:
-            url = requests.head(url).headers.get('location', url)
-        title = item.get("title", "")
-        item = {
-            'title': title,
-            'description': self._clean(item.get("description", "")),
-            'published date': item.get("published", ""),
-            'url': url,
-            'publisher': item.get("source", " ")
-        }
-        return item
+        url = process_url(item, self._exclude_websites)
+        if url:
+            title = item.get("title", "")
+            item = {
+                'title': title,
+                'description': self._clean(item.get("description", "")),
+                'published date': item.get("published", ""),
+                'url': url,
+                'publisher': item.get("source", " ")
+            }
+            return item
 
     def get_news(self, key):
         if key:
             key = "%20".join(key.split(" "))
             url = self._BASE_URL + '/search?q={}'.format(key) + self._ceid()
-            return list(map(self._process, feedparser.parse(url).entries[:self._max_results]))
+            return [item for item in map(self._process, feedparser.parse(url).entries[:self._max_results]) if item]
 
     def get_top_news(self):
         url = self._BASE_URL + "?" + self._ceid()
-        return list(map(self._process, feedparser.parse(url).entries[:self._max_results]))
+        return [item for item in map(self._process, feedparser.parse(url).entries[:self._max_results]) if item]
 
     def get_news_by_topic(self, topic: str):
         topic = topic.upper()
         if topic in TOPICS:
             url = self._BASE_URL + '/headlines/section/topic/' + topic + '?' + self._ceid()
-            return list(map(self._process, feedparser.parse(url).entries[:self._max_results]))
+            return [item for item in map(self._process, feedparser.parse(url).entries[:self._max_results]) if item]
 
         logger.info(f"Invalid topic. \nAvailable topics are: {', '.join(TOPICS)}.")
         return []
@@ -131,7 +136,7 @@ class GNews:
     def get_news_by_location(self, location: str):
         if location:
             url = self._BASE_URL + '/headlines/section/geo/' + location + '?' + self._ceid()
-            return list(map(self._process, feedparser.parse(url).entries[:self._max_results]))
+            return [item for item in map(self._process, feedparser.parse(url).entries[:self._max_results]) if item]
         logger.warning("Enter a valid location.")
         return []
 

@@ -48,8 +48,21 @@
     <li>
     <a href="#example-usage">Usage</a>
         <ul>
+         <li>   <a href="#Get-news-by-keyword"> Get News By Keywords </a> </li>
+        </ul>
+ <ul>
+         <li>   <a href="#Get-top-news"> Get Top News </a> </li>
+        </ul>
+ <ul>
+         <li>   <a href="#Get-news-by-major-topic"> Get News by Major Topics </a> </li>
+        </ul>
+  <ul>
+         <li>   <a href="#Get-news-by-geo-location"> Get News By GEO location </a> </li>
+        </ul>
+ <ul>
          <li>   <a href="#supported-countries"> Supported Countries </a> </li>
         </ul>
+
 <ul>
            <li> <a href="#supported-languages"> Supported Languages </a> </li>
         </ul>
@@ -124,35 +137,44 @@ print(pakistan_news[0])
  ...]
 ```
 
-
 ### Get news by keyword
-* `GNews.get_news(keyword)` 
+
+* `GNews.get_news(keyword)`
 
 ### Get top news
+
 * `GNews.get_top_news()`
 
 ### Get news by major topic
+
 * `GNews.get_news_by_topic(topic)`
 * Available topics:` WORLD, NATION, BUSINESS, TECHNOLOGY, ENTERTAINMENT, SPORTS, SCIENCE, HEALTH.`
 
 ### Get news by geo location
+
 * `GNews.get_news_by_location(location)`
 * location can be name of city/state/country
 
-### Results specification  
-* It's possible to set country, language, period and size during initialization
+### Results specification
+
+* It's possible to set country, language, period, exclude websites and size during initialization
+
 ```python
-google_news = GNews(language='en', country='US', period='7d', max_results=10)
-```
-* Or change it to an existing object
-```python
-google_news.period = '7d' # News from last 7 days
-google_news.results = 10 # number of responses across a keyword
-google_news.country = 'United States' # News from a specific country 
-google_news.language = 'english' # News in a specific language
+google_news = GNews(language='en', country='US', period='7d', max_results=10, exclude_websites=['yahoo.com', 'cnn.com'])
 ```
 
-  The format of the timeframe is a string comprised of a number, followed by a letter representing the time operator. For example 1y would signify 1 year. Full list of operators below:
+* Or change it to an existing object
+
+```python
+google_news.period = '7d'  # News from last 7 days
+google_news.results = 10  # number of responses across a keyword
+google_news.country = 'United States'  # News from a specific country 
+google_news.language = 'english'  # News in a specific language
+google_news.exclude_websites = ['yahoo.com', 'cnn.com']  # Exclude news from specific website i.e Yahoo.com and CNN.com
+```
+
+The format of the timeframe is a string comprised of a number, followed by a letter representing the time operator. For
+example 1y would signify 1 year. Full list of operators below:
 
 ```
  - h = hours (eg: 12h)
@@ -197,7 +219,7 @@ print(google_news.AVAILABLE_LANGUAGES)
 ### Article Properties
 
 - Get news returns the list with following keys: `title`, `published_date`, `description`, `url`, `publisher`.
- 
+
 | Properties   | Description                                    | Example                                                                                                                                                                                                                                                                             |
 |--------------|------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | title        | Title of the article                           | IMF Staff and Pakistan Reach Staff-Level Agreement on the Pending Reviews Under the Extended Fund Facility                                                                                                                                                                                                   |
@@ -206,29 +228,33 @@ print(google_news.AVAILABLE_LANGUAGES)
 | description  | Short description of article                   | IMF Staff and Pakistan Reach Staff-Level Agreement on the Pending Reviews Under the Extended Fund Facility ...                                                                                                                                                                                                                  |
 | publisher    | Publisher of article                           | The Guardian                                                                                                                                                                                                                                                                        |                                                                                                                                                        |
 
-
 ## Getting full article
+
 * To read a full article you can either:
-  * Navigate to the url directly in your browser, or
-  * Use `newspaper3k` library to scrape the article
+    * Navigate to the url directly in your browser, or
+    * Use `newspaper3k` library to scrape the article
 * The article url, needed for both methods, is accessed as `article['url']`.
 
 #### Using newspaper3k
+
 1. Install the library - `pip3 install newspaper3k`.
 2. Use `get_full_article` method from `GNews`, that creates an `newspaper.article.Article` object from the url.
+
 ```python
 from gnews import GNews
 
 google_news = GNews()
 json_resp = google_news.get_news('Pakistan')
-article = google_news.get_full_article(json_resp[0]['url']) # newspaper3k instance, you can access newspaper3k all attributes in article
+article = google_news.get_full_article(
+    json_resp[0]['url'])  # newspaper3k instance, you can access newspaper3k all attributes in article
 ```
-This new object contains `title`, `text` (full article) or `images` attributes.
-Examples:
+
+This new object contains `title`, `text` (full article) or `images` attributes. Examples:
 
 ```python
 article.title 
 ```
+
 > IMF Staff and Pakistan Reach Staff-Level Agreement on the Pending Reviews Under the Extended Fund Facility'
 
 ```python
@@ -236,30 +262,33 @@ article.text
 ```
 
 > End-of-Mission press releases include statements of IMF staff teams that convey preliminary findings after a mission. The views expressed are those of the IMF staff and do not necessarily represent the views of the IMF’s Executive Board.\n\nIMF staff and the Pakistani authorities have reached an agreement on a package of measures to complete second to fifth reviews of the authorities’ reform program supported by the IMF Extended Fund Facility (EFF) ..... (full article)
+
 ```python
 article.images
 ```
 
 > `{'https://www.imf.org/~/media/Images/IMF/Live-Page/imf-live-rgb-h.ashx?la=en', 'https://www.imf.org/-/media/Images/IMF/Data/imf-logo-eng-sep2019-update.ashx', 'https://www.imf.org/-/media/Images/IMF/Data/imf-seal-shadow-sep2019-update.ashx', 'https://www.imf.org/-/media/Images/IMF/Social/TW-Thumb/twitter-seal.ashx', 'https://www.imf.org/assets/imf/images/footer/IMF_seal.png'}
 `
+
 ```python
 article.authors
 ```
 
->`[]`
+> `[]`
 
 Read full documentation for `newspaper3k`
 [newspaper3k](https://newspaper.readthedocs.io/en/latest/user_guide/quickstart.html#parsing-an-article)
 <!-- ToDo -->
 
 ## Todo
+
 - Save to MongoDB
 - Save to SQLite
 - Save to JSON
 - Save to .CSV file
 - More than 100 articles
-<!-- ROADMAP -->
 
+<!-- ROADMAP -->
 
 ## Roadmap
 
