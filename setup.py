@@ -8,10 +8,10 @@ with open("README.md", "r") as fh:
 
 setup(
     name='gnews',
-    version='0.2.4',
+    version='0.2.5',
     author="Muhammad Abdullah",
     author_email="ranahaani@gmail.com",
-    description=' Provide an API to search for articles on Google News and returns a usable JSON response.',
+    description='Provide an API to search for articles on Google News and returns a usable JSON response.',
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(),
@@ -33,6 +33,8 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
     ],

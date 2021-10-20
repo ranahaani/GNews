@@ -112,3 +112,4 @@ AVAILABLE_COUNTRIES = {
     "Republic of Korea": "KR"
 }
 
+GOOGLE_NEWS_REGEX = f'^http(s)?://(www.)?news.google.com*'

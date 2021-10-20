@@ -1,12 +1,14 @@
 import hashlib
 import json
 import logging
+import re
 
 import pip
 import pymongo
+import requests
 from pymongo import MongoClient
 
-from gnews.utils.constants import AVAILABLE_LANGUAGES, AVAILABLE_COUNTRIES
+from gnews.utils.constants import AVAILABLE_LANGUAGES, AVAILABLE_COUNTRIES, GOOGLE_NEWS_REGEX
 
 
 def lang_mapping(lang):
@@ -21,7 +23,10 @@ def import_or_install(package):
     try:
         __import__(package)
     except ImportError:
-        pip.main(['install', package])
+        if hasattr(pip, 'main'):
+            pip.main(['install', package])
+        else:
+            pip._internal.main(['install', package])
 
 
 def connect_database(db_user, db_pw, db_name, collection_name):
@@ -71,3 +76,14 @@ def post_database(collection, news):
         collection.update_one(doc, {'$set': doc}, upsert=True)
     except pymongo.errors.DuplicateKeyError:
         logging.error("Posting to database failed.")
+
+
+def process_url(item, exclude_websites):
+    source = item.get('source').get('href')
+    if not all([not re.match(website, source) for website in
+                [f'^http(s)?://(www.)?{website.lower()}.*' for website in exclude_websites]]):
+        return
+    url = item.get('link')
+    if re.match(GOOGLE_NEWS_REGEX, url):
+        url = requests.head(url).headers.get('location', url)
+    return url
