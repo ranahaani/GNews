@@ -5,15 +5,12 @@ import feedparser
 from bs4 import BeautifulSoup as Soup
 from dotenv import load_dotenv
 
-from gnews.utils.constants import AVAILABLE_COUNTRIES, AVAILABLE_LANGUAGES
-from gnews.utils.utils import connect_database, post_database
-from gnews.utils.utils import import_or_install, process_url
+from gnews.utils.constants import AVAILABLE_COUNTRIES, AVAILABLE_LANGUAGES, TOPICS, BASE_URL
+from gnews.utils.utils import connect_database, post_database, import_or_install, process_url
 
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO,
                     datefmt='%m/%d/%Y %I:%M:%S %p')
 logger = logging.getLogger(__name__)
-
-TOPICS = ["WORLD", "NATION", "BUSINESS", "TECHNOLOGY", "ENTERTAINMENT", "SPORTS", "SCIENCE", "HEALTH"]
 
 
 class GNews:
@@ -29,7 +26,6 @@ class GNews:
         self._country = country
         self._period = period
         self._exclude_websites = exclude_websites if exclude_websites and isinstance(exclude_websites, list) else []
-        self._BASE_URL = 'https://news.google.com/rss'
 
     def _ceid(self):
         if self._period:
@@ -115,27 +111,41 @@ class GNews:
             return item
 
     def get_news(self, key):
+        """
+         :return: JSON response as nested Python dictionary.
+        """
         if key:
             key = "%20".join(key.split(" "))
-            url = self._BASE_URL + '/search?q={}'.format(key) + self._ceid()
+            url = BASE_URL + '/search?q={}'.format(key) + self._ceid()
             return [item for item in map(self._process, feedparser.parse(url).entries[:self._max_results]) if item]
 
     def get_top_news(self):
-        url = self._BASE_URL + "?" + self._ceid()
+        """
+         :return: Top News JSON response.
+        """
+        url = BASE_URL + "?" + self._ceid()
         return [item for item in map(self._process, feedparser.parse(url).entries[:self._max_results]) if item]
 
     def get_news_by_topic(self, topic: str):
+        f"""
+        :params: TOPIC names i.e {TOPICS}
+         :return: JSON response as nested Python dictionary.
+        """
         topic = topic.upper()
         if topic in TOPICS:
-            url = self._BASE_URL + '/headlines/section/topic/' + topic + '?' + self._ceid()
+            url = BASE_URL + '/headlines/section/topic/' + topic + '?' + self._ceid()
             return [item for item in map(self._process, feedparser.parse(url).entries[:self._max_results]) if item]
 
         logger.info(f"Invalid topic. \nAvailable topics are: {', '.join(TOPICS)}.")
         return []
 
     def get_news_by_location(self, location: str):
+        """
+        :params: city/state/country
+         :return: JSON response as nested Python dictionary.
+        """
         if location:
-            url = self._BASE_URL + '/headlines/section/geo/' + location + '?' + self._ceid()
+            url = BASE_URL + '/headlines/section/geo/' + location + '?' + self._ceid()
             return [item for item in map(self._process, feedparser.parse(url).entries[:self._max_results]) if item]
         logger.warning("Enter a valid location.")
         return []

@@ -27,63 +27,58 @@
     ·
     <a href="https://github.com/ranahaani/GNews/issues">Request Feature</a>
   </p>
-</p>
 
 <!-- TABLE OF CONTENTS -->
 <details open="open">
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-gnews">About</a>
-      <ul>
-        <li><a href="#demo">Demo</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li>
-    <a href="#usage">Usage</a>
-        <ul>
-         <li>   <a href="#Get-news-by-keyword"> Get News By Keywords </a> </li>
-        </ul>
- <ul>
-         <li>   <a href="#Get-top-news"> Get Top News </a> </li>
-        </ul>
- <ul>
-         <li>   <a href="#Get-news-by-major-topic"> Get News by Major Topics </a> </li>
-        </ul>
-  <ul>
-         <li>   <a href="#Get-news-by-geo-location"> Get News By GEO location </a> </li>
-        </ul>
- <ul>
-         <li>   <a href="#supported-countries"> Supported Countries </a> </li>
-        </ul>
-
-<ul>
-           <li> <a href="#supported-languages"> Supported Languages </a> </li>
-        </ul>
-        <ul>
-         <li>   <a href="#article-properties"> Article Properties </a> </li>
-        </ul>
-        <ul>
-         <li>   <a href="#getting-full-article"> Getting Full Article </a> </li>
-        </ul>
-    </li>
-    <li><a href="#todo">To do</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgements">Acknowledgements</a></li>
-  </ol>
+   <summary>Table of Contents</summary>
+   <ol>
+      <li>
+         <a href="#about-gnews">About</a>
+         <ul>
+            <li><a href="#demo">Demo</a></li>
+         </ul>
+      </li>
+      <li>
+         <a href="#getting-started">Getting Started</a>
+         <ul>
+            <li><a href="#installation">Installation</a></li>
+         </ul>
+      </li>
+      <li>
+         <a href="#usage">Usage</a>
+         <ul>
+            <li>   <a href="#Get-top-news">Top News </a> </li>
+         </ul>
+          <ul>
+            <li>   <a href="#Get-news-by-keyword">News by Keywords </a> </li>
+          </ul>
+         <ul>
+            <li>   <a href="#Get-news-by-major-topic">News by Major Topics </a> </li>
+         </ul>
+         <ul>
+            <li>   <a href="#Get-news-by-geo-location">News by GEO Location </a> </li>
+         </ul>
+         <ul>
+            <li>   <a href="#supported-countries"> Supported Countries </a> </li>
+         </ul>
+         <ul>
+            <li> <a href="#supported-languages"> Supported Languages </a> </li>
+         </ul>
+         <ul>
+            <li>   <a href="#article-properties"> Article Properties </a> </li>
+         </ul>
+         <ul>
+            <li>   <a href="#getting-full-article"> Getting Full Article </a> </li>
+         </ul>
+      </li>
+      <li><a href="#todo">To do</a></li>
+      <li><a href="#roadmap">Roadmap</a></li>
+      <li><a href="#contributing">Contributing</a></li>
+      <li><a href="#license">License</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="#acknowledgements">Acknowledgements</a></li>
+   </ol>
 </details>
-
-
-
 <!-- ABOUT GNews -->
 
 ## About GNews
@@ -137,13 +132,14 @@ print(pakistan_news[0])
  ...]
 ```
 
-### Get news by keyword
-
-* `GNews.get_news(keyword)`
-
 ### Get top news
 
 * `GNews.get_top_news()`
+
+
+### Get news by keyword
+
+* `GNews.get_news(keyword)`
 
 ### Get news by major topic
 

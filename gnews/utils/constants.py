@@ -112,4 +112,9 @@ AVAILABLE_COUNTRIES = {
     "Republic of Korea": "KR"
 }
 
+GOOGLE_NEWS_URL = 'https://news.google.com'
+BASE_URL = "{0}/rss".format(GOOGLE_NEWS_URL)
+
 GOOGLE_NEWS_REGEX = f'^http(s)?://(www.)?news.google.com*'
+
+TOPICS = ["WORLD", "NATION", "BUSINESS", "TECHNOLOGY", "ENTERTAINMENT", "SPORTS", "SCIENCE", "HEALTH"]
