@@ -306,6 +306,16 @@ contributions you make are **greatly appreciated**.
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
+### Development instructions
+#### Developing with docker
+1. Install [docker and docker-compose](https://docs.docker.com/get-docker/).
+2. Set-up your .env environment placing the mongo db credentials.
+3. Run `docker-compose up --build`
+#### Developing with virtual environment
+1. Start your virtual environment `virtualenv gnews`
+2. Install the requirements with `pip install -r requirements.txt`
+
+
 <!-- LICENSE -->
 
 ## License
