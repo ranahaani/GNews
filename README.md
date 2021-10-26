@@ -43,6 +43,9 @@
          <ul>
             <li><a href="#installation">Installation</a></li>
          </ul>
+        <ul>
+            <li><a href="#setup-with-docker">Setup with Docker</a></li>
+         </ul>
       </li>
       <li>
          <a href="#usage">Usage</a>
@@ -107,6 +110,14 @@ running follow these simple example steps.
 ``` shell
 pip install gnews
 ```
+### Setup with Docker
+#### Developing with docker
+1. Install [docker and docker-compose](https://docs.docker.com/get-docker/).
+2. Set-up your .env environment placing the mongo db credentials.
+3. Run `docker-compose up --build`
+#### Developing with virtual environment
+1. Start your virtual environment `virtualenv gnews`
+2. Install the requirements with `pip install -r requirements.txt`
 
 <!-- USAGE EXAMPLES -->
 
@@ -305,6 +316,8 @@ contributions you make are **greatly appreciated**.
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
+
+
 
 <!-- LICENSE -->
 
