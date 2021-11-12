@@ -11,6 +11,7 @@ from pymongo import MongoClient
 from gnews.utils.constants import AVAILABLE_LANGUAGES, AVAILABLE_COUNTRIES, GOOGLE_NEWS_REGEX
 
 
+
 def lang_mapping(lang):
     return AVAILABLE_LANGUAGES.get(lang)
 
