@@ -1,11 +1,12 @@
 import logging
 import os
+import urllib.request
 
 import feedparser
 from bs4 import BeautifulSoup as Soup
 from dotenv import load_dotenv
 
-from gnews.utils.constants import AVAILABLE_COUNTRIES, AVAILABLE_LANGUAGES, TOPICS, BASE_URL
+from gnews.utils.constants import AVAILABLE_COUNTRIES, AVAILABLE_LANGUAGES, TOPICS, BASE_URL, USER_AGENT
 from gnews.utils.utils import connect_database, post_database, import_or_install, process_url
 
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO,
@@ -18,7 +19,7 @@ class GNews:
     GNews initialization
     """
 
-    def __init__(self, language="en", country="US", max_results=100, period=None, exclude_websites=None):
+    def __init__(self, language="en", country="US", max_results=100, period=None, exclude_websites=None, proxy=None):
         self.countries = tuple(AVAILABLE_COUNTRIES),
         self.languages = tuple(AVAILABLE_LANGUAGES),
         self._max_results = max_results
@@ -26,6 +27,7 @@ class GNews:
         self._country = country
         self._period = period
         self._exclude_websites = exclude_websites if exclude_websites and isinstance(exclude_websites, list) else []
+        self._proxy = {'http': proxy, 'https': proxy} if proxy else None
 
     def _ceid(self):
         if self._period:
@@ -117,14 +119,14 @@ class GNews:
         if key:
             key = "%20".join(key.split(" "))
             url = BASE_URL + '/search?q={}'.format(key) + self._ceid()
-            return [item for item in map(self._process, feedparser.parse(url).entries[:self._max_results]) if item]
+            return self._get_news(url)
 
     def get_top_news(self):
         """
          :return: Top News JSON response.
         """
         url = BASE_URL + "?" + self._ceid()
-        return [item for item in map(self._process, feedparser.parse(url).entries[:self._max_results]) if item]
+        return self._get_news(url)
 
     def get_news_by_topic(self, topic: str):
         f"""
@@ -134,7 +136,7 @@ class GNews:
         topic = topic.upper()
         if topic in TOPICS:
             url = BASE_URL + '/headlines/section/topic/' + topic + '?' + self._ceid()
-            return [item for item in map(self._process, feedparser.parse(url).entries[:self._max_results]) if item]
+            return self._get_news(url)
 
         logger.info(f"Invalid topic. \nAvailable topics are: {', '.join(TOPICS)}.")
         return []
@@ -146,9 +148,23 @@ class GNews:
         """
         if location:
             url = BASE_URL + '/headlines/section/geo/' + location + '?' + self._ceid()
-            return [item for item in map(self._process, feedparser.parse(url).entries[:self._max_results]) if item]
+            return self._get_news(url)
         logger.warning("Enter a valid location.")
         return []
+
+    def _get_news(self, url):
+        try:
+            if self._proxy:
+                proxy_handler = urllib.request.ProxyHandler(self._proxy)
+                feed_data = feedparser.parse(url, agent=USER_AGENT, handlers=[proxy_handler])
+            else:
+                feed_data = feedparser.parse(url, agent=USER_AGENT)
+
+            return [item for item in
+                    map(self._process, feed_data.entries[:self._max_results]) if item]
+        except Exception as err:
+            logger.error(err.args[0])
+            return []
 
     def store_in_mongodb(self, news):
         """MongoDB cluster needs to be created first - https://www.mongodb.com/cloud/atlas/register"""
