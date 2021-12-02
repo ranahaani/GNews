@@ -23,10 +23,7 @@
     A Happy and lightweight Python Package that Provide an API to search for articles on Google News and returns a usable JSON response!
     <br />
   
-    If you like ```GNews``` or if it is useful to you, show your support by buying me a coffee.
-
-    <a href="https://www.buymeacoffee.com/ranahaani" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
-  <br/>
+    
     <a href="https://github.com/ranahaani/GNews"><strong>Explore the docs »</strong></a>
     <br />
     <br />
