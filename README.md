@@ -26,6 +26,9 @@
     <a href="https://github.com/ranahaani/GNews/issues">Report Bug</a>
     ·
     <a href="https://github.com/ranahaani/GNews/issues">Request Feature</a>
+If you like `GNews` or if it is useful to you, show your support by buying me a coffee.
+
+<a href="https://www.buymeacoffee.com/ranahaani" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
   </p>
 
 <!-- TABLE OF CONTENTS -->
@@ -98,10 +101,7 @@ may find a `Language & region` section where you can find all of the supported c
 
 [![GNews Demo][demo-gif]](https://github.com/ranahaani/GNews)
 
-## Support
-If you like `libqpsd` or if it is useful to you, show your support by buying me a coffee.
 
-<a href="https://www.buymeacoffee.com/ranahaani" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
 <!-- GETTING STARTED -->
 
