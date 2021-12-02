@@ -21,9 +21,7 @@
 
   <p align="center">
     A Happy and lightweight Python Package that Provide an API to search for articles on Google News and returns a usable JSON response!
-    <br />
-  
-    
+    <br />    
     <a href="https://github.com/ranahaani/GNews"><strong>Explore the docs »</strong></a>
     <br />
     <br />
