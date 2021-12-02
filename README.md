@@ -341,7 +341,7 @@ Project Link: [https://github.com/ranahaani/GNews](https://github.com/ranahaani/
 
 Project Link: [https://github.com/ranahaani/GNews](https://github.com/ranahaani/GNews)
 
-Buy Me a Coffee: [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/ranahaani){:target="_blank"}
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/ranahaani)
 
 [contributors-shield]: https://img.shields.io/github/contributors/ranahaani/GNews.svg?style=for-the-badge
 
