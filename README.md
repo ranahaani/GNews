@@ -25,6 +25,11 @@
     <a href="https://github.com/ranahaani/GNews"><strong>Explore the docs »</strong></a>
     <br />
     <br />
+    If you like <b> GNews </b> or if it is useful to you, show your support by buying me a coffee.
+    <br />
+    <a href="https://www.buymeacoffee.com/ranahaani" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" ></a>
+    <br />
+    <br />
     <a href="https://github.com/ranahaani/GNews/blob/master/README.md">View Demo</a>
     ·
     <a href="https://github.com/ranahaani/GNews/issues">Report Bug</a>
@@ -32,6 +37,7 @@
     <a href="https://github.com/ranahaani/GNews/issues">Request Feature</a>
 
   </p>
+
 
 <!-- TABLE OF CONTENTS -->
 <details open="open">
