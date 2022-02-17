@@ -134,7 +134,7 @@ pip install gnews
 
 #### Install using clone
 
-1. Clone this repository `virtualenv gnews`
+1. Clone this repository `https://github.com/ranahaani/GNews.git`
 2. Start your virtual environment `virtualenv gnews`
 3. Install the requirements with `pip install -r requirements.txt`
 
