@@ -15,11 +15,19 @@ logger = logging.getLogger(__name__)
 
 
 class GNews:
-    """
-    GNews initialization
-    """
 
     def __init__(self, language="en", country="US", max_results=100, period=None, exclude_websites=None, proxy=None):
+        """
+        :param language: The language in which to return results, defaults to en (optional)
+        :param country: The country code of the country you want to get headlines for, defaults to US
+        (optional)
+        :param max_results: The maximum number of results to return. The default is 100, defaults to 100
+        (optional)
+        :param period: The period of time from which you want the news
+        :param exclude_websites: A list of strings that indicate websites to exclude from results
+        :param proxy: The proxy parameter is a dictionary with a single key-value pair. The key is the
+        protocol name and the value is the proxy address
+        """
         self.countries = tuple(AVAILABLE_COUNTRIES),
         self.languages = tuple(AVAILABLE_LANGUAGES),
         self._max_results = max_results
@@ -47,6 +55,9 @@ class GNews:
 
     @language.setter
     def language(self, language):
+        """
+        :param language: The language code for the language you want to use
+        """
         self._language = AVAILABLE_LANGUAGES.get(language, language)
 
     @property
@@ -55,6 +66,10 @@ class GNews:
 
     @exclude_websites.setter
     def exclude_websites(self, exclude_websites):
+        """
+        The function takes in a list of websites that you want to exclude
+        :param exclude_websites: A list of strings that will be used to filter out websites
+        """
         self._exclude_websites = exclude_websites
 
     @property
@@ -82,6 +97,12 @@ class GNews:
         self._country = AVAILABLE_COUNTRIES.get(country, country)
 
     def get_full_article(self, url):
+        """
+        It takes a URL as an argument, downloads the article, parses it, and returns the article object
+
+        :param url: The URL of the article you want to summarize
+        :return: The article object from newspaper3k.
+        """
         try:
             import_or_install('newspaper3k')
             from newspaper import Article
@@ -114,7 +135,12 @@ class GNews:
 
     def get_news(self, key):
         """
-         :return: JSON response as nested Python dictionary.
+        The function takes in a key and returns a list of news articles
+
+        :param key: The query you want to search for. For example, if you want to search for news about
+        the "Yahoo", you would get results from Google News according to your key i.e "yahoo"
+        :return: A list of dictionaries. Each dictionary contains the title, link, and summary of the
+        news article.
         """
         if key:
             key = "%20".join(key.split(" "))
@@ -143,9 +169,13 @@ class GNews:
 
     def get_news_by_location(self, location: str):
         """
-        :params: city/state/country
-         :return: JSON response as nested Python dictionary.
+        This function is used to get news from a specific location (city, state, and country)
+
+        :param location: The location for which you want to get headlines
+        :type location: str
+        :return: A list of dictionaries.
         """
+
         if location:
             url = BASE_URL + '/headlines/section/geo/' + location + '?' + self._ceid()
             return self._get_news(url)
@@ -167,7 +197,15 @@ class GNews:
             return []
 
     def store_in_mongodb(self, news):
-        """MongoDB cluster needs to be created first - https://www.mongodb.com/cloud/atlas/register"""
+        '''
+        - MongoDB cluster needs to be created first - https://www.mongodb.com/cloud/atlas/register
+        - Connect to the MongoDB cluster
+        - Create a new collection
+        - Insert the news into the collection
+
+        :param news: the news object that we created in the previous function
+        '''
+
         load_dotenv()
 
         db_user = os.getenv("DB_USER")
