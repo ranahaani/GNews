@@ -3,13 +3,10 @@ import json
 import logging
 import re
 
-import pip
 import pymongo
 import requests
+from gnews.utils.constants import AVAILABLE_COUNTRIES, AVAILABLE_LANGUAGES, GOOGLE_NEWS_REGEX
 from pymongo import MongoClient
-
-from gnews.utils.constants import AVAILABLE_LANGUAGES, AVAILABLE_COUNTRIES, GOOGLE_NEWS_REGEX
-
 
 
 def lang_mapping(lang):
@@ -18,16 +15,6 @@ def lang_mapping(lang):
 
 def country_mapping(country):
     return AVAILABLE_COUNTRIES.get(country)
-
-
-def import_or_install(package):
-    try:
-        __import__(package)
-    except ImportError:
-        if hasattr(pip, 'main'):
-            pip.main(['install', package])
-        else:
-            pip._internal.main(['install', package])
 
 
 def connect_database(db_user, db_pw, db_name, collection_name):
