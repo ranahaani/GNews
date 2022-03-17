@@ -1,13 +1,18 @@
 import logging
 import os
+import sys
 import urllib.request
 
 import feedparser
 from bs4 import BeautifulSoup as Soup
 from dotenv import load_dotenv
+try:
+    import newspaper  # Optional - required by GNews.get_full_article()
+except ImportError:
+    pass
 
 from gnews.utils.constants import AVAILABLE_COUNTRIES, AVAILABLE_LANGUAGES, TOPICS, BASE_URL, USER_AGENT
-from gnews.utils.utils import connect_database, post_database, import_or_install, process_url
+from gnews.utils.utils import connect_database, post_database, process_url
 
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO,
                     datefmt='%m/%d/%Y %I:%M:%S %p')
@@ -98,15 +103,18 @@ class GNews:
 
     def get_full_article(self, url):
         """
-        It takes a URL as an argument, downloads the article, parses it, and returns the article object
+        Download an article from the specified URL, parse it, and return an article object.
 
-        :param url: The URL of the article you want to summarize
-        :return: The article object from newspaper3k.
+        :param url: The URL of the article you wish to summarize.
+        :return: An `Article` object returned by the `newspaper` library.
         """
+        # Check if the `newspaper` library is available
+        if 'newspaper' not in (sys.modules.keys() & globals()):  # Top import failed since it's not installed
+            print("\nget_full_article() requires the `newspaper` library.")
+            print("You can install it by running `python3 -m pip install newspaper3k` in your shell.\n")
+            return None
         try:
-            import_or_install('newspaper3k')
-            from newspaper import Article
-            article = Article(url="%s" % url, language=self._language)
+            article = newspaper.Article(url="%s" % url, language=self._language)
             article.download()
             article.parse()
         except Exception as error:
