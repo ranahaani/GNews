@@ -27,12 +27,13 @@ class GNews:
     def __init__(self, language="en", country="US", max_results=100, period=None, start_date=None, end_date=None,
                  exclude_websites=None, proxy=None):
         """
+        (optional parameters)
         :param language: The language in which to return results, defaults to en (optional)
         :param country: The country code of the country you want to get headlines for, defaults to US
-        (optional)
         :param max_results: The maximum number of results to return. The default is 100, defaults to 100
-        (optional)
         :param period: The period of time from which you want the news
+        :param start_date: Date after which results must have been published
+        :param end_date: Date before which results must have been published
         :param exclude_websites: A list of strings that indicate websites to exclude from results
         :param proxy: The proxy parameter is a dictionary with a single key-value pair. The key is the
         protocol name and the value is the proxy address
@@ -108,9 +109,11 @@ class GNews:
     def start_date(self):
         """
         :return: string of start_date in form YYYY-MM-DD, or None if start_date is not set
+        NOTE: this will reset period to None if start_date is not none
         """
         if self._start_date is None:
             return None
+        self.period = None
         return self._start_date.strftime("%Y-%m-%d")
 
     @start_date.setter
@@ -118,11 +121,9 @@ class GNews:
         """
         The function sets the start of the date range you want to search
         :param start_date: either a tuple in the form (YYYY, MM, DD) or a datetime
-        NOTE: this will reset period to None
         """
         if type(start_date) is tuple:
             start_date = datetime.datetime(start_date[0], start_date[1], start_date[2])
-        self.period = None
         if self._end_date:
             if start_date-self._end_date == datetime.timedelta(days=0):
                 warnings.warn("The start and end dates should be at least 1 day apart, or GNews will return no results")
@@ -134,9 +135,11 @@ class GNews:
     def end_date(self):
         """
         :return: string of end_date in form YYYY-MM-DD, or None if end_date is not set
+        NOTE: this will reset period to None if end date is not None
         """
         if self._end_date is None:
             return None
+        self.period = None
         return self._end_date.strftime("%Y-%m-%d")
 
     @end_date.setter
@@ -148,7 +151,6 @@ class GNews:
         """
         if type(end_date) is tuple:
             end_date = datetime.datetime(end_date[0], end_date[1], end_date[2])
-        self.period = None
         if self._start_date:
             if end_date-self._start_date == datetime.timedelta(days=0):
                 warnings.warn("The start and end dates should be at least 1 day apart, or GNews will return no results")
@@ -230,6 +232,9 @@ class GNews:
          :return: Top News JSON response.
          Note: this function will not take date ranges into account
         """
+        if self.start_date or self.end_date:
+            warnings.warn("get_top_news will not take date ranges into account. \n"
+                          "Try get_news('?')")
         query = "?"
         return self._get_news(query)
 
@@ -241,7 +246,8 @@ class GNews:
         topic = topic.upper()
         if topic in TOPICS:
             if self.start_date or self.end_date:
-                return self.get_news('"{}"'.format(topic))
+                warnings.warn("get_news_by_topic will not take date ranges into account. \n"
+                              "Try get_news('\"{}\"')".format(topic))
             query = '/headlines/section/topic/' + topic + '?'
             return self._get_news(query)
 
@@ -259,7 +265,8 @@ class GNews:
 
         if location:
             if self.start_date or self.end_date:
-                return self.get_news('"{}"'.format(location))
+                warnings.warn("get_news_by_location will not take date ranges into account. \n"
+                              "Try get_news('\"{}\"')".format(location))
             query = '/headlines/section/geo/' + location + '?'
             return self._get_news(query)
         logger.warning("Enter a valid location.")
