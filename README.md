@@ -198,8 +198,8 @@ google_news.results = 10  # number of responses across a keyword
 google_news.country = 'United States'  # News from a specific country 
 google_news.language = 'english'  # News in a specific language
 google_news.exclude_websites = ['yahoo.com', 'cnn.com']  # Exclude news from specific website i.e Yahoo.com and CNN.com
-google_news.start_date = (2020, 01, 01) # Search from 1st Jan 2020
-google_news.end_date = (2020, 03, 01) # Search until 1st March 2020
+google_news.start_date = (2020, 1, 1) # Search from 1st Jan 2020
+google_news.end_date = (2020, 3, 1) # Search until 1st March 2020
 ```
 
 The format of the timeframe is a string comprised of a number, followed by a letter representing the time operator. For
