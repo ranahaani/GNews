@@ -2,10 +2,13 @@ import logging
 import os
 import sys
 import urllib.request
+import datetime
+import warnings
 
 import feedparser
 from bs4 import BeautifulSoup as Soup
 from dotenv import load_dotenv
+
 try:
     import newspaper  # Optional - required by GNews.get_full_article()
 except ImportError:
@@ -21,7 +24,8 @@ logger = logging.getLogger(__name__)
 
 class GNews:
 
-    def __init__(self, language="en", country="US", max_results=100, period=None, exclude_websites=None, proxy=None):
+    def __init__(self, language="en", country="US", max_results=100, period=None, start_date=None, end_date=None,
+                 exclude_websites=None, proxy=None):
         """
         :param language: The language in which to return results, defaults to en (optional)
         :param country: The country code of the country you want to get headlines for, defaults to US
@@ -39,20 +43,27 @@ class GNews:
         self._language = language
         self._country = country
         self._period = period
+        self._end_date = None
+        self._start_date = None
+        self.end_date = self.end_date = end_date
+        self._start_date = self.start_date = start_date
         self._exclude_websites = exclude_websites if exclude_websites and isinstance(exclude_websites, list) else []
         self._proxy = {'http': proxy, 'https': proxy} if proxy else None
 
     def _ceid(self):
         if self._period:
-            return 'when%3A{}&ceid={}:{}&hl={}&gl={}'.format(self._period,
-                                                             self._country,
-                                                             self._language,
-                                                             self._language,
-                                                             self._country)
-        return '&ceid={}:{}&hl={}&gl={}'.format(self._country,
-                                                self._language,
-                                                self._language,
-                                                self._country)
+            return 'when%3A{}&ceid={}:{}&hl={}-{}&gl={}'.format(self._period,
+                                                                self._country,
+                                                                self._language,
+                                                                self._language,
+                                                                self._country,
+                                                                self._country)
+
+        return '&ceid={}:{}&hl={}-{}&gl={}'.format(self._country,
+                                                   self._language,
+                                                   self._language,
+                                                   self._country,
+                                                   self._country)
 
     @property
     def language(self):
@@ -94,6 +105,58 @@ class GNews:
         self._period = period
 
     @property
+    def start_date(self):
+        """
+        :return: string of start_date in form YYYY-MM-DD, or None if start_date is not set
+        """
+        if self._start_date is None:
+            return None
+        return self._start_date.strftime("%Y-%m-%d")
+
+    @start_date.setter
+    def start_date(self, start_date):
+        """
+        The function sets the start of the date range you want to search
+        :param start_date: either a tuple in the form (YYYY, MM, DD) or a datetime
+        NOTE: this will reset period to None
+        """
+        if type(start_date) is tuple:
+            start_date = datetime.datetime(start_date[0], start_date[1], start_date[2])
+        self.period = None
+        if self._end_date:
+            if start_date-self._end_date == datetime.timedelta(days=0):
+                warnings.warn("The start and end dates should be at least 1 day apart, or GNews will return no results")
+            elif self._end_date < start_date:
+                warnings.warn("End date should be after start date, or GNews will return no results")
+        self._start_date = start_date
+
+    @property
+    def end_date(self):
+        """
+        :return: string of end_date in form YYYY-MM-DD, or None if end_date is not set
+        """
+        if self._end_date is None:
+            return None
+        return self._end_date.strftime("%Y-%m-%d")
+
+    @end_date.setter
+    def end_date(self, end_date):
+        """
+        The function sets the end of the date range you want to search
+        :param end_date: either a tuple in the form (YYYY, MM, DD) or a datetime
+        NOTE: this will reset period to None
+        """
+        if type(end_date) is tuple:
+            end_date = datetime.datetime(end_date[0], end_date[1], end_date[2])
+        self.period = None
+        if self._start_date:
+            if end_date-self._start_date == datetime.timedelta(days=0):
+                warnings.warn("The start and end dates should be at least 1 day apart, or GNews will return no results")
+            elif end_date < self._start_date:
+                warnings.warn("End date should be after start date, or GNews will return no results")
+        self._end_date = end_date
+
+    @property
     def country(self):
         return self._country
 
@@ -122,7 +185,8 @@ class GNews:
             return None
         return article
 
-    def _clean(self, html):
+    @staticmethod
+    def _clean(html):
         soup = Soup(html, features="html.parser")
         text = soup.get_text()
         text = text.replace('\xa0', ' ')
@@ -152,15 +216,22 @@ class GNews:
         """
         if key:
             key = "%20".join(key.split(" "))
-            url = BASE_URL + '/search?q={}'.format(key) + self._ceid()
-            return self._get_news(url)
+            query = '/search?q={}'.format(key)
+            if self.end_date is not None:
+                query += "%20before%3A{}".format(self.end_date)
+            if self.start_date is not None:
+                query += "%20after%3A{}".format(self.start_date)
+
+            return self._get_news(query)
 
     def get_top_news(self):
         """
+        This functiom returns top news stories for the current time
          :return: Top News JSON response.
+         Note: this function will not take date ranges into account
         """
-        url = BASE_URL + "?" + self._ceid()
-        return self._get_news(url)
+        query = "?"
+        return self._get_news(query)
 
     def get_news_by_topic(self, topic: str):
         f"""
@@ -169,8 +240,10 @@ class GNews:
         """
         topic = topic.upper()
         if topic in TOPICS:
-            url = BASE_URL + '/headlines/section/topic/' + topic + '?' + self._ceid()
-            return self._get_news(url)
+            if self.start_date or self.end_date:
+                return self.get_news('"{}"'.format(topic))
+            query = '/headlines/section/topic/' + topic + '?'
+            return self._get_news(query)
 
         logger.info(f"Invalid topic. \nAvailable topics are: {', '.join(TOPICS)}.")
         return []
@@ -185,12 +258,15 @@ class GNews:
         """
 
         if location:
-            url = BASE_URL + '/headlines/section/geo/' + location + '?' + self._ceid()
-            return self._get_news(url)
+            if self.start_date or self.end_date:
+                return self.get_news('"{}"'.format(location))
+            query = '/headlines/section/geo/' + location + '?'
+            return self._get_news(query)
         logger.warning("Enter a valid location.")
         return []
 
-    def _get_news(self, url):
+    def _get_news(self, query):
+        url = BASE_URL + query + self._ceid()
         try:
             if self._proxy:
                 proxy_handler = urllib.request.ProxyHandler(self._proxy)
@@ -205,14 +281,14 @@ class GNews:
             return []
 
     def store_in_mongodb(self, news):
-        '''
+        """
         - MongoDB cluster needs to be created first - https://www.mongodb.com/cloud/atlas/register
         - Connect to the MongoDB cluster
         - Create a new collection
         - Insert the news into the collection
 
         :param news: the news object that we created in the previous function
-        '''
+        """
 
         load_dotenv()
 
