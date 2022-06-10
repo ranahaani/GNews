@@ -3,6 +3,7 @@ import os
 import sys
 import urllib.request
 import datetime
+import inspect
 import warnings
 
 import feedparser
@@ -23,7 +24,6 @@ logger = logging.getLogger(__name__)
 
 
 class GNews:
-
     def __init__(self, language="en", country="US", max_results=100, period=None, start_date=None, end_date=None,
                  exclude_websites=None, proxy=None):
         """
@@ -52,19 +52,29 @@ class GNews:
         self._proxy = {'http': proxy, 'https': proxy} if proxy else None
 
     def _ceid(self):
-        if self._period:
-            return 'when%3A{}&ceid={}:{}&hl={}-{}&gl={}'.format(self._period,
-                                                                self._country,
+        time_query = ''
+        if self._start_date or self._end_date:
+            if inspect.stack()[2][3] != 'get_news':
+                warnings.warn(message=("Only searches using the function get_news support date ranges. Review the "
+                                       f"documentation for {inspect.stack()[2][3]} for a partial workaround. \nStart "
+                                       "date and end date will be ignored"), category=UserWarning, stacklevel=4)
+                if self._period:
+                    time_query += 'when%3A'.format(self._period)
+            if self._period:
+                warnings.warn(message=f'\nPeriod ({self.period}) will be ignored in favour of the start and end dates',
+                              category=UserWarning, stacklevel=4)
+            if self.end_date is not None:
+                time_query += '%20before%3A{}'.format(self.end_date)
+            if self.start_date is not None:
+                time_query += '%20after%3A{}'.format(self.start_date)
+        elif self._period:
+            time_query += 'when%3A'.format(self._period)
+
+        return time_query + '&ceid={}:{}&hl={}-{}&gl={}'.format(self._country,
                                                                 self._language,
                                                                 self._language,
                                                                 self._country,
                                                                 self._country)
-
-        return '&ceid={}:{}&hl={}-{}&gl={}'.format(self._country,
-                                                   self._language,
-                                                   self._language,
-                                                   self._country,
-                                                   self._country)
 
     @property
     def language(self):
@@ -109,7 +119,7 @@ class GNews:
     def start_date(self):
         """
         :return: string of start_date in form YYYY-MM-DD, or None if start_date is not set
-        NOTE: this will reset period to None if start_date is not none
+        …NOTE this will reset period to None if start_date is not none
         """
         if self._start_date is None:
             return None
@@ -125,7 +135,7 @@ class GNews:
         if type(start_date) is tuple:
             start_date = datetime.datetime(start_date[0], start_date[1], start_date[2])
         if self._end_date:
-            if start_date-self._end_date == datetime.timedelta(days=0):
+            if start_date - self._end_date == datetime.timedelta(days=0):
                 warnings.warn("The start and end dates should be at least 1 day apart, or GNews will return no results")
             elif self._end_date < start_date:
                 warnings.warn("End date should be after start date, or GNews will return no results")
@@ -135,7 +145,7 @@ class GNews:
     def end_date(self):
         """
         :return: string of end_date in form YYYY-MM-DD, or None if end_date is not set
-        NOTE: this will reset period to None if end date is not None
+        …NOTE this will reset period to None if end date is not None
         """
         if self._end_date is None:
             return None
@@ -147,12 +157,12 @@ class GNews:
         """
         The function sets the end of the date range you want to search
         :param end_date: either a tuple in the form (YYYY, MM, DD) or a datetime
-        NOTE: this will reset period to None
+        …NOTE this will reset period to None
         """
         if type(end_date) is tuple:
             end_date = datetime.datetime(end_date[0], end_date[1], end_date[2])
         if self._start_date:
-            if end_date-self._start_date == datetime.timedelta(days=0):
+            if end_date - self._start_date == datetime.timedelta(days=0):
                 warnings.warn("The start and end dates should be at least 1 day apart, or GNews will return no results")
             elif end_date < self._start_date:
                 warnings.warn("End date should be after start date, or GNews will return no results")
@@ -169,9 +179,8 @@ class GNews:
     def get_full_article(self, url):
         """
         Download an article from the specified URL, parse it, and return an article object.
-
-        :param url: The URL of the article you wish to summarize.
-        :return: An `Article` object returned by the `newspaper` library.
+         :param url: The URL of the article you wish to summarize.
+         :return: An `Article` object returned by the `newspaper` library.
         """
         # Check if the `newspaper` library is available
         if 'newspaper' not in (sys.modules.keys() & globals()):  # Top import failed since it's not installed
@@ -207,66 +216,67 @@ class GNews:
             }
             return item
 
+    def docstring_parameter(*sub):
+        def dec(obj):
+            obj.__doc__ = obj.__doc__.format(*sub)
+            return obj
+
+        return dec
+
+    indent = '\n\t\t\t'
+    indent2 = indent + '\t'
+    standard_output = (indent + "{'title': Article Title," + indent + "'description': Google News summary of the "
+                       "article," + indent + "'url': link to the news article," + indent + "'publisher':" + indent2 +
+                       "{'href': link to publisher's website," + indent2 + "'title': name of the publisher}}")
+
+    @docstring_parameter(standard_output)
     def get_news(self, key):
         """
         The function takes in a key and returns a list of news articles
-
         :param key: The query you want to search for. For example, if you want to search for news about
         the "Yahoo", you would get results from Google News according to your key i.e "yahoo"
-        :return: A list of dictionaries. Each dictionary contains the title, link, and summary of the
-        news article.
+        :return: A list of dictionaries with structure: {0}.
         """
         if key:
             key = "%20".join(key.split(" "))
             query = '/search?q={}'.format(key)
-            if self.end_date is not None:
-                query += "%20before%3A{}".format(self.end_date)
-            if self.start_date is not None:
-                query += "%20after%3A{}".format(self.start_date)
-
             return self._get_news(query)
 
+    @docstring_parameter(standard_output)
     def get_top_news(self):
         """
-        This functiom returns top news stories for the current time
-         :return: Top News JSON response.
-         Note: this function will not take date ranges into account
+        This function returns top news stories for the current time
+        :return: A list of dictionaries with structure: {0}.
+        ..To implement date range try get_news('?')
         """
-        if self.start_date or self.end_date:
-            warnings.warn("get_top_news will not take date ranges into account. \n"
-                          "Try get_news('?')")
         query = "?"
         return self._get_news(query)
 
+    @docstring_parameter(standard_output, ', '.join(TOPICS))
     def get_news_by_topic(self, topic: str):
-        f"""
-        :params: TOPIC names i.e {TOPICS}
-         :return: JSON response as nested Python dictionary.
+        """
+        Function to get news from one of Google's key topics
+        :param topic: TOPIC names i.e {1}
+        :return: A list of dictionaries with structure: {0}.
+        ..To implement date range try get_news('topic')
         """
         topic = topic.upper()
         if topic in TOPICS:
-            if self.start_date or self.end_date:
-                warnings.warn("get_news_by_topic will not take date ranges into account. \n"
-                              "Try get_news('\"{}\"')".format(topic))
             query = '/headlines/section/topic/' + topic + '?'
             return self._get_news(query)
 
         logger.info(f"Invalid topic. \nAvailable topics are: {', '.join(TOPICS)}.")
         return []
 
+    @docstring_parameter(standard_output)
     def get_news_by_location(self, location: str):
         """
         This function is used to get news from a specific location (city, state, and country)
-
-        :param location: The location for which you want to get headlines
-        :type location: str
-        :return: A list of dictionaries.
+        :param location: (type: str) The location for which you want to get headlines
+        :return: A list of dictionaries with structure: {0}.
+        ..To implement date range try get_news('location')
         """
-
         if location:
-            if self.start_date or self.end_date:
-                warnings.warn("get_news_by_location will not take date ranges into account. \n"
-                              "Try get_news('\"{}\"')".format(location))
             query = '/headlines/section/geo/' + location + '?'
             return self._get_news(query)
         logger.warning("Enter a valid location.")
@@ -293,8 +303,7 @@ class GNews:
         - Connect to the MongoDB cluster
         - Create a new collection
         - Insert the news into the collection
-
-        :param news: the news object that we created in the previous function
+         :param news: the news object that we created in the previous function
         """
 
         load_dotenv()
