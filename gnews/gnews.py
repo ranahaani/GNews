@@ -68,13 +68,12 @@ class GNews:
             if self.start_date is not None:
                 time_query += '%20after%3A{}'.format(self.start_date)
         elif self._period:
-            time_query += 'when%3A'.format(self._period)
+            time_query += '%20when%3A{}'.format(self._period)
 
-        return time_query + '&ceid={}:{}&hl={}-{}&gl={}'.format(self._country,
-                                                                self._language,
-                                                                self._language,
-                                                                self._country,
-                                                                self._country)
+        return time_query + '&hl={}&gl={}&ceid={}:{}'.format(self._language,
+                                                             self._country,
+                                                             self._country,
+                                                             self._language,)
 
     @property
     def language(self):
