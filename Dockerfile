@@ -1,4 +1,4 @@
-FROM python:3.10.0
+FROM python:3.12.0a3
 
 RUN mkdir -p /usr/src/app
 
