@@ -194,7 +194,7 @@ google_news = GNews(language='en', country='US', period='7d', start_date=None, e
 
 ```python
 google_news.period = '7d'  # News from last 7 days
-google_news.results = 10  # number of responses across a keyword
+google_news.max_results = 10  # number of responses across a keyword
 google_news.country = 'United States'  # News from a specific country 
 google_news.language = 'english'  # News in a specific language
 google_news.exclude_websites = ['yahoo.com', 'cnn.com']  # Exclude news from specific website i.e Yahoo.com and CNN.com
