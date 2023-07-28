@@ -10,6 +10,9 @@ import feedparser
 from bs4 import BeautifulSoup as Soup
 from dotenv import load_dotenv
 
+import socks
+import socket
+
 try:
     import newspaper  # Optional - required by GNews.get_full_article()
 except ImportError:
@@ -25,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 class GNews:
     def __init__(self, language="en", country="US", max_results=100, period=None, start_date=None, end_date=None,
-                 exclude_websites=None, proxy=None):
+                 exclude_websites=None, proxy=None, use_tor=False):
         """
         (optional parameters)
         :param language: The language in which to return results, defaults to en (optional)
@@ -50,6 +53,12 @@ class GNews:
         self._start_date = self.start_date = start_date
         self._exclude_websites = exclude_websites if exclude_websites and isinstance(exclude_websites, list) else []
         self._proxy = {'http': proxy, 'https': proxy} if proxy else None
+        self.use_tor = use_tor
+        
+        # Set up a Tor proxy if use_tor is True
+        if self._use_tor:
+            socks.set_default_proxy(socks.SOCKS5, "localhost", 9050)
+            socket.socket = socks.socksocket
 
     def _ceid(self):
         time_query = ''
@@ -286,9 +295,16 @@ class GNews:
         try:
             if self._proxy:
                 proxy_handler = urllib.request.ProxyHandler(self._proxy)
-                feed_data = feedparser.parse(url, agent=USER_AGENT, handlers=[proxy_handler])
+            elif self.use_tor:
+                # Setup Tor proxy
+                proxy_handler = urllib.request.ProxyHandler({"http" : "socks5://localhost:9050",
+                                                            "https": "socks5://localhost:9050"})
             else:
-                feed_data = feedparser.parse(url, agent=USER_AGENT)
+                proxy_handler = urllib.request.ProxyHandler({})
+            
+            opener = urllib.request.build_opener(proxy_handler)
+            urllib.request.install_opener(opener)
+            feed_data = feedparser.parse(url, agent=USER_AGENT)
 
             return [item for item in
                     map(self._process, feed_data.entries[:self._max_results]) if item]
