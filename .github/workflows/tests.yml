@@ -24,4 +24,4 @@ jobs:
 
       - name: Run test cases
         run: |
-          python -m unittest test_gnews.py
+          python -m unittest tests/test_gnews.py

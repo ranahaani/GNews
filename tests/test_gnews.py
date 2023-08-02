@@ -28,7 +28,7 @@ class TestGNews(unittest.TestCase):
 
     def test_get_news_by_location(self):
         # Test that get_news_by_location returns a non-empty list of news articles for a valid location
-        location = "New York"
+        location = "India"
         news_articles = self.gnews.get_news_by_location(location)
         self.assertTrue(isinstance(news_articles, list))
         self.assertTrue(len(news_articles) > 0)
