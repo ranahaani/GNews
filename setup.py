@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='gnews',
-    version='0.2.7',
+    version='0.2.8',
     author="Muhammad Abdullah",
     author_email="ranahaani@gmail.com",
     description='Provide an API to search for articles on Google News and returns a usable JSON response.',
