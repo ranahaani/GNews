@@ -1,11 +1,11 @@
-# This workflow will upload a Python Package using Twine when a release is created.
+# This workflow will upload a Python Package using Twine when a release is created
+# For more information see: https://help.github.com/en/actions/language-and-framework-guides/using-python-with-github-actions#publishing-to-package-registries
 
 name: Upload Python Package
 
 on:
-  workflow_dispatch:
   release:
-    types: [published]
+    types: [created]
 
 jobs:
   deploy:
@@ -13,23 +13,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-
-    - name: Set up Python 3
-      uses: actions/setup-python@v4
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
       with:
         python-version: '3.x'
-
     - name: Install dependencies
       run: |
-        pip install -U pip
-        pip install build
-
-    - name: Build package
-      run: python -m build
-
-    - name: Publish
+        python -m pip install --upgrade pip
+        pip install setuptools wheel twine
+    - name: Build and publish
+          - name: Publish
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         password: ${{ secrets.PYPI_API_TOKEN }}
