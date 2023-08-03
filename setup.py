@@ -8,7 +8,8 @@ with open("README.md", "r") as fh:
 
 setup(
     name='gnews',
-    version='0.3.0',
+    setup_requires=['setuptools_scm'],  
+    use_scm_version=True, 
     author="Muhammad Abdullah",
     author_email="ranahaani@gmail.com",
     description='Provide an API to search for articles on Google News and returns a usable JSON response.',
@@ -30,7 +31,6 @@ setup(
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
-        'Programming Language :: Python :: 3.11',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
     ],
