@@ -9,10 +9,10 @@ with open("README.md", "r") as fh:
 setup(
     name='gnews',
     version='0.3.1',
-    setup_requires=['setuptools_scm'],  
-    use_scm_version={
-        "local_scheme": "no-local-version"
-    },
+    # setup_requires=['setuptools_scm'],  
+    # use_scm_version={
+    #     "local_scheme": "no-local-version"
+    # },
 
     author="Muhammad Abdullah",
     author_email="ranahaani@gmail.com",
