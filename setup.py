@@ -9,7 +9,9 @@ with open("README.md", "r") as fh:
 setup(
     name='gnews',
     setup_requires=['setuptools_scm'],  
-    use_scm_version=True, 
+    use_scm_version={
+        "local_scheme": "no-local-version"
+    },
     author="Muhammad Abdullah",
     author_email="ranahaani@gmail.com",
     description='Provide an API to search for articles on Google News and returns a usable JSON response.',
