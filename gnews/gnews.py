@@ -281,6 +281,19 @@ class GNews:
         logger.warning("Enter a valid location.")
         return []
 
+    @docstring_parameter(standard_output)
+    def get_news_by_site(self, site: str):
+        """
+        This function is used to get news from a specific site
+        :param site: (type: str) The site domain for which you want to get headlines. E.g., 'cnn.com'
+        :return: A list of news articles from the specified site.
+        """
+        if site:
+            key = "site:{}".format(site)
+            return self.get_news(key)
+        logger.warning("Enter a valid site domain.")
+        return []
+
     def _get_news(self, query):
         url = BASE_URL + query + self._ceid()
         try:

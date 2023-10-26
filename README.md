@@ -181,6 +181,11 @@ print(pakistan_news[0])
 * `GNews.get_news_by_location(location)`
 * location can be name of city/state/country
 
+### Get news by site
+
+* `GNews.get_news_by_site(site)`
+* site should be in the format of: `"cnn.com"`
+
 ### Results specification
 
 * It's possible to pass proxy, country, language, period, start date, end date exclude websites and size during initialization
