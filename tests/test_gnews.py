@@ -33,8 +33,7 @@ class TestGNews(unittest.TestCase):
         self.assertTrue(isinstance(news_articles, list))
         self.assertTrue(len(news_articles) > 0)
 
-        def test_get_news_by_site_valid(self):
-        # Test that get_news_by_site returns news articles for a valid site domain
+    def test_get_news_by_site_valid(self):
         site = "cnn.com"
         news_articles = self.gnews.get_news_by_site(site)
         self.assertTrue(isinstance(news_articles, list))
