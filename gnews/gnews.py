@@ -176,24 +176,28 @@ class GNews:
         self._country = AVAILABLE_COUNTRIES.get(country, country)
 
     def get_full_article(self, url):
-        """
-        Download an article from the specified URL, parse it, and return an article object.
-         :param url: The URL of the article you wish to summarize.
-         :return: An `Article` object returned by the `newspaper` library.
-        """
-        # Check if the `newspaper` library is available
-        if 'newspaper' not in (sys.modules.keys() & globals()):  # Top import failed since it's not installed
-            print("\nget_full_article() requires the `newspaper` library.")
-            print("You can install it by running `python3 -m pip install newspaper3k` in your shell.\n")
+    """
+    Download an article from the specified URL, parse it, and return an article object.
+     :param url: The URL of the article you wish to summarize.
+     :return: An `Article` object returned by the `newspaper3k` library if installed; otherwise, None.
+    """
+        try:
+            import newspaper
+        except ImportError:
+            print("\nget_full_article() requires the `newspaper3k` library.")
+            print("You can install it by running `pip3 install newspaper3k` in your shell.")
             return None
+    
         try:
             article = newspaper.Article(url="%s" % url, language=self._language)
             article.download()
             article.parse()
         except Exception as error:
-            logger.error(error.args[0])
+            print(f"An error occurred while fetching the article: {error}")
             return None
+    
         return article
+
 
     @staticmethod
     def _clean(html):
