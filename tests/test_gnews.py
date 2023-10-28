@@ -33,12 +33,18 @@ class TestGNews(unittest.TestCase):
         self.assertTrue(isinstance(news_articles, list))
         self.assertTrue(len(news_articles) > 0)
 
-    def test_get_news_by_site(self):
-        # Test that get_news_by_site returns a non-empty list of news articles for a valid site
+        def test_get_news_by_site_valid(self):
+        # Test that get_news_by_site returns news articles for a valid site domain
         site = "cnn.com"
-        news_articles - self.gnews.get_news_by_site(site)
+        news_articles = self.gnews.get_news_by_site(site)
         self.assertTrue(isinstance(news_articles, list))
         self.assertTrue(len(news_articles) > 0)
+
+    def test_get_news_by_site_invalid(self):
+        # Test that get_news_by_site returns an empty list for an invalid site domain
+        site = "invalidsite123.com"
+        news_articles = self.gnews.get_news_by_site(site)
+        self.assertEqual(news_articles, [])
 
     def test_get_full_article(self):
         pass
