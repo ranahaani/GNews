@@ -15,84 +15,77 @@
     <img src="https://github.com/ranahaani/GNews/raw/master/imgs/logo.png" alt="GNews">
   </a>
   
-  
-  
-<h3 align="center">GNews</h3>
+<h3 align="center">GNews 📰</h3>
 
   <p align="center">
-    A Happy and lightweight Python Package that Provide an API to search for articles on Google News and returns a usable JSON response!
+    A Happy and lightweight Python Package that Provides an API to search for articles on Google News and returns a usable JSON response! 🚀
     <br />    
-    <a href="https://github.com/ranahaani/GNews"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    If you like <b> GNews </b> or if it is useful to you, show your support by buying me a coffee.
+    If you like ❤️ GNews or find it useful 🌟, support the project by buying me a coffee ☕.
     <br />
     <a href="https://www.buymeacoffee.com/ranahaani" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" ></a>
     <br />
     <br />
-    <a href="https://github.com/ranahaani/GNews/blob/master/README.md">View Demo</a>
+    <a href="https://github.com/ranahaani/GNews/blob/master/README.md">🚀 View Demo</a>
     ·
-    <a href="https://github.com/ranahaani/GNews/issues">Report Bug</a>
+    <a href="https://github.com/ranahaani/GNews/issues">🐞 Report Bug</a>
     ·
-    <a href="https://github.com/ranahaani/GNews/issues">Request Feature</a>
-
+    <a href="https://github.com/ranahaani/GNews/issues">🚀 Request Feature</a>
   </p>
-
+</p>
 
 <!-- TABLE OF CONTENTS -->
 <details open="open">
-   <summary>Table of Contents</summary>
+   <summary>Table of Contents 📑</summary>
    <ol>
       <li>
-         <a href="#about-gnews">About</a>
+         <a href="#about-gnews">About 🚩</a>
          <ul>
-            <li><a href="#demo">Demo</a></li>
+            <li><a href="#demo">Demo 📺</a></li>
          </ul>
       </li>
       <li>
-         <a href="#getting-started">Getting Started</a>
+         <a href="#getting-started">Getting Started 🚀</a>
          <ul>
-            <li><a href="#installation">Installation</a></li>
+            <li><a href="#installation">Installation 📦</a></li>
          </ul>
         <ul>
-            <li><a href="#setup-with-docker">Setup with Docker</a></li>
+            <li><a href="#setup-with-docker">Setup with Docker 🐳</a></li>
          </ul>
       </li>
       <li>
-         <a href="#usage">Usage</a>
+         <a href="#usage">Usage 🧩</a>
          <ul>
-            <li>   <a href="#Get-top-news">Top News </a> </li>
+            <li>   <a href="#Get-top-news">Top News 🌟</a> </li>
          </ul>
           <ul>
-            <li>   <a href="#Get-news-by-keyword">News by Keywords </a> </li>
+            <li>   <a href="#Get-news-by-keyword">News by Keywords 🔎</a> </li>
           </ul>
          <ul>
-            <li>   <a href="#Get-news-by-major-topic">News by Major Topics </a> </li>
+            <li>   <a href="#Get-news-by-major-topic">News by Major Topics 🚀</a> </li>
          </ul>
          <ul>
-            <li>   <a href="#Get-news-by-geo-location">News by GEO Location </a> </li>
+            <li>   <a href="#Get-news-by-geo-location">News by GEO Location 🌎</a> </li>
          </ul>
          <ul>
-            <li>   <a href="#supported-countries"> Supported Countries </a> </li>
+            <li>   <a href="#supported-countries"> Supported Countries 🌐</a> </li>
          </ul>
          <ul>
-            <li> <a href="#supported-languages"> Supported Languages </a> </li>
+            <li> <a href="#supported-languages"> Supported Languages 🌍</a> </li>
          </ul>
          <ul>
-            <li>   <a href="#article-properties"> Article Properties </a> </li>
+            <li>   <a href="#article-properties"> Article Properties 📝</a> </li>
          </ul>
          <ul>
-            <li>   <a href="#getting-full-article"> Getting Full Article </a> </li>
+            <li>   <a href="#getting-full-article"> Getting Full Article 📰</a> </li>
          </ul>
       </li>
-      <li><a href="#todo">To do</a></li>
-      <li><a href="#roadmap">Roadmap</a></li>
-      <li><a href="#contributing">Contributing</a></li>
-      <li><a href="#license">License</a></li>
-      <li><a href="#contact">Contact</a></li>
-      <li><a href="#acknowledgements">Acknowledgements</a></li>
+      <li><a href="#todo">To Do 📋</a></li>
+      <li><a href="#roadmap">Roadmap 🛣️</a></li>
+      <li><a href="#contributing">Contributing 🤝</a></li>
+      <li><a href="#license">License ⚖️</a></li>
+      <li><a href="#contact">Contact 📬</a></li>
+      <li><a href="#acknowledgements">Acknowledgements 🙏</a></li>
    </ol>
-
 </details>
 <!-- ABOUT GNews -->
 
