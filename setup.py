@@ -9,7 +9,7 @@ with open("README.md", "r") as fh:
 setup(
     name='gnews',
     version='0.3.6',
-    # setup_requires=['setuptools_scm'],  
+    # setup_requires=['setuptools_scm'],
     # use_scm_version={
     #     "local_scheme": "no-local-version"
     # },
@@ -31,7 +31,6 @@ setup(
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
