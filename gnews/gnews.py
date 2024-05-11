@@ -1,6 +1,4 @@
 import logging
-import os
-import sys
 import urllib.request
 import datetime
 import inspect
@@ -8,15 +6,9 @@ import warnings
 
 import feedparser
 from bs4 import BeautifulSoup as Soup
-from dotenv import load_dotenv
-
-try:
-    import newspaper  # Optional - required by GNews.get_full_article()
-except ImportError:
-    pass
 
 from gnews.utils.constants import AVAILABLE_COUNTRIES, AVAILABLE_LANGUAGES, TOPICS, BASE_URL, USER_AGENT
-from gnews.utils.utils import connect_database, post_database, process_url
+from gnews.utils.utils import process_url
 
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO,
                     datefmt='%m/%d/%Y %I:%M:%S %p')
@@ -312,22 +304,3 @@ class GNews:
         except Exception as err:
             logger.error(err.args[0])
             return []
-
-    def store_in_mongodb(self, news):
-        """
-        - MongoDB cluster needs to be created first - https://www.mongodb.com/cloud/atlas/register
-        - Connect to the MongoDB cluster
-        - Create a new collection
-        - Insert the news into the collection
-         :param news: the news object that we created in the previous function
-        """
-
-        load_dotenv()
-
-        db_user = os.getenv("DB_USER")
-        db_pw = os.getenv("DB_PW")
-        db_name = os.getenv("DB_NAME")
-        collection_name = os.getenv("COLLECTION_NAME")
-
-        collection = connect_database(db_user, db_pw, db_name, collection_name)
-        post_database(collection, news)
