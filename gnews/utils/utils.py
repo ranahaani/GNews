@@ -24,3 +24,16 @@ def process_url(item, exclude_websites):
     if re.match(GOOGLE_NEWS_REGEX, url):
         url = requests.head(url).headers.get('location', url)
     return url
+
+@staticmethod
+def _get_final_url(url):
+    try:
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36'
+        }
+        response = requests.get(url, headers=headers)
+        final_url = response.url
+        return final_url
+    except requests.RequestException as e:
+        logging.error(f"Request failed: {e}")
+        return None
