@@ -1,4 +1,8 @@
-feedparser~=6.0.2
 beautifulsoup4>=4.9.3,<5
-dnspython
-requests
+feedparser~=6.0.2
+newspaper==0.1.0.7
+dnspython==2.1.0
+pymongo==4.8.0
+python-dotenv==1.0.1
+Requests==2.32.3
+setuptools==69.5.1
