@@ -3,6 +3,9 @@ import urllib.request
 import datetime
 import inspect
 import warnings
+import os
+import pymongo
+from dotenv import load_dotenv
 
 import feedparser
 from bs4 import BeautifulSoup as Soup
@@ -14,10 +17,14 @@ logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO,
                     datefmt='%m/%d/%Y %I:%M:%S %p')
 logger = logging.getLogger(__name__)
 
+load_dotenv()
+
+DB_STRING = os.getenv("DB_STRING")
+DB_NAME = os.getenv("DB_NAME")
 
 class GNews:
     def __init__(self, language="en", country="US", max_results=100, period=None, start_date=None, end_date=None,
-                 exclude_websites=None, proxy=None):
+                 exclude_websites=None, proxy=None, upsert=False):
         """
         (optional parameters)
         :param language: The language in which to return results, defaults to en (optional)
@@ -29,6 +36,7 @@ class GNews:
         :param exclude_websites: A list of strings that indicate websites to exclude from results
         :param proxy: The proxy parameter is a dictionary with a single key-value pair. The key is the
         protocol name and the value is the proxy address
+        :param upsert: Boolean flag to upsert news articles into MongoDB
         """
         self.countries = tuple(AVAILABLE_COUNTRIES),
         self.languages = tuple(AVAILABLE_LANGUAGES),
@@ -42,6 +50,14 @@ class GNews:
         self._start_date = self.start_date = start_date
         self._exclude_websites = exclude_websites if exclude_websites and isinstance(exclude_websites, list) else []
         self._proxy = {'http': proxy, 'https': proxy} if proxy else None
+        self._upsert = upsert
+
+        try:
+            self.myclient = pymongo.MongoClient(DB_STRING)
+            self.mydb = self.myclient[DB_NAME]
+        except pymongo.errors.ConnectionError as e:
+            logger.error(f"Error connecting to MongoDB: {e}")
+            raise
 
     def _ceid(self):
         time_query = ''
@@ -225,30 +241,37 @@ class GNews:
                        "{'href': link to publisher's website," + indent2 + "'title': name of the publisher}}")
 
     @docstring_parameter(standard_output)
-    def get_news(self, key):
+    def get_news(self, key, collection_name=None):
         """
         The function takes in a key and returns a list of news articles
         :param key: The query you want to search for. For example, if you want to search for news about
         the "Yahoo", you would get results from Google News according to your key i.e "yahoo"
+        :param collection_name: Name of the MongoDB collection to upsert news articles into if upsert=True
         :return: A list of dictionaries with structure: {0}.
         """
         if key:
             key = "%20".join(key.split(" "))
             query = '/search?q={}'.format(key)
-            return self._get_news(query)
+            news_articles = self._get_news(query)
+            if self._upsert and collection_name:
+                self.upsert_news(collection_name, news_articles)
+            return news_articles
 
     @docstring_parameter(standard_output)
-    def get_top_news(self):
+    def get_top_news(self, collection_name=None):
         """
         This function returns top news stories for the current time
         :return: A list of dictionaries with structure: {0}.
         ..To implement date range try get_news('?')
         """
         query = "?"
-        return self._get_news(query)
+        news_articles = self._get_news(query)
+        if self._upsert and collection_name:
+            self.upsert_news(collection_name, news_articles)
+        return news_articles
 
     @docstring_parameter(standard_output, ', '.join(TOPICS))
-    def get_news_by_topic(self, topic: str):
+    def get_news_by_topic(self, topic: str, collection_name=None):
         """
         Function to get news from one of Google's key topics
         :param topic: TOPIC names i.e {1}
@@ -258,13 +281,16 @@ class GNews:
         topic = topic.upper()
         if topic in TOPICS:
             query = '/headlines/section/topic/' + topic + '?'
-            return self._get_news(query)
+            news_articles = self._get_news(query)
+            if self._upsert and collection_name:
+                self.upsert_news(collection_name, news_articles)
+            return news_articles
 
         logger.info(f"Invalid topic. \nAvailable topics are: {', '.join(TOPICS)}.")
         return []
 
     @docstring_parameter(standard_output)
-    def get_news_by_location(self, location: str):
+    def get_news_by_location(self, location: str, collection_name=None):
         """
         This function is used to get news from a specific location (city, state, and country)
         :param location: (type: str) The location for which you want to get headlines
@@ -273,12 +299,15 @@ class GNews:
         """
         if location:
             query = '/headlines/section/geo/' + location + '?'
-            return self._get_news(query)
+            news_articles = self._get_news(query)
+            if self._upsert and collection_name:
+                self.upsert_news(collection_name, news_articles)
+            return news_articles
         logger.warning("Enter a valid location.")
         return []
 
     @docstring_parameter(standard_output)
-    def get_news_by_site(self, site: str):
+    def get_news_by_site(self, site: str, collection_name=None):
         """
         This function is used to get news from a specific site
         :param site: (type: str) The site domain for which you want to get headlines. E.g., 'cnn.com'
@@ -286,7 +315,10 @@ class GNews:
         """
         if site:
             key = "site:{}".format(site)
-            return self.get_news(key)
+            news_articles = self.get_news(key)
+            if self._upsert and collection_name:
+                self.upsert_news(collection_name, news_articles)
+            return news_articles
         logger.warning("Enter a valid site domain.")
         return []
 
@@ -302,5 +334,16 @@ class GNews:
             return [item for item in
                     map(self._process, feed_data.entries[:self._max_results]) if item]
         except Exception as err:
-            logger.error(err.args[0])
+            logger.error(f"Error fetching news: {err}")
             return []
+
+    def upsert_news(self, collection_name, news_articles):
+        try:
+            article_collection = self.mydb[collection_name]
+            for article in news_articles:
+                if not article_collection.find_one({"title": article["title"]}):
+                    article_collection.insert_one(article)
+                else:
+                    logger.info(f"Skipping duplicate article: {article['title']}")
+        except pymongo.errors.PyMongoError as e:
+            logger.error(f"Error upserting news articles: {e}")
