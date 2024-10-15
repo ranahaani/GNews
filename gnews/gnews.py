@@ -254,7 +254,7 @@ class GNews:
         """
         This function returns top news stories for the current time
         :return: A list of dictionaries with structure: {0}.
-        ..To implement a specific date range try get_news('?')
+        ..To implement a specific date range retriving news try get_news('?')
         """
         query = "?"
         return self._get_news(query)
@@ -265,7 +265,7 @@ class GNews:
         Function to get news from one of Google's key topics
         :param topic: TOPIC names i.e {1}
         :return: A list of dictionaries with structure: {0}.
-        ..To implement a specific date range try get_news('topic')
+        ..To implement a specific date range retriving news try get_news('topic')
         """
         topic = topic.upper()
         if topic in TOPICS:
@@ -281,7 +281,7 @@ class GNews:
         This function is used to get news from a specific location (city, state, and country)
         :param location: (type: str) The location for which you want to get headlines
         :return: A list of dictionaries with structure: {0}.
-        ..To implement a specific date range try get_news('location')
+        ..To implement a specific date range retriving news try get_news('location')
         """
         if location:
             query = '/headlines/section/geo/' + location + '?'
