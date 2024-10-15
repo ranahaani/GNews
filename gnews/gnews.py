@@ -7,7 +7,7 @@ import warnings
 import feedparser
 from bs4 import BeautifulSoup as Soup
 
-from gnews.utils.constants import AVAILABLE_COUNTRIES, AVAILABLE_LANGUAGES, TOPICS, BASE_URL, USER_AGENT
+from gnews.utils.constants import AVAILABLE_COUNTRIES, AVAILABLE_LANGUAGES, SECTIONS, TOPICS, BASE_URL, USER_AGENT
 from gnews.utils.utils import process_url
 
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO,
@@ -247,7 +247,7 @@ class GNews:
         query = "?"
         return self._get_news(query)
 
-    @docstring_parameter(standard_output, ', '.join(TOPICS))
+    @docstring_parameter(standard_output, ', '.join(TOPICS), ', '.join(SECTIONS.keys()))
     def get_news_by_topic(self, topic: str):
         """
         Function to get news from one of Google's key topics
@@ -259,8 +259,11 @@ class GNews:
         if topic in TOPICS:
             query = '/headlines/section/topic/' + topic + '?'
             return self._get_news(query)
+        elif topic in SECTIONS.keys():
+            query = '/topics/' + SECTIONS[topic] + '?'
+            return self._get_news(query)
 
-        logger.info(f"Invalid topic. \nAvailable topics are: {', '.join(TOPICS)}.")
+        logger.info(f"Invalid topic. \nAvailable topics are: {', '.join(TOPICS), ', '.join(SECTIONS.keys())}.")
         return []
 
     @docstring_parameter(standard_output)
