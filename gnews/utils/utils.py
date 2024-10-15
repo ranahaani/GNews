@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import hashlib
 import json
 import logging
@@ -24,3 +25,20 @@ def process_url(item, exclude_websites):
     if re.match(GOOGLE_NEWS_REGEX, url):
         url = requests.head(url).headers.get('location', url)
     return url
+
+def str_to_datetime(date_str:str):
+    return datetime.strptime(date_str, '%a, %d %b %Y %H:%M:%S GMT')
+
+def period_to_datetime(period: str):
+    now = datetime.now()
+    ammount = int(period[:-1])
+    delta = period[-1]
+    
+    if delta == 'd':
+        init_date = now - timedelta(days=ammount)
+    elif delta == 'h':
+        init_date = now - timedelta(hours=ammount)
+    elif delta == 'm':
+        init_date = now - timedelta(days=ammount*30)
+    
+    return init_date
