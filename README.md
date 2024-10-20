@@ -354,8 +354,6 @@ Muhammad Abdullah - [@ranahaani](https://twitter.com/ranahaani) - ranahaani@gmai
 
 Project Link: [https://github.com/ranahaani/GNews](https://github.com/ranahaani/GNews)
 
-Project Link: [https://github.com/ranahaani/GNews](https://github.com/ranahaani/GNews)
-
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/ranahaani)
 
 [contributors-shield]: https://img.shields.io/github/contributors/ranahaani/GNews.svg?style=for-the-badge
