@@ -46,10 +46,10 @@
       <li>
          <a href="#getting-started">Getting Started 🚀</a>
          <ul>
-            <li><a href="#installation">Installation 📦</a></li>
+            <li><a href="#1-installing-the-gnews-package">Installing the GNews package 📦</a></li>
          </ul>
         <ul>
-            <li><a href="#setup-with-docker">Setup with Docker 🐳</a></li>
+            <li><a href="#2-setting-up-gnews-for-local-development">Setting Up GNews for Local Development 🧑‍💻</a></li>
          </ul>
       </li>
       <li>
@@ -108,28 +108,50 @@ may find a `Language & region` section where you can find all of the supported c
 
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally. To get a local copy up and
-running follow these simple example steps.
+This section provides instructions for two different use cases:
 
-### Installation
+1. **Installing the GNews package** for immediate use.
+2. **Setting up the GNews project** for local development.
+
+### 1. Installing the GNews package
+
+To install the package and start using it in your own projects, follow these steps:
 
 ``` shell
 pip install gnews
 ```
+### 2. Setting Up GNews for Local Development
 
-### Setup with Docker
+If you want to make modifications locally, follow these steps to set up the development environment.
 
-#### Developing with docker
+#### Option 1: Setup with Docker
 
 1. Install [docker and docker-compose](https://docs.docker.com/get-docker/).
-2. Set-up your .env environment placing the mongo db credentials.
-3. Run `docker-compose up --build`
+2. Configure the `.env` file by placing your MongoDB credentials.
+3. Run the following command to build and start the Docker containers:
 
-#### Install using clone
+``` shell
+docker-compose up --build
+```
 
-1. Clone this repository `https://github.com/ranahaani/GNews.git`
-2. Start your virtual environment `virtualenv gnews`
-3. Install the requirements with `pip install -r requirements.txt`
+#### Option 2: Install Using Git Clone
+
+1. Clone this repository:
+``` shell
+git clone https://github.com/ranahaani/GNews.git
+```
+
+2. Set up a virtual environment:
+```shell
+virtualenv venv
+source venv/bin/activate  # MacOS/Linux
+.\venv\Scripts\activate  # Windows
+```
+
+3. Install the required dependencies:
+```shell
+pip install -r requirements.txt
+```
 
 <!-- USAGE EXAMPLES -->
 
