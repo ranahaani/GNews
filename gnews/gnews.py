@@ -8,7 +8,7 @@ import feedparser
 from bs4 import BeautifulSoup as Soup
 
 from gnews.utils.constants import AVAILABLE_COUNTRIES, AVAILABLE_LANGUAGES, TOPICS, BASE_URL, USER_AGENT
-from gnews.utils.utils import process_url
+from gnews.utils.utils import period_to_datetime, process_url, str_to_datetime
 
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO,
                     datefmt='%m/%d/%Y %I:%M:%S %p')
@@ -200,7 +200,7 @@ class GNews:
 
     def _process(self, item):
         url = process_url(item, self._exclude_websites)
-        if url:
+        if url and (inspect.stack()[2][3] == 'get_news' or inspect.stack()[2][3] == 'get_news_by_site' or self._is_date_in_range(item.get("published", ""))):
             title = item.get("title", "")
             item = {
                 'title': title,
@@ -210,6 +210,18 @@ class GNews:
                 'publisher': item.get("source", " ")
             }
             return item
+        
+    def _is_date_in_range(self, date_str):
+        published_date = str_to_datetime(date_str)
+        
+        if self._start_date and self._end_date:
+            return self._start_date.date() <= published_date.date() <= self._end_date.date()
+        elif self._period:
+            start_period = period_to_datetime(self._period)
+                
+            return start_period <= published_date
+
+        return True
 
     def docstring_parameter(*sub):
         def dec(obj):
@@ -242,7 +254,7 @@ class GNews:
         """
         This function returns top news stories for the current time
         :return: A list of dictionaries with structure: {0}.
-        ..To implement date range try get_news('?')
+        ..To implement a specific date range retriving news try get_news('?')
         """
         query = "?"
         return self._get_news(query)
@@ -253,7 +265,7 @@ class GNews:
         Function to get news from one of Google's key topics
         :param topic: TOPIC names i.e {1}
         :return: A list of dictionaries with structure: {0}.
-        ..To implement date range try get_news('topic')
+        ..To implement a specific date range retriving news try get_news('topic')
         """
         topic = topic.upper()
         if topic in TOPICS:
@@ -269,7 +281,7 @@ class GNews:
         This function is used to get news from a specific location (city, state, and country)
         :param location: (type: str) The location for which you want to get headlines
         :return: A list of dictionaries with structure: {0}.
-        ..To implement date range try get_news('location')
+        ..To implement a specific date range retriving news try get_news('location')
         """
         if location:
             query = '/headlines/section/geo/' + location + '?'
