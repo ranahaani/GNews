@@ -180,12 +180,45 @@ print(pakistan_news[0])
 * site should be in the format of: `"cnn.com"`
 
 ### Results specification
+All parameters are optional and can be passed during initialization. Here’s a list of the available parameters:
 
-* It's possible to pass proxy, country, language, period, start date, end date exclude websites and size during initialization
-
+- **language**: The language in which to return results (default: 'en').
+- **country**: The country code for the headlines (default: 'US').
+- **period**: The time period for which you want news.
+- **start_date**: Date after which results must have been published.
+- **end_date**: Date before which results must have been published.
+- **max_results**: The maximum number of results to return (default: 100).
+- **exclude_websites**: A list of websites to exclude from results.
+- **proxy**: A dictionary specifying the proxy settings used to route requests. The dictionary should contain a single key-value pair where the key is the protocol (`http` or `https`) and the value is the proxy address. Example:
 ```python
-google_news = GNews(language='en', country='US', period='7d', start_date=None, end_date=None, max_results=10, exclude_websites=['yahoo.com', 'cnn.com'],
-                    proxy=proxy)
+# Example with only HTTP proxy
+  proxy = {
+      'http': 'http://your_proxy_address',
+  }
+  
+# Example with only HTTPS proxy
+  proxy = {
+      'https': 'http://your_proxy_address',
+  }
+```
+  
+#### Example Initialization
+```python
+from gnews import GNews
+
+# Initialize GNews with various parameters, including proxy
+google_news = GNews(
+    language='en',
+    country='US',
+    period='7d',
+    start_date=None,
+    end_date=None,
+    max_results=10,
+    exclude_websites=['yahoo.com', 'cnn.com'],
+    proxy={
+        'https': 'https://your_proxy_address'
+    }
+)
 ```
 
 * Or change it to an existing object
