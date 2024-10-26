@@ -53,7 +53,7 @@
          </ul>
       </li>
       <li>
-         <a href="#usage">Usage 🧩</a>
+         <a href="#example-usage">Usage 🧩</a>
          <ul>
             <li>   <a href="#Get-top-news">Top News 🌟</a> </li>
          </ul>
@@ -66,6 +66,12 @@
          <ul>
             <li>   <a href="#Get-news-by-geo-location">News by GEO Location 🌎</a> </li>
          </ul>
+          <ul>
+            <li>   <a href="#get-news-by-site">News by Site 📰</a> </li>
+          </ul>
+          <ul>
+            <li>   <a href="#results-specification">Results 📊</a> </li>
+          </ul>
          <ul>
             <li>   <a href="#supported-countries"> Supported Countries 🌐</a> </li>
          </ul>
@@ -212,7 +218,7 @@ example 1y would signify 1 year. Full list of operators below:
  
 Setting the start and end dates can be done by passing in either a datetime or a tuple in the form (YYYY, MM, DD).
 
-#### Supported Countries
+### Supported Countries
 
 ```python
 print(google_news.AVAILABLE_COUNTRIES)
@@ -231,7 +237,7 @@ print(google_news.AVAILABLE_COUNTRIES)
  'Republic of Korea': 'KR'}
 ```
 
-#### Supported Languages
+### Supported Languages
 
 ```python
 print(google_news.AVAILABLE_LANGUAGES)
