@@ -55,34 +55,16 @@
       <li>
          <a href="#example-usage">Usage 🧩</a>
          <ul>
-            <li>   <a href="#Get-top-news">Top News 🌟</a> </li>
-         </ul>
-          <ul>
-            <li>   <a href="#Get-news-by-keyword">News by Keywords 🔎</a> </li>
-          </ul>
-         <ul>
-            <li>   <a href="#Get-news-by-major-topic">News by Major Topics 🚀</a> </li>
-         </ul>
-         <ul>
-            <li>   <a href="#Get-news-by-geo-location">News by GEO Location 🌎</a> </li>
-         </ul>
-          <ul>
-            <li>   <a href="#get-news-by-site">News by Site 📰</a> </li>
-          </ul>
-          <ul>
-            <li>   <a href="#results-specification">Results 📊</a> </li>
-          </ul>
-         <ul>
-            <li>   <a href="#supported-countries"> Supported Countries 🌐</a> </li>
-         </ul>
-         <ul>
-            <li> <a href="#supported-languages"> Supported Languages 🌍</a> </li>
-         </ul>
-         <ul>
-            <li>   <a href="#article-properties"> Article Properties 📝</a> </li>
-         </ul>
-         <ul>
-            <li>   <a href="#getting-full-article"> Getting Full Article 📰</a> </li>
+            <li><a href="#Get-top-news">Top News 🌟</a></li>
+            <li><a href="#Get-news-by-keyword">News by Keywords 🔎</a></li>
+            <li><a href="#Get-news-by-major-topic">News by Major Topics 🚀</a></li>
+            <li><a href="#Get-news-by-geo-location">News by GEO Location 🌎</a></li>
+            <li><a href="#get-news-by-site">News by Site 📰</a></li>
+            <li><a href="#results-specification">Results 📊</a></li>
+            <li><a href="#supported-countries">Supported Countries 🌐</a></li>
+            <li><a href="#supported-languages">Supported Languages 🌍</a></li>
+            <li><a href="#article-properties">Article Properties 📝</a></li>
+            <li><a href="#getting-full-article">Getting Full Article 📰</a></li>
          </ul>
       </li>
       <li><a href="#todo">To Do 📋</a></li>
