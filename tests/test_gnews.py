@@ -45,6 +45,23 @@ class TestGNews(unittest.TestCase):
         news_articles = self.gnews.get_news_by_site(site)
         self.assertEqual(news_articles, [])
 
+    def test_get_news_more_than_100(self):
+        # Set up a GNews instance with a high max_results value
+        self.gnews = GNews(max_results=150)
+        query = "technology"
+
+        # Call get_news with the query
+        news_articles = self.gnews.get_news(query)
+
+        # Verify the result respects the maximum result cap
+        self.assertTrue(isinstance(news_articles, list))
+        self.assertTrue(len(news_articles) > 0)
+        self.assertTrue(len(news_articles) <= 150, "Should fetch no more than max_results")
+
+        # Ensure no duplicates in the results
+        urls = [article['url'] for article in news_articles]
+        self.assertEqual(len(urls), len(set(urls)), "No duplicate articles should be fetched")
+
     def test_get_full_article(self):
         pass
         # Test that get_full_article returns a valid article object for a valid URL
