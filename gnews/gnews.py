@@ -240,7 +240,7 @@ class GNews:
             query = '/search?q={}'.format(key)
             return self._get_news(query)
 
-    def _get_more_than_100(self, key):
+    def _get_news_more_than_100(self, key):
         """
         Fetch more than 100 news articles by iterating backward in time, dynamically adjusting
         the date range based on the earliest date seen so far.
