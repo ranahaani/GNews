@@ -233,10 +233,65 @@ class GNews:
         :return: A list of dictionaries with structure: {0}.
         """
         if key:
+            if self._max_results > 100:
+                return self._get_more_than_100(key)
+            
             key = "%20".join(key.split(" "))
             query = '/search?q={}'.format(key)
             return self._get_news(query)
 
+    def _get_news_more_than_100(self, key):
+        """
+        Fetch more than 100 news articles by iterating backward in time, dynamically adjusting
+        the date range based on the earliest date seen so far.
+        """
+        articles = []
+        seen_urls = set()
+        earliest_date = None
+        
+        if self._start_date or self._end_date or self._period:
+            warnings.warn(message=("Searches for over 100 articles do not currently support date ranges. \nStart "
+                                    "date, end date, and period will be ignored"), category=UserWarning, stacklevel=4)
+
+        # Start with no specific date range for the first query
+        self._start_date = None
+        self._end_date = None
+
+        while len(articles) < self._max_results:
+            # Fetch articles for the current range
+            fetched_articles = self._get_news(f'/search?q={key}')
+            if not fetched_articles:  # Stop if no more articles are found
+                break
+
+            for article in fetched_articles:
+                if article['url'] not in seen_urls:
+                    articles.append(article)
+                    seen_urls.add(article['url'])
+
+                    # Track the earliest published date
+                    published_date = article.get("published date")
+                    try:
+                        published_date = datetime.datetime.strptime(published_date, '%a, %d %b %Y %H:%M:%S GMT')
+                    except Exception as e:
+                        logger.warning(f"Failed to parse published date: {e}")
+                        continue
+
+                    if earliest_date is None or published_date < earliest_date:
+                        earliest_date = published_date
+
+                if len(articles) >= self._max_results:
+                    return articles
+
+            # If fewer than 100 articles were fetched, assume the range is exhausted
+            if len(fetched_articles) < 100:
+                break
+
+            # Update the sliding window to fetch older articles
+            self._end_date = earliest_date
+            self._start_date = earliest_date - datetime.timedelta(days=7)
+
+        return articles
+    
     @docstring_parameter(standard_output)
     def get_top_news(self):
         """
