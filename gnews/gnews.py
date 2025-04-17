@@ -169,9 +169,9 @@ class GNews:
 
     def get_full_article(self, url):
         """
-        Download an article from the specified URL, parse it, and return an article object.
+        Download an article from the specified URL, parse it, and return the full text of the article.
          :param url: The URL of the article you wish to summarize.
-         :return: An `Article` object returned by the `newspaper3k` library if installed; otherwise, None.
+         :return: The full text of the article.
         """
         try:
             import newspaper
@@ -188,7 +188,12 @@ class GNews:
             print(f"An error occurred while fetching the article: {error}")
             return None
     
-        return article
+        if len(article.text) < 200:  # Assuming that a complete article would have more than 200 characters
+            soup = Soup(article.html, 'html.parser')
+            full_text = soup.get_text()
+            return full_text.strip()
+    
+        return article.text.strip()
 
 
     @staticmethod
