@@ -30,7 +30,7 @@ jobs:
           cache: 'pip'
 
       - name: Install dependencies
-        run: pip install gnews newspaper3k googlenewsdecoder
+        run: pip install -r requirements.txt
 
       - name: Fetch ${{ matrix.topic }} News
         run: |
@@ -68,7 +68,7 @@ jobs:
           cache: 'pip'
 
       - name: Install dependencies
-        run: pip install gnews newspaper3k googlenewsdecoder
+        run: pip install -r requirements.txt
 
       - name: Fetch ${{ matrix.topic }} News
         run: |
@@ -114,7 +114,7 @@ jobs:
           cache: 'pip'
 
       - name: Install dependencies
-        run: pip install gnews newspaper3k googlenewsdecoder
+        run: pip install -r requirements.txt
 
       - name: Fetch Specialized News
         run: |
