@@ -6,3 +6,4 @@ gnews
 newspaper3k
 googlenewsdecoder
 lxml
+lxml_html_clean
