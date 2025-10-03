@@ -1,0 +1,73 @@
+name: Fetch Keyword-Based News
+
+on:
+  # Run daily at 6 AM UTC
+  schedule:
+    - cron: '0 6 * * *'
+
+  # Allow manual trigger with custom keywords
+  workflow_dispatch:
+    inputs:
+      keywords:
+        description: 'Comma-separated keywords to search'
+        required: false
+        default: 'AI,climate change,cryptocurrency,space exploration'
+        type: string
+
+jobs:
+  fetch-keyword-news:
+    runs-on: ubuntu-latest
+
+    strategy:
+      max-parallel: 8
+      fail-fast: false
+
+      matrix:
+        include:
+          # Tech keywords
+          - { keyword: 'artificial intelligence', max: 30, output: 'ai_news.json' }
+          - { keyword: 'machine learning', max: 30, output: 'ml_news.json' }
+          - { keyword: 'blockchain', max: 20, output: 'blockchain_news.json' }
+          - { keyword: 'quantum computing', max: 20, output: 'quantum_news.json' }
+
+          # Climate/Environment
+          - { keyword: 'climate change', max: 30, output: 'climate_news.json' }
+          - { keyword: 'renewable energy', max: 25, output: 'renewable_news.json' }
+
+          # Finance
+          - { keyword: 'cryptocurrency', max: 30, output: 'crypto_news.json' }
+          - { keyword: 'stock market', max: 25, output: 'stocks_news.json' }
+
+          # Science
+          - { keyword: 'space exploration', max: 25, output: 'space_news.json' }
+          - { keyword: 'medical research', max: 25, output: 'medical_news.json' }
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install gnews newspaper3k googlenewsdecoder
+
+      - name: Fetch articles for "${{ matrix.keyword }}"
+        continue-on-error: true
+        run: |
+          python get_full_articles.py \
+            --keyword "${{ matrix.keyword }}" \
+            --max-results ${{ matrix.max }} \
+            --output ${{ matrix.output }} \
+            --pretty
+
+      - name: Upload results
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: keyword-${{ matrix.keyword }}
+          path: ${{ matrix.output }}
+          retention-days: 30

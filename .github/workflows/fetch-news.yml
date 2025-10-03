@@ -1,0 +1,125 @@
+name: Fetch News Articles
+
+on:
+  # Run every 6 hours
+  schedule:
+    - cron: '0 */6 * * *'
+
+  # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      max_results:
+        description: 'Maximum results per category'
+        required: false
+        default: '50'
+        type: string
+
+jobs:
+  fetch-news:
+    runs-on: ubuntu-latest
+
+    strategy:
+      max-parallel: 10  # Conservative rate limiting
+      fail-fast: false  # Continue other jobs if one fails
+
+      matrix:
+        category:
+          - { topic: 'TECHNOLOGY', max: 50 }
+          - { topic: 'BUSINESS', max: 50 }
+          - { topic: 'WORLD', max: 50 }
+          - { topic: 'HEALTH', max: 50 }
+          - { topic: 'SCIENCE', max: 30 }
+          - { topic: 'SPORTS', max: 30 }
+          - { topic: 'ENTERTAINMENT', max: 30 }
+          - { topic: 'POLITICS', max: 30 }
+          - { type: 'top', max: 100 }  # Top news with auto-categorization
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install gnews newspaper3k googlenewsdecoder
+
+      - name: Fetch News Articles
+        id: fetch
+        continue-on-error: true
+        run: |
+          if [ "${{ matrix.category.topic }}" != "" ]; then
+            # Topic-based search
+            python get_full_articles.py \
+              --topic ${{ matrix.category.topic }} \
+              --max-results ${{ matrix.category.max }} \
+              --output ${{ matrix.category.topic }}_news.json \
+              --pretty
+            echo "filename=${{ matrix.category.topic }}_news.json" >> $GITHUB_OUTPUT
+            echo "category=${{ matrix.category.topic }}" >> $GITHUB_OUTPUT
+          else
+            # Top news
+            python get_full_articles.py \
+              --max-results ${{ matrix.category.max }} \
+              --output top_news.json \
+              --pretty
+            echo "filename=top_news.json" >> $GITHUB_OUTPUT
+            echo "category=TOP_NEWS" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Verify output file
+        if: steps.fetch.outcome == 'success'
+        run: |
+          if [ -f "${{ steps.fetch.outputs.filename }}" ]; then
+            echo "✅ Successfully created ${{ steps.fetch.outputs.filename }}"
+            echo "📊 File size: $(du -h ${{ steps.fetch.outputs.filename }} | cut -f1)"
+            echo "📰 Article count: $(python -c "import json; print(len(json.load(open('${{ steps.fetch.outputs.filename }}', encoding='utf-8'))))")"
+          else
+            echo "❌ Output file not found"
+            exit 1
+          fi
+
+      - name: Upload articles as artifact
+        if: steps.fetch.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.fetch.outputs.category }}-news
+          path: ${{ steps.fetch.outputs.filename }}
+          retention-days: 30
+
+      - name: Report failure
+        if: steps.fetch.outcome == 'failure'
+        run: |
+          echo "::warning::Failed to fetch news for ${{ steps.fetch.outputs.category }}"
+
+  # Optional: Combine all artifacts into single archive
+  combine-results:
+    needs: fetch-news
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: news-articles
+
+      - name: List downloaded files
+        run: |
+          echo "📁 Downloaded articles:"
+          find news-articles -name "*.json" -exec echo "  - {}" \;
+
+      - name: Create combined archive
+        run: |
+          cd news-articles
+          tar -czf ../all-news-$(date +%Y%m%d-%H%M%S).tar.gz */
+
+      - name: Upload combined archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: all-news-archive
+          path: all-news-*.tar.gz
+          retention-days: 90

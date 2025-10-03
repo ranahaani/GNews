@@ -1,0 +1,188 @@
+name: Fetch News (Batched for Rate Limiting)
+
+# Use this workflow when you need to fetch from many sources
+# and want to avoid rate limiting by running jobs sequentially
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Daily at midnight
+  workflow_dispatch:
+
+jobs:
+  # Batch 1: Major News Categories
+  batch-1-major-topics:
+    runs-on: ubuntu-latest
+
+    strategy:
+      max-parallel: 5
+      fail-fast: false
+      matrix:
+        topic: [TECHNOLOGY, BUSINESS, WORLD, HEALTH]
+        max_results: [50]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install gnews newspaper3k googlenewsdecoder
+
+      - name: Fetch ${{ matrix.topic }} News
+        run: |
+          python get_full_articles.py \
+            --topic ${{ matrix.topic }} \
+            --max-results ${{ matrix.max_results }} \
+            --output ${{ matrix.topic }}_news.json \
+            --pretty
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: batch1-${{ matrix.topic }}
+          path: ${{ matrix.topic }}_news.json
+
+  # Batch 2: Secondary Categories (runs after Batch 1)
+  batch-2-secondary-topics:
+    needs: batch-1-major-topics
+    runs-on: ubuntu-latest
+
+    strategy:
+      max-parallel: 5
+      fail-fast: false
+      matrix:
+        topic: [SCIENCE, SPORTS, ENTERTAINMENT, POLITICS]
+        max_results: [30]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install gnews newspaper3k googlenewsdecoder
+
+      - name: Fetch ${{ matrix.topic }} News
+        run: |
+          python get_full_articles.py \
+            --topic ${{ matrix.topic }} \
+            --max-results ${{ matrix.max_results }} \
+            --output ${{ matrix.topic }}_news.json \
+            --pretty
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: batch2-${{ matrix.topic }}
+          path: ${{ matrix.topic }}_news.json
+
+  # Batch 3: Specialized Searches (runs after Batch 2)
+  batch-3-specialized:
+    needs: batch-2-secondary-topics
+    runs-on: ubuntu-latest
+
+    strategy:
+      max-parallel: 4
+      fail-fast: false
+      matrix:
+        include:
+          # Top news with auto-categorization
+          - { type: 'top', max: 100, output: 'top_news.json' }
+
+          # Specific sites
+          - { type: 'site', site: 'reuters.com', max: 30, output: 'reuters_news.json' }
+          - { type: 'site', site: 'bbc.com', max: 30, output: 'bbc_news.json' }
+
+          # Time-based searches
+          - { type: 'keyword', keyword: 'breaking news', period: '1d', max: 25, output: 'breaking_24h.json' }
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install gnews newspaper3k googlenewsdecoder
+
+      - name: Fetch Specialized News
+        run: |
+          if [ "${{ matrix.type }}" == "top" ]; then
+            python get_full_articles.py \
+              --max-results ${{ matrix.max }} \
+              --output ${{ matrix.output }} \
+              --pretty
+
+          elif [ "${{ matrix.type }}" == "site" ]; then
+            python get_full_articles.py \
+              --site ${{ matrix.site }} \
+              --max-results ${{ matrix.max }} \
+              --output ${{ matrix.output }} \
+              --pretty
+
+          elif [ "${{ matrix.type }}" == "keyword" ]; then
+            python get_full_articles.py \
+              --keyword "${{ matrix.keyword }}" \
+              --period ${{ matrix.period }} \
+              --max-results ${{ matrix.max }} \
+              --output ${{ matrix.output }} \
+              --pretty
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: batch3-${{ matrix.output }}
+          path: ${{ matrix.output }}
+
+  # Final job: Combine all results
+  combine-all-batches:
+    needs: [batch-1-major-topics, batch-2-secondary-topics, batch-3-specialized]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-news
+
+      - name: Create summary
+        run: |
+          echo "# News Collection Summary" > summary.md
+          echo "" >> summary.md
+          echo "Generated: $(date -u)" >> summary.md
+          echo "" >> summary.md
+          echo "## Files Collected:" >> summary.md
+
+          for file in $(find all-news -name "*.json"); do
+            count=$(python3 -c "import json; print(len(json.load(open('$file', encoding='utf-8'))))" 2>/dev/null || echo "0")
+            size=$(du -h "$file" | cut -f1)
+            echo "- $(basename $file): $count articles ($size)" >> summary.md
+          done
+
+          cat summary.md
+          cat summary.md >> $GITHUB_STEP_SUMMARY
+
+      - name: Create combined archive
+        run: |
+          cd all-news
+          tar -czf ../news-archive-$(date +%Y%m%d).tar.gz */
+
+      - name: Upload combined archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: news-archive-complete
+          path: news-archive-*.tar.gz
+          retention-days: 90
