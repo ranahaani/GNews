@@ -47,6 +47,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Verify newspaper3k installation
+        run: |
+          python -c "import newspaper; print(f'newspaper3k version: {newspaper.__version__}')"
+          python -c "from newspaper import Article; print('Article import successful')"
+
       - name: Fetch News Articles
         id: fetch
         continue-on-error: true
