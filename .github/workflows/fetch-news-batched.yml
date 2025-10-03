@@ -2,10 +2,11 @@ name: Fetch News (Batched for Rate Limiting)
 
 # Use this workflow when you need to fetch from many sources
 # and want to avoid rate limiting by running jobs sequentially
+#
+# ⚠️ MANUAL TRIGGER ONLY - Schedule removed (using fetch-news.yml for scheduled runs)
+# This workflow can be manually triggered via workflow_dispatch when needed
 
 on:
-  schedule:
-    - cron: '0 0 * * *'  # Daily at midnight
   workflow_dispatch:
 
 jobs:
@@ -17,8 +18,8 @@ jobs:
       max-parallel: 5
       fail-fast: false
       matrix:
-        topic: [TECHNOLOGY, BUSINESS, WORLD, HEALTH]
-        max_results: [50]
+        topic: [TECHNOLOGY, BUSINESS, WORLD, HEALTH, NATION]
+        max_results: [30]
 
     steps:
       - uses: actions/checkout@v4
@@ -95,14 +96,14 @@ jobs:
       matrix:
         include:
           # Top news with auto-categorization
-          - { type: 'top', max: 100, output: 'top_news.json' }
+          - { type: 'top', max: 30, output: 'top_news.json' }
 
           # Specific sites
           - { type: 'site', site: 'reuters.com', max: 30, output: 'reuters_news.json' }
           - { type: 'site', site: 'bbc.com', max: 30, output: 'bbc_news.json' }
 
           # Time-based searches
-          - { type: 'keyword', keyword: 'breaking news', period: '1d', max: 25, output: 'breaking_24h.json' }
+          - { type: 'keyword', keyword: 'breaking news', period: '1d', max: 30, output: 'breaking_24h.json' }
 
     steps:
       - uses: actions/checkout@v4

@@ -1,10 +1,9 @@
 name: Fetch Keyword-Based News
 
-on:
-  # Run daily at 6 AM UTC
-  schedule:
-    - cron: '0 6 * * *'
+# ⚠️ MANUAL TRIGGER ONLY - Schedule removed (using fetch-news.yml for scheduled runs)
+# This workflow can be manually triggered via workflow_dispatch when needed
 
+on:
   # Allow manual trigger with custom keywords
   workflow_dispatch:
     inputs:
@@ -27,20 +26,20 @@ jobs:
           # Tech keywords
           - { keyword: 'artificial intelligence', max: 30, output: 'ai_news.json' }
           - { keyword: 'machine learning', max: 30, output: 'ml_news.json' }
-          - { keyword: 'blockchain', max: 20, output: 'blockchain_news.json' }
-          - { keyword: 'quantum computing', max: 20, output: 'quantum_news.json' }
+          - { keyword: 'blockchain', max: 30, output: 'blockchain_news.json' }
+          - { keyword: 'quantum computing', max: 30, output: 'quantum_news.json' }
 
           # Climate/Environment
           - { keyword: 'climate change', max: 30, output: 'climate_news.json' }
-          - { keyword: 'renewable energy', max: 25, output: 'renewable_news.json' }
+          - { keyword: 'renewable energy', max: 30, output: 'renewable_news.json' }
 
           # Finance
           - { keyword: 'cryptocurrency', max: 30, output: 'crypto_news.json' }
-          - { keyword: 'stock market', max: 25, output: 'stocks_news.json' }
+          - { keyword: 'stock market', max: 30, output: 'stocks_news.json' }
 
           # Science
-          - { keyword: 'space exploration', max: 25, output: 'space_news.json' }
-          - { keyword: 'medical research', max: 25, output: 'medical_news.json' }
+          - { keyword: 'space exploration', max: 30, output: 'space_news.json' }
+          - { keyword: 'medical research', max: 30, output: 'medical_news.json' }
 
     steps:
       - name: Checkout repository

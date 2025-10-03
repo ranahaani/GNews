@@ -1,9 +1,10 @@
 name: Fetch News Articles
 
 on:
-  # Run every 6 hours
+  # Run every 8 hours at 4AM, 12PM, 8PM EST (9AM, 5PM, 1AM UTC)
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 9,17 * * *'  # 4AM and 12PM EST
+    - cron: '0 1 * * *'     # 8PM EST (1AM UTC next day)
 
   # Allow manual trigger
   workflow_dispatch:
@@ -11,7 +12,7 @@ on:
       max_results:
         description: 'Maximum results per category'
         required: false
-        default: '50'
+        default: '30'
         type: string
 
 jobs:
@@ -24,15 +25,16 @@ jobs:
 
       matrix:
         category:
-          - { topic: 'TECHNOLOGY', max: 50 }
-          - { topic: 'BUSINESS', max: 50 }
-          - { topic: 'WORLD', max: 50 }
-          - { topic: 'HEALTH', max: 50 }
+          - { topic: 'TECHNOLOGY', max: 30 }
+          - { topic: 'BUSINESS', max: 30 }
+          - { topic: 'WORLD', max: 30 }
+          - { topic: 'HEALTH', max: 30 }
           - { topic: 'SCIENCE', max: 30 }
           - { topic: 'SPORTS', max: 30 }
           - { topic: 'ENTERTAINMENT', max: 30 }
           - { topic: 'POLITICS', max: 30 }
-          - { type: 'top', max: 100 }  # Top news with auto-categorization
+          - { topic: 'NATION', max: 30 }  # US news (stored as 'US' category)
+          - { type: 'top', max: 30 }  # Top news with auto-categorization
 
     steps:
       - name: Checkout repository
@@ -64,7 +66,13 @@ jobs:
               --output ${{ matrix.category.topic }}_news.json \
               --pretty
             echo "filename=${{ matrix.category.topic }}_news.json" >> $GITHUB_OUTPUT
-            echo "category=${{ matrix.category.topic }}" >> $GITHUB_OUTPUT
+
+            # Map NATION to US for display/artifact naming
+            if [ "${{ matrix.category.topic }}" == "NATION" ]; then
+              echo "category=US" >> $GITHUB_OUTPUT
+            else
+              echo "category=${{ matrix.category.topic }}" >> $GITHUB_OUTPUT
+            fi
           else
             # Top news
             python get_full_articles.py \

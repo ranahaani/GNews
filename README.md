@@ -67,6 +67,7 @@
             <li><a href="#getting-full-article">Getting Full Article 📰</a></li>
          </ul>
       </li>
+      <li><a href="#documentation">Documentation 📚</a></li>
       <li><a href="#todo">To Do 📋</a></li>
       <li><a href="#roadmap">Roadmap 🛣️</a></li>
       <li><a href="#contributing">Contributing 🤝</a></li>
@@ -351,6 +352,39 @@ article.authors
 
 Read full documentation for `newspaper3k`
 [newspaper3k](https://newspaper.readthedocs.io/en/latest/user_guide/quickstart.html#parsing-an-article)
+
+<!-- DOCUMENTATION -->
+
+## Documentation
+
+📚 **Comprehensive documentation is available in the [`docs/`](docs/) folder:**
+
+- **[CHANGELOG.md](docs/CHANGELOG.md)** - Version history and release notes
+- **[GITHUB_ACTIONS_GUIDE.md](docs/GITHUB_ACTIONS_GUIDE.md)** - GitHub Actions workflow setup and customization
+- **[ARTICLE_EXTRACTOR_README.md](docs/ARTICLE_EXTRACTOR_README.md)** - Full article extraction script documentation
+- **[IMPLEMENTATION_SUMMARY.md](docs/IMPLEMENTATION_SUMMARY.md)** - v2.0 implementation quick reference
+- **[CODE_OF_CONDUCT.md](docs/CODE_OF_CONDUCT.md)** - Community guidelines
+
+### Quick Links
+
+🚀 **Getting Started:**
+- [Installation & Setup](docs/ARTICLE_EXTRACTOR_README.md#installation)
+- [GitHub Actions Setup](docs/GITHUB_ACTIONS_GUIDE.md#quick-setup)
+
+📖 **Usage Guides:**
+- [Script Usage Examples](docs/ARTICLE_EXTRACTOR_README.md#usage)
+- [Workflow Customization](docs/GITHUB_ACTIONS_GUIDE.md#customization-guide)
+
+🆕 **What's New:**
+- [v2.0 Release Notes](docs/CHANGELOG.md)
+- [Smart Duplicate Handling](docs/CHANGELOG.md#-new-features)
+- [24-Hour Time Filtering](docs/CHANGELOG.md#-new-features)
+- [Rich Emoji Logging](docs/CHANGELOG.md#-new-features)
+
+🐛 **Troubleshooting:**
+- [Common Issues](docs/GITHUB_ACTIONS_GUIDE.md#troubleshooting)
+- [Rate Limiting](docs/GITHUB_ACTIONS_GUIDE.md#rate-limiting-best-practices)
+
 <!-- ToDo -->
 
 ## Todo

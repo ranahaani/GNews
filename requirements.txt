@@ -7,3 +7,6 @@ newspaper3k
 googlenewsdecoder
 lxml
 lxml_html_clean
+psycopg2-binary
+python-dotenv
+python-logging-loki
