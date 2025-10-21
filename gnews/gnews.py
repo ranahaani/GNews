@@ -1,3 +1,4 @@
+import csv
 import logging
 import urllib.request
 import datetime
@@ -362,3 +363,16 @@ class GNews:
         except Exception as err:
             logger.error(err.args[0])
             return []
+            class GNews:
+    # ... many functions ...
+
+    def export_to_csv(self, articles, filename):
+        """Export articles to a CSV."""
+        header = ['title', 'description', 'url', 'publisher', 'published date']
+        with open(filename, 'w', encoding='utf-8', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=header)
+            writer.writeheader()
+            for article in articles:
+                row = {field: article.get(field, '') for field in header}
+                writer.writerow(row)
+
