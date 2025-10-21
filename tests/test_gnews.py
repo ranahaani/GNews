@@ -1,10 +1,14 @@
 import unittest
+import os
+import csv
 from gnews import GNews
 
 class TestGNews(unittest.TestCase):
     def setUp(self):
         # Create a GNews instance with default parameters for testing
         self.gnews = GNews()
+        # Define a test filename that will be created and deleted
+        self.test_csv_file = 'test_export.csv'
 
     def test_get_news(self):
         # Test that get_news returns a non-empty list of news articles
@@ -70,6 +74,64 @@ class TestGNews(unittest.TestCase):
         # self.assertIsNotNone(article)
         # self.assertTrue(hasattr(article, 'title'))
         # self.assertTrue(hasattr(article, 'text'))
+
+    def test_export_to_csv(self):
+        # 1. Define sample data
+        sample_articles = [
+            {
+                'title': 'Test Article 1',
+                'description': 'Description for article 1',
+                'published date': 'Mon, 01 Jan 2024 00:00:00 GMT',
+                'url': 'https://example.com/article1',
+                'publisher': 'Example News'
+            },
+            {
+                'title': 'Test Article 2, with comma',
+                'description': 'Description with "quotes"',
+                'published date': 'Tue, 02 Jan 2024 00:00:00 GMT',
+                'url': 'https://example.com/article2',
+                'publisher': 'Another Source'
+            }
+        ]
+
+        # 2. Call the export method
+        self.gnews.export_to_csv(sample_articles, self.test_csv_file)
+
+        # 3. Verify file was created
+        self.assertTrue(os.path.exists(self.test_csv_file), "CSV file was not created")
+
+        # 4. Verify file content
+        with open(self.test_csv_file, 'r', encoding='utf-8') as f:
+            reader = csv.reader(f)
+
+            # Check header
+            header = next(reader)
+            self.assertEqual(header, ['title', 'description', 'published date', 'url', 'publisher'])
+
+            # Check rows
+            rows = list(reader)
+            self.assertEqual(len(rows), 2)
+            # Check content of row 1
+            self.assertEqual(rows[0], [
+                'Test Article 1', 'Description for article 1', 'Mon, 01 Jan 2024 00:00:00 GMT',
+                'https://example.com/article1', 'Example News'
+            ])
+            # Check content of row 2 (handles commas and quotes)
+            self.assertEqual(rows[1], [
+                'Test Article 2, with comma', 'Description with "quotes"', 'Tue, 02 Jan 2024 00:00:00 GMT',
+                'https://example.com/article2', 'Another Source'
+            ])
+
+    def test_export_to_csv_empty(self):
+        # Test that no file is created if the article list is empty
+        self.gnews.export_to_csv([], self.test_csv_file)
+        self.assertFalse(os.path.exists(self.test_csv_file),
+                         "CSV file should not be created for an empty article list")
+
+    def tearDown(self):
+        # Clean up the test CSV file after each test
+        if os.path.exists(self.test_csv_file):
+            os.remove(self.test_csv_file)
 
 if __name__ == '__main__':
     unittest.main()
