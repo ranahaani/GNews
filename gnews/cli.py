@@ -37,7 +37,7 @@ def format_result(results: list | list[dict[str, any]], format: str):
 @app.command()
 def search(
     keyword: Annotated[str, typer.Argument()], 
-    limit: Annotated[int, typer.Option(help="Limit the number of articles received")] = 100,
+    limit: Annotated[int, typer.Option(help="Limit the number of articles received")] = 10,
     format: Annotated[str, typer.Option(help="Determine the format of output (json, csv, table)")] = "json"
     ):
     if format not in ["json", "csv", "table"]:
@@ -56,7 +56,7 @@ def search(
 @app.command()
 def trending(
     country: Annotated[str, typer.Option(help="The country from which to get trending news from")] = "US",
-    limit: Annotated[int, typer.Option(help="Limit the number of articles received")] = 100,
+    limit: Annotated[int, typer.Option(help="Limit the number of articles received")] = 10,
     format: Annotated[str, typer.Option(help="Determine the format of output (json, csv, table)")] = "json"
     ):
     pass
@@ -64,7 +64,7 @@ def trending(
 @app.command()
 def topic(
     topic: Annotated[str, typer.Argument(help="What topic to get news related to")],
-    limit: Annotated[int, typer.Option(help="Limit the number of articles received")] = 100,
+    limit: Annotated[int, typer.Option(help="Limit the number of articles received")] = 10,
     format: Annotated[str, typer.Option(help="Determine the format of output (json, csv, table)")] = "json"
     ):
     # check if topic is in 
@@ -73,7 +73,7 @@ def topic(
 @app.command()
 def location(
     location: Annotated[str, typer.Argument(help="Where news received will be related to.")],
-    limit: Annotated[int, typer.Option(help="Limit the number of articles received")] = 100,
+    limit: Annotated[int, typer.Option(help="Limit the number of articles received")] = 10,
     format: Annotated[str, typer.Option(help="Determine the format of output (json, csv, table)")] = "json"
     ):
     pass
