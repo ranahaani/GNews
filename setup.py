@@ -15,7 +15,7 @@ setup(
     # },
     entry_points={
         "console_scripts": [
-            "gnews = gnews.cli:main",
+            "gnews = gnews.cli:app",
         ],
     },
     author="Muhammad Abdullah",
