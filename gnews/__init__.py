@@ -1,4 +1,5 @@
-from .gnews import GNews
+# gnews/ai/__init__.py
+from .sentiment import SentimentAnalyzer
 
-name = "gnews"
-__all__ = ["GNews"]
+__all__ = ["SentimentAnalyzer"]
+
