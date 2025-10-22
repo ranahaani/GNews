@@ -249,4 +249,5 @@ dmypy.json
 # profiling data
 .prof
 
+.vscode
 # End of https://www.toptal.com/developers/gitignore/api/pycharm,python
