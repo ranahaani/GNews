@@ -200,6 +200,8 @@ All parameters are optional and can be passed during initialization. Here’s a 
 - **end_date**: Date before which results must have been published.
 - **max_results**: The maximum number of results to return (default: 100).
 - **exclude_websites**: A list of websites to exclude from results.
+- **log_level**: The logging level for output (DEBUG, INFO, WARNING, ERROR, CRITICAL) (default: 'INFO').
+- **log_file**: Optional file path for logging output. If provided, logs will be written to this file in addition to console (default: None).
 - **proxy**: A dictionary specifying the proxy settings used to route requests. The dictionary should contain a single key-value pair where the key is the protocol (`http` or `https`) and the value is the proxy address. Example:
 ```python
 # Example with only HTTP proxy
@@ -226,6 +228,8 @@ google_news = GNews(
     end_date=None,
     max_results=10,
     exclude_websites=['yahoo.com', 'cnn.com'],
+    log_level='DEBUG',
+    log_file='gnews.log',
     proxy={
         'https': 'https://your_proxy_address'
     }
