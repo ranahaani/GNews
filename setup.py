@@ -13,7 +13,11 @@ setup(
     # use_scm_version={
     #     "local_scheme": "no-local-version"
     # },
-
+    entry_points={
+        "console_scripts": [
+            "gnews = gnews.cli:main",
+        ],
+    },
     author="Muhammad Abdullah",
     author_email="ranahaani@gmail.com",
     description='Provide an API to search for articles on Google News and returns a usable JSON response.',
