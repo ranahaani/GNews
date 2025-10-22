@@ -59,6 +59,8 @@ def trending(
     limit: Annotated[int, typer.Option(help="Limit the number of articles received")] = 100,
     format: Annotated[str, typer.Option(help="Determine the format of output (json, csv, table)")] = "json"
     ):
+
+    google_news = gnews.GNews(max_results=limit)
     pass
 
 @app.command()
