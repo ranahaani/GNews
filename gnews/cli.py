@@ -1,8 +1,38 @@
 import typer
 import gnews
 from typing_extensions import Annotated
+import json
+from tabulate import tabulate
 
 app = typer.Typer()
+
+def format_result(results: list | list[dict[str, any]], format: str):
+    if format == "json":
+        print(json.dumps(results))
+    elif format == "csv":
+        header = "title,description,published_date,url,publisher,publisher_href\n"
+        csv = header + ""
+        for article in results:
+            csv += article["title"] + "," + article["description"] + "," + f"\"{article['published date']}\""
+            csv += "," + article["url"] + "," + article["publisher"]["title"] + "," + article["publisher"]["href"]
+            csv += "\n"
+        print(csv)
+    else:
+        #table format
+        headers = ["Title", "Description", "Published Date", "Url", "Publisher", "Publisher Href"]
+        data = []
+        for article in results:
+            new_data = []
+            new_data.append(article["title"])
+            new_data.append(article["description"])
+            new_data.append(article["published date"])
+            new_data.append(article["url"])
+            new_data.append(article["publisher"]["title"])
+            new_data.append(article["publisher"]["href"])
+            data.append(new_data)
+        
+        print(tabulate(data, headers=headers, tablefmt="grid", missingval="?"))
+
 
 @app.command()
 def search(
@@ -10,10 +40,18 @@ def search(
     limit: Annotated[int, typer.Option(help="Limit the number of articles received")] = 100,
     format: Annotated[str, typer.Option(help="Determine the format of output (json, csv, table)")] = "json"
     ):
+    if format not in ["json", "csv", "table"]:
+        typer.echo("Format should be one of these three options: \"json\", \"csv\", or \"table\"") 
+        return
+
     google_news = gnews.GNews(max_results=limit)
     articles = google_news.get_news(keyword)
-    print(articles)
-    pass
+
+    if len(articles) == 0:
+        typer.echo(f"No articles were found for the keyword \"{keyword}\".")
+        return
+    
+    return format_result(articles, format)
 
 @app.command()
 def trending(
