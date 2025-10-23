@@ -4,6 +4,8 @@ from typing_extensions import Annotated
 import json
 from tabulate import tabulate
 import os
+from gnews.utils.constants import AVAILABLE_COUNTRIES, AVAILABLE_LANGUAGES, TOPICS, SECTIONS
+import urllib.parse
 
 app = typer.Typer()
 
@@ -61,15 +63,20 @@ def format_result(results: list | list[dict[str, any]], format: str, filename_pr
 
 @app.command()
 def search(
-    keyword: Annotated[str, typer.Argument()],
-    limit: Annotated[int, typer.Option(help="Limit the number of articles received")] = 10,
-    format: Annotated[str, typer.Option(help="Determine the format of output (json, csv, table)")] = "json"
+    keyword: Annotated[str, typer.Argument(help="The keyword by which to search Google News.")],
+    limit: Annotated[int, typer.Option(help="Limit the number of articles received. Default is 10.")] = 10,
+    format: Annotated[str, typer.Option(help="Determine the format of output. Default is \"json\" for json file. Options: (json, csv, table)")] = "json",
+    language: Annotated[str, typer.Option(help="The language in which to return results, in a two character abbreviation. Defaults to \"en\"")] = "en"
 ):
     if format not in ["json", "csv", "table"]:
         typer.echo("Format should be one of these: \"json\", \"csv\", or \"table\"")
         return
 
-    google_news = gnews.GNews(max_results=limit)
+    if language not in AVAILABLE_LANGUAGES.values():
+        typer.echo("Language should be in the list of available languages.")
+        return
+
+    google_news = gnews.GNews(max_results=limit, language=language)
     articles = google_news.get_news(keyword)
 
     if not articles:
@@ -79,16 +86,56 @@ def search(
     format_result(articles, format, f"search_{keyword}")
 
 @app.command()
-def topic(
-    topic: Annotated[str, typer.Argument(help="What topic to get news related to")],
-    limit: Annotated[int, typer.Option(help="Limit the number of articles received")] = 10,
-    format: Annotated[str, typer.Option(help="Determine the format of output (json, csv, table)")] = "json"
+def trending(
+    country: Annotated[str, typer.Option(help="What country to get news related to as two character abbreviation. Default is \"US\".")] = "US",
+    limit: Annotated[int, typer.Option(help="Limit the number of articles received. Default is 10.")] = 10,
+    format: Annotated[str, typer.Option(help="Determine the format of output. Default is \"json\" for json file. Options: (json, csv, table)")] = "json",
+    language: Annotated[str, typer.Option(help="The language in which to return results, in a two character abbreviation. Defaults to \"en\"")] = "en"
 ):
     if format not in ["json", "csv", "table"]:
         typer.echo("Format should be one of these: \"json\", \"csv\", or \"table\"")
         return
 
-    google_news = gnews.GNews(max_results=limit)
+    if country not in AVAILABLE_COUNTRIES.values():
+        typer.echo("Country should be in list of available countries.")
+        return
+
+    if language not in AVAILABLE_LANGUAGES.values():
+        typer.echo("Language should be in the list of available languages.")
+        return
+
+    google_news = gnews.GNews(max_results=limit, country=country, language=language)
+    articles = google_news.get_top_news()
+
+    if not articles:
+        typer.echo(f"No trending articles found for the country \"{country}\".")
+        return
+
+    format_result(articles, format, f"trending_{country}")
+    pass
+
+@app.command()
+def topic(
+    topic: Annotated[str, typer.Argument(help="What topic to get news related to")],
+    limit: Annotated[int, typer.Option(help="Limit the number of articles received. Default is 10.")] = 10,
+    format: Annotated[str, typer.Option(help="Determine the format of output. Default is \"json\" for json file. Options: (json, csv, table)")] = "json",
+    language: Annotated[str, typer.Option(help="The language in which to return results, in a two character abbreviation. Defaults to \"en\"")] = "en"
+    ):
+
+    topic = topic.upper()
+    if format not in ["json", "csv", "table"]:
+        typer.echo("Format should be one of these: \"json\", \"csv\", or \"table\"")
+        return
+
+    if language not in AVAILABLE_LANGUAGES.values():
+        typer.echo("Language should be in the list of available languages.")
+        return
+
+    if topic not in TOPICS and topic not in SECTIONS.keys():
+        typer.echo("Topic should be in the list of available topics.")
+        return
+
+    google_news = gnews.GNews(max_results=limit, language=language)
     articles = google_news.get_news_by_topic(topic)
 
     if not articles:
@@ -100,15 +147,23 @@ def topic(
 @app.command()
 def location(
     location: Annotated[str, typer.Argument(help="Where news received will be related to.")],
-    limit: Annotated[int, typer.Option(help="Limit the number of articles received")] = 10,
-    format: Annotated[str, typer.Option(help="Determine the format of output (json, csv, table)")] = "json"
-):
+    limit: Annotated[int, typer.Option(help="Limit the number of articles received. Default is 10.")] = 10,
+    format: Annotated[str, typer.Option(help="Determine the format of output. Default is \"json\" for json file. Options: (json, csv, table)")] = "json",
+    language: Annotated[str, typer.Option(help="The language in which to return results, in a two character abbreviation. Defaults to \"en\"")] = "en"
+    ):
+    # encodes for URL
+    locationUrlSafe = urllib.parse.quote(location)
+
     if format not in ["json", "csv", "table"]:
         typer.echo("Format should be one of these: \"json\", \"csv\", or \"table\"")
         return
 
-    google_news = gnews.GNews(max_results=limit)
-    articles = google_news.get_news_by_location(location)
+    if language not in AVAILABLE_LANGUAGES.values():
+        typer.echo("Language should be in the list of available languages.")
+        return
+
+    google_news = gnews.GNews(max_results=limit, language=language)
+    articles = google_news.get_news_by_location(locationUrlSafe)
 
     if not articles:
         typer.echo(f"No articles found for the location \"{location}\".")
