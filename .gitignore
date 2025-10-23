@@ -137,6 +137,7 @@ share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+gnews.egg-info/
 MANIFEST
 
 # PyInstaller
