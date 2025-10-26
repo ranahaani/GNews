@@ -14,6 +14,13 @@ logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO,
                     datefmt='%m/%d/%Y %I:%M:%S %p')
 logger = logging.getLogger(__name__)
 
+from gnews.exceptions import (
+    GNewsException,
+    RateLimitError,
+    InvalidConfigError,
+    NetworkError
+)
+
 
 class GNews:
     def __init__(self, language="en", country="US", max_results=100, period=None, start_date=None, end_date=None,
@@ -30,18 +37,25 @@ class GNews:
         :param proxy: The proxy parameter is a dictionary with a single key-value pair. The key is the
         protocol name and the value is the proxy address
         """
-        self.countries = tuple(AVAILABLE_COUNTRIES),
-        self.languages = tuple(AVAILABLE_LANGUAGES),
+        self.countries = tuple(AVAILABLE_COUNTRIES)
+        self.languages = tuple(AVAILABLE_LANGUAGES)
         self._max_results = max_results
         self._language = language
         self._country = country
         self._period = period
         self._end_date = None
         self._start_date = None
-        self.end_date = self.end_date = end_date
+        self.end_date = end_date
         self._start_date = self.start_date = start_date
         self._exclude_websites = exclude_websites if exclude_websites and isinstance(exclude_websites, list) else []
         self._proxy = proxy if proxy else None
+
+        if self._language not in AVAILABLE_LANGUAGES.values():
+            raise InvalidConfigError(f"Invalid language: {self._language}")
+
+        if self._country not in AVAILABLE_COUNTRIES.values():
+            raise InvalidConfigError(f"Invalid country: {self._country}")
+
 
     def _ceid(self):
         time_query = ''
@@ -185,8 +199,8 @@ class GNews:
             article.download()
             article.parse()
         except Exception as error:
-            print(f"An error occurred while fetching the article: {error}")
-            return None
+            raise NetworkError(f"Failed to download full article: {error}")
+
     
         return article
 
@@ -360,5 +374,5 @@ class GNews:
             return [item for item in
                     map(self._process, feed_data.entries[:self._max_results]) if item]
         except Exception as err:
-            logger.error(err.args[0])
-            return []
+            raise NetworkError(f"Network error while fetching news: {err}")
+
