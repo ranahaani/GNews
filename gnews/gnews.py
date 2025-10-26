@@ -10,14 +10,11 @@ from bs4 import BeautifulSoup as Soup
 from gnews.utils.constants import AVAILABLE_COUNTRIES, AVAILABLE_LANGUAGES, SECTIONS, TOPICS, BASE_URL, USER_AGENT
 from gnews.utils.utils import process_url
 
-logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO,
-                    datefmt='%m/%d/%Y %I:%M:%S %p')
 logger = logging.getLogger(__name__)
-
 
 class GNews:
     def __init__(self, language="en", country="US", max_results=100, period=None, start_date=None, end_date=None,
-                 exclude_websites=None, proxy=None):
+                 exclude_websites=None, proxy=None, log_level="INFO", log_file=None):
         """
         (optional parameters)
         :param language: The language in which to return results, defaults to en (optional)
@@ -29,7 +26,22 @@ class GNews:
         :param exclude_websites: A list of strings that indicate websites to exclude from results
         :param proxy: The proxy parameter is a dictionary with a single key-value pair. The key is the
         protocol name and the value is the proxy address
+        :param log_level: The logging level (DEBUG, INFO, WARNING, ERROR), defaults to INFO
+        :param log_file: Optional file path for logging output, defaults to None (console only)
         """
+        # Configure logging if not already configured
+        if not logging.getLogger().hasHandlers():
+            level = getattr(logging, log_level.upper(), logging.INFO)
+            handlers = [logging.StreamHandler()]
+            if log_file:
+                handlers.append(logging.FileHandler(log_file))
+            logging.basicConfig(
+                level=level,
+                format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                datefmt='%m/%d/%Y %I:%M:%S %p',
+                handlers=handlers
+            )
+        
         self.countries = tuple(AVAILABLE_COUNTRIES),
         self.languages = tuple(AVAILABLE_LANGUAGES),
         self._max_results = max_results
@@ -176,8 +188,8 @@ class GNews:
         try:
             import newspaper
         except ImportError:
-            print("\nget_full_article() requires the `newspaper3k` library.")
-            print("You can install it by running `pip3 install newspaper3k` in your shell.")
+            logger.warning("get_full_article() requires the `newspaper3k` library.")
+            logger.warning("You can install it by running `pip3 install newspaper3k` in your shell.")
             return None
     
         try:
@@ -185,7 +197,7 @@ class GNews:
             article.download()
             article.parse()
         except Exception as error:
-            print(f"An error occurred while fetching the article: {error}")
+            logger.error("An error occurred while fetching the article: %s", error)
             return None
     
         return article

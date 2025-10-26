@@ -1,8 +1,11 @@
 import unittest
+import logging
 from gnews import GNews
 
 class TestGNews(unittest.TestCase):
     def setUp(self):
+        # Disable logging during tests
+        logging.disable(logging.CRITICAL)
         # Create a GNews instance with default parameters for testing
         self.gnews = GNews()
 
