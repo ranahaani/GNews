@@ -9,6 +9,12 @@ from bs4 import BeautifulSoup as Soup
 
 from gnews.utils.constants import AVAILABLE_COUNTRIES, AVAILABLE_LANGUAGES, SECTIONS, TOPICS, BASE_URL, USER_AGENT
 from gnews.utils.utils import process_url
+from gnews.exceptions import (
+    GNewsException,
+    RateLimitError,
+    InvalidConfigError,
+    NetworkError,
+)
 
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO,
                     datefmt='%m/%d/%Y %I:%M:%S %p')
@@ -19,27 +25,31 @@ class GNews:
     def __init__(self, language="en", country="US", max_results=100, period=None, start_date=None, end_date=None,
                  exclude_websites=None, proxy=None):
         """
-        (optional parameters)
-        :param language: The language in which to return results, defaults to en (optional)
-        :param country: The country code of the country you want to get headlines for, defaults to US
-        :param max_results: The maximum number of results to return. The default is 100, defaults to 100
-        :param period: The period of time from which you want the news
+        Initialize the GNews client with configuration options.
+
+        :param language: The language in which to return results, defaults to 'en'
+        :param country: The country code for which to get headlines, defaults to 'US'
+        :param max_results: Maximum number of results to return
+        :param period: Time period for filtering news
         :param start_date: Date after which results must have been published
         :param end_date: Date before which results must have been published
-        :param exclude_websites: A list of strings that indicate websites to exclude from results
-        :param proxy: The proxy parameter is a dictionary with a single key-value pair. The key is the
-        protocol name and the value is the proxy address
+        :param exclude_websites: List of websites to exclude from results
+        :param proxy: Proxy settings as a dict {protocol: address}
         """
         self.countries = tuple(AVAILABLE_COUNTRIES),
         self.languages = tuple(AVAILABLE_LANGUAGES),
+
+        if max_results <= 0:
+            raise InvalidConfigError("max_results must be a positive integer.")
+
         self._max_results = max_results
         self._language = language
         self._country = country
         self._period = period
         self._end_date = None
         self._start_date = None
-        self.end_date = self.end_date = end_date
-        self._start_date = self.start_date = start_date
+        self.end_date = end_date
+        self.start_date = start_date
         self._exclude_websites = exclude_websites if exclude_websites and isinstance(exclude_websites, list) else []
         self._proxy = proxy if proxy else None
 
@@ -47,9 +57,8 @@ class GNews:
         time_query = ''
         if self._start_date or self._end_date:
             if inspect.stack()[2][3] != 'get_news':
-                warnings.warn(message=("Only searches using the function get_news support date ranges. Review the "
-                                       f"documentation for {inspect.stack()[2][3]} for a partial workaround. \nStart "
-                                       "date and end date will be ignored"), category=UserWarning, stacklevel=4)
+                warnings.warn(message=("Only searches using get_news support date ranges. "
+                                       "Start and end dates will be ignored."), category=UserWarning, stacklevel=4)
                 if self._period:
                     time_query += 'when%3A'.format(self._period)
             if self._period:
@@ -73,9 +82,6 @@ class GNews:
 
     @language.setter
     def language(self, language):
-        """
-        :param language: The language code for the language you want to use
-        """
         self._language = AVAILABLE_LANGUAGES.get(language, language)
 
     @property
@@ -84,10 +90,8 @@ class GNews:
 
     @exclude_websites.setter
     def exclude_websites(self, exclude_websites):
-        """
-        The function takes in a list of websites that you want to exclude
-        :param exclude_websites: A list of strings that will be used to filter out websites
-        """
+        if not isinstance(exclude_websites, list):
+            raise InvalidConfigError("exclude_websites must be a list.")
         self._exclude_websites = exclude_websites
 
     @property
@@ -96,6 +100,8 @@ class GNews:
 
     @max_results.setter
     def max_results(self, size):
+        if size <= 0:
+            raise InvalidConfigError("max_results must be greater than 0.")
         self._max_results = size
 
     @property
@@ -108,10 +114,6 @@ class GNews:
 
     @property
     def start_date(self):
-        """
-        :return: string of start_date in form YYYY-MM-DD, or None if start_date is not set
-        …NOTE this will reset period to None if start_date is not none
-        """
         if self._start_date is None:
             return None
         self.period = None
@@ -119,25 +121,17 @@ class GNews:
 
     @start_date.setter
     def start_date(self, start_date):
-        """
-        The function sets the start of the date range you want to search
-        :param start_date: either a tuple in the form (YYYY, MM, DD) or a datetime
-        """
         if type(start_date) is tuple:
             start_date = datetime.datetime(start_date[0], start_date[1], start_date[2])
         if self._end_date:
             if start_date - self._end_date == datetime.timedelta(days=0):
-                warnings.warn("The start and end dates should be at least 1 day apart, or GNews will return no results")
+                warnings.warn("The start and end dates should be at least 1 day apart.")
             elif self._end_date < start_date:
-                warnings.warn("End date should be after start date, or GNews will return no results")
+                warnings.warn("End date should be after start date.")
         self._start_date = start_date
 
     @property
     def end_date(self):
-        """
-        :return: string of end_date in form YYYY-MM-DD, or None if end_date is not set
-        …NOTE this will reset period to None if end date is not None
-        """
         if self._end_date is None:
             return None
         self.period = None
@@ -145,18 +139,13 @@ class GNews:
 
     @end_date.setter
     def end_date(self, end_date):
-        """
-        The function sets the end of the date range you want to search
-        :param end_date: either a tuple in the form (YYYY, MM, DD) or a datetime
-        …NOTE this will reset period to None
-        """
         if type(end_date) is tuple:
             end_date = datetime.datetime(end_date[0], end_date[1], end_date[2])
         if self._start_date:
             if end_date - self._start_date == datetime.timedelta(days=0):
-                warnings.warn("The start and end dates should be at least 1 day apart, or GNews will return no results")
+                warnings.warn("The start and end dates should be at least 1 day apart.")
             elif end_date < self._start_date:
-                warnings.warn("End date should be after start date, or GNews will return no results")
+                warnings.warn("End date should be after start date.")
         self._end_date = end_date
 
     @property
@@ -169,27 +158,24 @@ class GNews:
 
     def get_full_article(self, url):
         """
-        Download an article from the specified URL, parse it, and return an article object.
-         :param url: The URL of the article you wish to summarize.
-         :return: An `Article` object returned by the `newspaper3k` library if installed; otherwise, None.
+        Download and parse a full article using newspaper3k.
         """
         try:
             import newspaper
-        except ImportError:
-            print("\nget_full_article() requires the `newspaper3k` library.")
-            print("You can install it by running `pip3 install newspaper3k` in your shell.")
-            return None
-    
+        except ImportError as e:
+            raise InvalidConfigError(
+                "get_full_article() requires the `newspaper3k` library. "
+                "Install it via `pip install newspaper3k`."
+            ) from e
+
         try:
             article = newspaper.Article(url="%s" % url, language=self._language)
             article.download()
             article.parse()
         except Exception as error:
-            print(f"An error occurred while fetching the article: {error}")
-            return None
-    
-        return article
+            raise NetworkError(f"An error occurred while fetching the article: {error}") from error
 
+        return article
 
     @staticmethod
     def _clean(html):
@@ -213,10 +199,11 @@ class GNews:
 
     def docstring_parameter(*sub):
         def dec(obj):
-            obj.__doc__ = obj.__doc__.format(*sub)
+            if obj.__doc__:
+                obj.__doc__ = obj.__doc__.format(*sub)
             return obj
-
         return dec
+
 
     indent = '\n\t\t\t'
     indent2 = indent + '\t'
@@ -226,49 +213,34 @@ class GNews:
 
     @docstring_parameter(standard_output)
     def get_news(self, key):
-        """
-        The function takes in a key and returns a list of news articles
-        :param key: The query you want to search for. For example, if you want to search for news about
-        the "Yahoo", you would get results from Google News according to your key i.e "yahoo"
-        :return: A list of dictionaries with structure: {0}.
-        """
         if key:
             if self._max_results > 100:
                 return self._get_news_more_than_100(key)
-            
             key = "%20".join(key.split(" "))
             query = '/search?q={}'.format(key)
             return self._get_news(query)
+        raise InvalidConfigError("Search key cannot be empty.")
 
     def _get_news_more_than_100(self, key):
-        """
-        Fetch more than 100 news articles by iterating backward in time, dynamically adjusting
-        the date range based on the earliest date seen so far.
-        """
         articles = []
         seen_urls = set()
         earliest_date = None
-        
-        if self._start_date or self._end_date or self._period:
-            warnings.warn(message=("Searches for over 100 articles do not currently support date ranges. \nStart "
-                                    "date, end date, and period will be ignored"), category=UserWarning, stacklevel=4)
 
-        # Start with no specific date range for the first query
+        if self._start_date or self._end_date or self._period:
+            warnings.warn("Searches for over 100 articles ignore date ranges.", category=UserWarning)
+
         self._start_date = None
         self._end_date = None
 
         while len(articles) < self._max_results:
-            # Fetch articles for the current range
             fetched_articles = self._get_news(f'/search?q={key}')
-            if not fetched_articles:  # Stop if no more articles are found
+            if not fetched_articles:
                 break
 
             for article in fetched_articles:
                 if article['url'] not in seen_urls:
                     articles.append(article)
                     seen_urls.add(article['url'])
-
-                    # Track the earliest published date
                     published_date = article.get("published date")
                     try:
                         published_date = datetime.datetime.strptime(published_date, '%a, %d %b %Y %H:%M:%S GMT')
@@ -282,34 +254,21 @@ class GNews:
                 if len(articles) >= self._max_results:
                     return articles
 
-            # If fewer than 100 articles were fetched, assume the range is exhausted
             if len(fetched_articles) < 100:
                 break
 
-            # Update the sliding window to fetch older articles
             self._end_date = earliest_date
             self._start_date = earliest_date - datetime.timedelta(days=7)
 
         return articles
-    
+
     @docstring_parameter(standard_output)
     def get_top_news(self):
-        """
-        This function returns top news stories for the current time
-        :return: A list of dictionaries with structure: {0}.
-        ..To implement date range try get_news('?')
-        """
         query = "?"
         return self._get_news(query)
 
     @docstring_parameter(standard_output, ', '.join(TOPICS), ', '.join(SECTIONS.keys()))
     def get_news_by_topic(self, topic: str):
-        """
-        Function to get news from one of Google's key topics
-        :param topic: TOPIC names i.e {1}
-        :return: A list of dictionaries with structure: {0}.
-        ..To implement date range try get_news('topic')
-        """
         topic = topic.upper()
         if topic in TOPICS:
             query = '/headlines/section/topic/' + topic + '?'
@@ -317,36 +276,21 @@ class GNews:
         elif topic in SECTIONS.keys():
             query = '/topics/' + SECTIONS[topic] + '?'
             return self._get_news(query)
-
-        logger.info(f"Invalid topic. \nAvailable topics are: {', '.join(TOPICS), ', '.join(SECTIONS.keys())}.")
-        return []
+        raise InvalidConfigError(f"Invalid topic '{topic}'. Must be one of {list(TOPICS) + list(SECTIONS.keys())}.")
 
     @docstring_parameter(standard_output)
     def get_news_by_location(self, location: str):
-        """
-        This function is used to get news from a specific location (city, state, and country)
-        :param location: (type: str) The location for which you want to get headlines
-        :return: A list of dictionaries with structure: {0}.
-        ..To implement date range try get_news('location')
-        """
         if location:
             query = '/headlines/section/geo/' + location + '?'
             return self._get_news(query)
-        logger.warning("Enter a valid location.")
-        return []
+        raise InvalidConfigError("Location cannot be empty.")
 
     @docstring_parameter(standard_output)
     def get_news_by_site(self, site: str):
-        """
-        This function is used to get news from a specific site
-        :param site: (type: str) The site domain for which you want to get headlines. E.g., 'cnn.com'
-        :return: A list of news articles from the specified site.
-        """
         if site:
             key = "site:{}".format(site)
             return self.get_news(key)
-        logger.warning("Enter a valid site domain.")
-        return []
+        raise InvalidConfigError("Site domain cannot be empty.")
 
     def _get_news(self, query):
         url = BASE_URL + query + self._ceid()
@@ -357,8 +301,11 @@ class GNews:
             else:
                 feed_data = feedparser.parse(url, agent=USER_AGENT)
 
-            return [item for item in
-                    map(self._process, feed_data.entries[:self._max_results]) if item]
+            if feed_data.status == 429:
+                raise RateLimitError("Rate limit exceeded while fetching news.")
+            return [item for item in map(self._process, feed_data.entries[:self._max_results]) if item]
+
+        except RateLimitError:
+            raise
         except Exception as err:
-            logger.error(err.args[0])
-            return []
+            raise NetworkError(f"Failed to fetch or parse news feed: {err}") from err
