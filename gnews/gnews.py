@@ -3,6 +3,7 @@ import urllib.request
 import datetime
 import inspect
 import warnings
+import csv
 
 import feedparser
 from bs4 import BeautifulSoup as Soup
@@ -190,6 +191,39 @@ class GNews:
     
         return article
 
+    def export_to_csv(self, articles, filename='gnews_export.csv'):
+        """
+        Exports a list of news articles to a CSV file.
+
+        :param articles: A list of article dictionaries, typically from a get_news* method.
+        :param filename: The name of the CSV file to create (e.g., 'ai_news.csv').
+        """
+        if not articles or not isinstance(articles, list):
+            logger.warning("No articles to export or invalid article list provided.")
+            return
+
+        # Headers based on the keys returned by the _process method
+        headers = ['title', 'description', 'published date', 'url', 'publisher']
+
+        try:
+            with open(filename, 'w', newline='', encoding='utf-8') as f:
+                # Use extrasaction='ignore' to avoid errors if an article dict
+                # has extra keys not in the headers.
+                writer = csv.DictWriter(f, fieldnames=headers, extrasaction='ignore')
+                writer.writeheader()
+
+                count = 0
+                for article in articles:
+                    # Ensure all keys are present, defaulting to empty string if not
+                    row = {header: article.get(header, "") for header in headers}
+                    writer.writerow(row)
+                    count += 1
+
+            logger.info(f"Successfully exported {count} articles to {filename}")
+        except IOError as e:
+            logger.error(f"IOError writing to file {filename}: {e}")
+        except Exception as e:
+            logger.error(f"An unexpected error occurred during CSV export: {e}")
 
     @staticmethod
     def _clean(html):

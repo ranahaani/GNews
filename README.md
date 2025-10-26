@@ -367,6 +367,27 @@ article.authors
 
 Read full documentation for `newspaper3k`
 [newspaper3k](https://newspaper.readthedocs.io/en/latest/user_guide/quickstart.html#parsing-an-article)
+
+### Exporting to CSV
+
+You can easily export the fetched news articles to a CSV file using the `export_to_csv` method. This is useful for data analysis or sharing.
+
+```python
+from gnews import GNews
+
+google_news = GNews()
+articles = google_news.get_news('artificial intelligence')
+
+# Export the articles to a CSV file
+google_news.export_to_csv(articles, 'ai_news.csv')
+```
+This will create a file named `ai_news.csv` in your current directory with the following columns:
+- `title`
+- `description`
+- `published date`
+- `url`
+- `publisher`
+
 <!-- ToDo -->
 
 ## Todo
