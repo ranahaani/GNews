@@ -1,6 +1,6 @@
 import unittest
 from gnews import GNews
-
+from gnews import GNews, NetworkError, InvalidConfigError
 class TestGNews(unittest.TestCase):
     def setUp(self):
         # Create a GNews instance with default parameters for testing
@@ -70,6 +70,22 @@ class TestGNews(unittest.TestCase):
         # self.assertIsNotNone(article)
         # self.assertTrue(hasattr(article, 'title'))
         # self.assertTrue(hasattr(article, 'text'))
+    
+    def test_invalid_language(self):
+        with self.assertRaises(InvalidConfigError):
+            GNews(language="invalid_lang")
+
+    def test_invalid_country(self):
+        with self.assertRaises(InvalidConfigError):
+            GNews(country="XX")
+
+    def test_network_error(self):
+        gnews = GNews()
+        gnews._get_news = lambda query: (_ for _ in ()).throw(NetworkError("Network failure"))
+        with self.assertRaises(NetworkError):
+            gnews.get_news("test")
+
+
 
 if __name__ == '__main__':
     unittest.main()
