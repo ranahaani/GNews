@@ -236,6 +236,7 @@ class GNews:
             if self._max_results > 100:
                 return self._get_news_more_than_100(key)
             
+            key = urllib.parse.quote(key)
             key = "%20".join(key.split(" "))
             query = '/search?q={}'.format(key)
             return self._get_news(query)
