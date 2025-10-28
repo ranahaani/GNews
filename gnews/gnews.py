@@ -331,6 +331,7 @@ class GNews:
         ..To implement date range try get_news('location')
         """
         if location:
+            location = urllib.parse.quote(location)
             query = '/headlines/section/geo/' + location + '?'
             return self._get_news(query)
         logger.warning("Enter a valid location.")
