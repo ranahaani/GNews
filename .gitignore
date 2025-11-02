@@ -137,6 +137,7 @@ share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+gnews.egg-info/
 MANIFEST
 
 # PyInstaller
@@ -249,4 +250,5 @@ dmypy.json
 # profiling data
 .prof
 
+.vscode
 # End of https://www.toptal.com/developers/gitignore/api/pycharm,python
