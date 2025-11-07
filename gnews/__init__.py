@@ -1,4 +1,5 @@
 from .gnews import GNews
+from .async_gnews import GNewsAsync
 from .exceptions import (
     GNewsException,
     RateLimitError,
@@ -10,6 +11,7 @@ name = "gnews"
 
 __all__ = [
     "GNews",
+    "GNewsAsync",
     "GNewsException",
     "RateLimitError",
     "InvalidConfigError",

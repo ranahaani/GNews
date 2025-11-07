@@ -137,6 +137,26 @@ pakistan_news = google_news.get_news('Pakistan')
 print(pakistan_news[0])
 ```
 
+#### Async usage
+
+```python
+import asyncio
+from gnews import GNewsAsync
+
+
+async def main():
+    async with GNewsAsync(max_results=10) as google_news:
+        results = await asyncio.gather(
+            google_news.get_news("Artificial Intelligence"),
+            google_news.get_news("Machine Learning"),
+        )
+        return results
+
+
+headlines_ai, headlines_ml = asyncio.run(main())
+print(headlines_ai[0])
+```
+
 ```
 [{
 'publisher': 'Aljazeera.com',
