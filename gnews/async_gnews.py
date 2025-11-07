@@ -333,7 +333,7 @@ class GNewsAsync:
 
         try:
             time_start = time.time()
-            async with session.get(url, proxy=proxy, ssl=False) as response:
+            async with session.get(url, proxy=proxy) as response:
                 time_end = time.time()
                 if response.status == 429:
                     raise RateLimitError("Rate limit exceeded while fetching news.")
@@ -407,7 +407,7 @@ class GNewsAsync:
         proxy = self._get_proxy_for_url(url)
 
         try:
-            async with session.head(url, allow_redirects=False, proxy=proxy, ssl=False) as response:
+            async with session.head(url, allow_redirects=False, proxy=proxy) as response:
                 if response.status in {301, 302, 303, 307, 308}:
                     location = response.headers.get("Location")
                     if location:
