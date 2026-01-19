@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 class GNews:
     def __init__(self, language="en", country="US", max_results=100, period=None, start_date=None, end_date=None,
-                 exclude_websites=None, proxy=None):
+                 exclude_websites=None, proxy=None, des_keep_url=False):
         """
         Initialize the GNews client with configuration options.
 
@@ -35,6 +35,8 @@ class GNews:
         :param end_date: Date before which results must have been published
         :param exclude_websites: List of websites to exclude from results
         :param proxy: Proxy settings as a dict {protocol: address}
+        :param des_keep_url: Flag to control whether to preserve additional links in the description.
+
         """
         self.countries = tuple(AVAILABLE_COUNTRIES),
         self.languages = tuple(AVAILABLE_LANGUAGES),
@@ -52,6 +54,7 @@ class GNews:
         self.start_date = start_date
         self._exclude_websites = exclude_websites if exclude_websites and isinstance(exclude_websites, list) else []
         self._proxy = proxy if proxy else None
+        self._des_keep_url = des_keep_url
 
     def _ceid(self):
         time_query = ''
@@ -184,13 +187,32 @@ class GNews:
         text = text.replace('\xa0', ' ')
         return text
 
+    @staticmethod
+    def _clean_keep_url(html):
+        soup = Soup(html, "html.parser")
+        result = []
+        for a in soup.find_all("a"):
+            text = a.get_text(strip=True)
+            href = a.get("href", "")
+            result.append({
+                "title": text,
+                "url": href
+            })
+        return result
+
     def _process(self, item):
         url = process_url(item, self._exclude_websites, self._proxy)
         if url:
+
+            if self._des_keep_url:
+                des = self._clean(item.get("description", ""))
+            else:
+                des = self._clean(item.get("description", ""))
+
             title = item.get("title", "")
             item = {
                 'title': title,
-                'description': self._clean(item.get("description", "")),
+                'description': des,
                 'published date': item.get("published", ""),
                 'url': url,
                 'publisher': item.get("source", " ")
