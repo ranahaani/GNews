@@ -1,10 +1,11 @@
 from setuptools import setup, find_packages
 
-with open('requirements.txt') as f:
+with open('requirements.txt',encoding="utf-8") as f:
     requirements = f.read().splitlines()
 
-with open("README.md", "r") as fh:
+with open("README.md", "r",encoding="utf-8") as fh:
     long_description = fh.read()
+
 
 setup(
     name='gnews',
@@ -13,7 +14,11 @@ setup(
     # use_scm_version={
     #     "local_scheme": "no-local-version"
     # },
-
+    entry_points={
+        "console_scripts": [
+            "gnews = gnews.cli:app",
+        ],
+    },
     author="Muhammad Abdullah",
     author_email="ranahaani@gmail.com",
     description='Provide an API to search for articles on Google News and returns a usable JSON response.',
