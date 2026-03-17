@@ -166,6 +166,22 @@ print(pakistan_news[0])
  ...]
 ```
 
+### 📘 Interactive Tutorial 
+
+We have created a step-by-step **[ jupyter Notebook tutorial ]** that demonstrates:
+
+- Basic usage and setup  
+- Filtering news (by topic, location, domain, date range, etc.)
+- Exporting results (CSV, JSON)  
+- Real-world analysis: **Sentiment Analysis on news headlines**
+- Advanced usage & best practices  
+- Interactive examples you can run line-by-line
+
+👉 **Open the tutorial here:**  
+[examples/tutorial.ipynb](./examples/tutorial.ipynb)
+
+This is the best way to learn GNews hands-on.
+
 ### Get top news
 
 * `GNews.get_top_news()`
