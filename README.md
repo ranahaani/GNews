@@ -67,6 +67,7 @@
             <li><a href="#getting-full-article">Getting Full Article 📰</a></li>
          </ul>
       </li>
+      <li><a href="#real-world-examples">Real-World Examples 🌍</a></li>
       <li><a href="#todo">To Do 📋</a></li>
       <li><a href="#roadmap">Roadmap 🛣️</a></li>
       <li><a href="#contributing">Contributing 🤝</a></li>
@@ -207,7 +208,7 @@ CRICKET, RUGBY, ECONOMY, PERSONAL FINANCE, FINANCE, DIGITAL CURRENCIES, MOBILE, 
 * site should be in the format of: `"cnn.com"`
 
 ### Results specification
-All parameters are optional and can be passed during initialization. Here’s a list of the available parameters:
+All parameters are optional and can be passed during initialization. Here's a list of the available parameters:
 
 - **language**: The language in which to return results (default: 'en').
 - **country**: The country code for the headlines (default: 'US').
@@ -350,7 +351,7 @@ article.title
 article.text 
 ```
 
-> End-of-Mission press releases include statements of IMF staff teams that convey preliminary findings after a mission. The views expressed are those of the IMF staff and do not necessarily represent the views of the IMF’s Executive Board.\n\nIMF staff and the Pakistani authorities have reached an agreement on a package of measures to complete second to fifth reviews of the authorities’ reform program supported by the IMF Extended Fund Facility (EFF) ..... (full article)
+> End-of-Mission press releases include statements of IMF staff teams that convey preliminary findings after a mission. The views expressed are those of the IMF staff and do not necessarily represent the views of the IMF's Executive Board.\n\nIMF staff and the Pakistani authorities have reached an agreement on a package of measures to complete second to fifth reviews of the authorities' reform program supported by the IMF Extended Fund Facility (EFF) ..... (full article)
 
 ```python
 article.images
@@ -367,6 +368,220 @@ article.authors
 
 Read full documentation for `newspaper3k`
 [newspaper3k](https://newspaper.readthedocs.io/en/latest/user_guide/quickstart.html#parsing-an-article)
+
+<!-- REAL-WORLD EXAMPLES -->
+
+## Real-World Examples
+
+The following examples demonstrate practical applications of GNews in real-world scenarios.
+
+### 1. Building a News Bot
+
+This example shows how to build a simple news bot that fetches top headlines and formats them for posting to a messaging platform or social media feed.
+
+```python
+from gnews import GNews
+
+def fetch_top_headlines(topic="TECHNOLOGY", max_results=5):
+    """Fetch top news headlines for a given topic and format them as messages."""
+    google_news = GNews(language='en', country='US', max_results=max_results)
+    news = google_news.get_news_by_topic(topic)
+    
+    messages = []
+    for article in news:
+        message = (
+            f"📰 {article['title']}\n"
+            f"🏢 {article['publisher']}\n"
+            f"🔗 {article['url']}\n"
+            f"📅 {article['published_date']}\n"
+        )
+        messages.append(message)
+    return messages
+
+# Usage
+headlines = fetch_top_headlines(topic="TECHNOLOGY", max_results=5)
+for msg in headlines:
+    print(msg)
+    print("---")
+```
+
+> This bot can be extended to post messages to Slack, Discord, or Twitter using their respective APIs.
+
+### 2. Market Sentiment Analysis
+
+This example demonstrates how to collect financial news and perform basic sentiment analysis on headlines, useful for understanding market trends.
+
+```python
+from gnews import GNews
+
+def analyze_market_sentiment(keyword="stock market", max_results=20):
+    """Fetch financial news and categorize headlines by sentiment keywords."""
+    google_news = GNews(language='en', country='US', max_results=max_results)
+    news = google_news.get_news(keyword)
+
+    positive_keywords = ['surge', 'growth', 'profit', 'gain', 'rise', 'bullish', 'rally']
+    negative_keywords = ['crash', 'loss', 'decline', 'fall', 'drop', 'bearish', 'recession']
+
+    results = {"positive": [], "negative": [], "neutral": []}
+    for article in news:
+        title_lower = article['title'].lower()
+        if any(kw in title_lower for kw in positive_keywords):
+            results["positive"].append(article['title'])
+        elif any(kw in title_lower for kw in negative_keywords):
+            results["negative"].append(article['title'])
+        else:
+            results["neutral"].append(article['title'])
+
+    print(f"Positive: {len(results['positive'])} | Negative: {len(results['negative'])} | Neutral: {len(results['neutral'])}")
+    return results
+
+# Usage
+sentiment = analyze_market_sentiment(keyword="stock market", max_results=20)
+```
+
+> For more accurate sentiment analysis, consider integrating with NLP libraries like `TextBlob` or `VADER`.
+
+### 3. Research Data Collection
+
+This example shows how to collect and structure news data for academic research, exporting the results to a CSV file for further analysis.
+
+```python
+import csv
+from datetime import datetime
+from gnews import GNews
+
+def collect_research_data(keywords, start_date, end_date, filename="research_data.csv"):
+    """Collect news articles for research and save results to a CSV file."""
+    google_news = GNews(
+        language='en',
+        country='US',
+        max_results=50,
+        start_date=start_date,
+        end_date=end_date
+    )
+
+    all_articles = []
+    for keyword in keywords:
+        articles = google_news.get_news(keyword)
+        for article in articles:
+            all_articles.append({
+                'keyword': keyword,
+                'title': article['title'],
+                'published_date': article['published_date'],
+                'description': article['description'],
+                'publisher': article['publisher'],
+                'url': article['url']
+            })
+
+    with open(filename, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=['keyword', 'title', 'published_date', 'description', 'publisher', 'url'])
+        writer.writeheader()
+        writer.writerows(all_articles)
+
+    print(f"Saved {len(all_articles)} articles to {filename}")
+    return all_articles
+
+# Usage
+articles = collect_research_data(
+    keywords=["climate change", "renewable energy"],
+    start_date=(2024, 1, 1),
+    end_date=(2024, 6, 30),
+    filename="climate_research.csv"
+)
+```
+
+> You can combine this with `pandas` for more advanced data analysis and visualization.
+
+### 4. News Monitoring Dashboard
+
+This example demonstrates how to monitor news for specific topics over time, which can be used for brand monitoring, crisis tracking, or competitive analysis.
+
+```python
+from gnews import GNews
+
+def monitor_topic(keywords, country='US', max_results=10):
+    """Monitor multiple keywords and return a summary report of recent coverage."""
+    google_news = GNews(language='en', country=country, max_results=max_results, period='7d')
+
+    report = {}
+    for keyword in keywords:
+        articles = google_news.get_news(keyword)
+        publishers = set(a['publisher'] for a in articles)
+        report[keyword] = {
+            'article_count': len(articles),
+            'publishers': list(publishers),
+            'latest_headline': articles[0]['title'] if articles else 'No articles found'
+        }
+
+    # Print summary
+    print(f"{'Topic':<25} {'Articles':<12} {'Latest Headline'}")
+    print("-" * 80)
+    for topic, data in report.items():
+        print(f"{topic:<25} {data['article_count']:<12} {data['latest_headline']}")
+
+    return report
+
+# Usage
+report = monitor_topic(
+    keywords=["Python programming", "artificial intelligence", "cybersecurity"],
+    country='US',
+    max_results=10
+)
+```
+
+> This can be integrated with scheduling tools like `cron` or `APScheduler` to run automatically at regular intervals.
+
+### 5. Multi-language News Aggregation
+
+This example demonstrates how to aggregate news about the same topic from multiple languages and regions, providing a global perspective on a story.
+
+```python
+from gnews import GNews
+
+def aggregate_multilingual_news(keyword, regions):
+    """Fetch news for the same keyword across multiple language/region combinations."""
+    all_results = {}
+
+    for region_name, language, country in regions:
+        try:
+            google_news = GNews(language=language, country=country, max_results=5)
+            articles = google_news.get_news(keyword)
+            all_results[region_name] = {
+                'language': language,
+                'country': country,
+                'articles': [
+                    {'title': a['title'], 'publisher': a['publisher'], 'url': a['url']}
+                    for a in articles
+                ]
+            }
+        except Exception as e:
+            all_results[region_name] = {'error': str(e)}
+
+    # Print summary
+    for region, data in all_results.items():
+        if 'error' in data:
+            print(f"\n🌍 {region} ({data.get('language', 'N/A')}): Error - {data['error']}")
+            continue
+        print(f"\n🌍 {region} ({data['language']}):")
+        for article in data['articles'][:3]:
+            print(f"   📰 {article['title']}")
+
+    return all_results
+
+# Usage
+regions = [
+    ("United States", "en", "US"),
+    ("France", "fr", "FR"),
+    ("Germany", "de", "DE"),
+    ("Japan", "ja", "JP"),
+    ("Brazil", "pt-419", "BR"),
+]
+
+results = aggregate_multilingual_news(keyword="climate", regions=regions)
+```
+
+> This is useful for international organizations, journalists, or researchers who need to compare how the same story is covered across different regions.
+
 <!-- ToDo -->
 
 ## Todo
