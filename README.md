@@ -55,16 +55,26 @@
       <li>
          <a href="#example-usage">Usage 🧩</a>
          <ul>
-            <li><a href="#Get-top-news">Top News 🌟</a></li>
-            <li><a href="#Get-news-by-keyword">News by Keywords 🔎</a></li>
-            <li><a href="#Get-news-by-major-topic">News by Major Topics 🚀</a></li>
-            <li><a href="#Get-news-by-geo-location">News by GEO Location 🌎</a></li>
+            <li><a href="#get-top-news">Top News 🌟</a></li>
+            <li><a href="#get-news-by-keyword">News by Keywords 🔎</a></li>
+            <li><a href="#get-news-by-major-topic">News by Major Topics 🚀</a></li>
+            <li><a href="#get-news-by-geo-location">News by GEO Location 🌎</a></li>
             <li><a href="#get-news-by-site">News by Site 📰</a></li>
             <li><a href="#results-specification">Results 📊</a></li>
             <li><a href="#supported-countries">Supported Countries 🌐</a></li>
             <li><a href="#supported-languages">Supported Languages 🌍</a></li>
             <li><a href="#article-properties">Article Properties 📝</a></li>
             <li><a href="#getting-full-article">Getting Full Article 📰</a></li>
+         </ul>
+      </li>
+      <li>
+         <a href="#real-world-examples">Real-World Examples 🌍</a>
+         <ul>
+            <li><a href="#1-building-a-news-bot">Building a News Bot 🤖</a></li>
+            <li><a href="#2-market-sentiment-analysis">Market Sentiment Analysis 📈</a></li>
+            <li><a href="#3-research-data-collection">Research Data Collection 🔬</a></li>
+            <li><a href="#4-news-monitoring-dashboard">News Monitoring Dashboard 📡</a></li>
+            <li><a href="#5-multi-language-news-aggregation">Multi-language News Aggregation 🌐</a></li>
          </ul>
       </li>
       <li><a href="#todo">To Do 📋</a></li>
@@ -79,12 +89,10 @@
 
 ## About GNews
 
-🚩 GNews is A Happy and lightweight Python Package that searches Google News RSS Feed and returns a usable JSON
-response \
-🚩 As well as you can fetch full article (**No need to write scrappers for articles fetching anymore**)
+🚩 GNews is a lightweight Python Package that searches Google News RSS Feed and returns a usable JSON response. \
+🚩 You can also fetch full articles (**no need to write scrapers for article fetching anymore**).
 
-Google News cover across **141+ countries** with **41+ languages**. On the bottom left side of the Google News page you
-may find a `Language & region` section where you can find all of the supported combinations.
+Google News covers **141+ countries** with **41+ languages**. On the bottom left side of the Google News page you can find a `Language & region` section with all supported combinations.
 
 ### Demo
 
@@ -103,29 +111,26 @@ This section provides instructions for two different use cases:
 
 ### 1. Installing the GNews package
 
-To install the package and start using it in your own projects, follow these steps:
-
-``` shell
+```shell
 pip install gnews
 ```
-### 2. Setting Up GNews for Local Development
 
-If you want to make modifications locally, follow these steps to set up the development environment.
+### 2. Setting Up GNews for Local Development
 
 #### Option 1: Setup with Docker
 
 1. Install [docker and docker-compose](https://docs.docker.com/get-docker/).
-2. Configure the `.env` file by placing your MongoDB credentials.
-3. Run the following command to build and start the Docker containers:
+2. Configure the `.env` file with your MongoDB credentials.
+3. Run:
 
-``` shell
+```shell
 docker-compose up --build
 ```
 
 #### Option 2: Install Using Git Clone
 
-1. Clone this repository:
-``` shell
+1. Clone the repository:
+```shell
 git clone https://github.com/ranahaani/GNews.git
 ```
 
@@ -136,14 +141,14 @@ source venv/bin/activate  # MacOS/Linux
 .\venv\Scripts\activate  # Windows
 ```
 
-3. Install the required dependencies:
+3. Install dependencies:
 ```shell
 pip install -r requirements.txt
 ```
 
 <!-- USAGE EXAMPLES -->
 
-### Example usage
+## Example usage
 
 ```python
 from gnews import GNews
@@ -153,22 +158,20 @@ pakistan_news = google_news.get_news('Pakistan')
 print(pakistan_news[0])
 ```
 
+Output:
 ```
-[{
-'publisher': 'Aljazeera.com',
- 'description': 'Pakistan accuses India of stoking conflict in Indian Ocean  '
-                'Aljazeera.com',
- 'published date': 'Tue, 16 Feb 2021 11:50:43 GMT',
- 'title': 'Pakistan accuses India of stoking conflict in Indian Ocean - '
-          'Aljazeera.com',
- 'url': 'https://www.aljazeera.com/news/2021/2/16/pakistan-accuses-india-of-nuclearizing-indian-ocean'
- },
- ...]
+{
+  'publisher': 'Aljazeera.com',
+  'description': 'Pakistan accuses India of stoking conflict in Indian Ocean - Aljazeera.com',
+  'published date': 'Tue, 16 Feb 2021 11:50:43 GMT',
+  'title': 'Pakistan accuses India of stoking conflict in Indian Ocean - Aljazeera.com',
+  'url': 'https://www.aljazeera.com/news/2021/2/16/pakistan-accuses-india-of-nuclearizing-indian-ocean'
+}
 ```
 
-### 📘 Interactive Tutorial 
+### 📘 Interactive Tutorial
 
-We have created a step-by-step **[ jupyter Notebook tutorial ]** that demonstrates:
+We have created a step-by-step **[Jupyter Notebook tutorial]** that demonstrates:
 
 - Basic usage and setup  
 - Filtering news (by topic, location, domain, date range, etc.)
@@ -177,101 +180,97 @@ We have created a step-by-step **[ jupyter Notebook tutorial ]** that demonstrat
 - Advanced usage & best practices  
 - Interactive examples you can run line-by-line
 
-👉 **Open the tutorial here:**  
-[examples/tutorial.ipynb](./examples/tutorial.ipynb)
+👉 **Open the tutorial here:** [examples/tutorial.ipynb](./examples/tutorial.ipynb)
 
-This is the best way to learn GNews hands-on.
+---
 
 ### Get top news
 
-* `GNews.get_top_news()`
+```python
+google_news.get_top_news()
+```
 
 ### Get news by keyword
 
-* `GNews.get_news(keyword)`
+```python
+google_news.get_news('Artificial Intelligence')
+```
 
 ### Get news by major topic
 
-* `GNews.get_news_by_topic(topic)`
-* Available topics:` WORLD, NATION, BUSINESS, TECHNOLOGY, ENTERTAINMENT, SPORTS, SCIENCE, HEALTH, POLITICS, CELEBRITIES, TV, MUSIC, MOVIES, THEATER, SOCCER, CYCLING, MOTOR SPORTS, TENNIS, COMBAT SPORTS, BASKETBALL, BASEBALL, FOOTBALL, SPORTS BETTING, WATER SPORTS, HOCKEY, GOLF, 
-CRICKET, RUGBY, ECONOMY, PERSONAL FINANCE, FINANCE, DIGITAL CURRENCIES, MOBILE, ENERGY, GAMING, INTERNET SECURITY, GADGETS, VIRTUAL REALITY, ROBOTICS, NUTRITION, PUBLIC HEALTH, MENTAL HEALTH, MEDICINE, SPACE, WILDLIFE, ENVIRONMENT, NEUROSCIENCE, PHYSICS, GEOLOGY, PALEONTOLOGY, SOCIAL SCIENCES, EDUCATION, JOBS, ONLINE EDUCATION, HIGHER EDUCATION, VEHICLES, ARTS-DESIGN, BEAUTY, FOOD, TRAVEL, SHOPPING, HOME, OUTDOORS, FASHION.`
+```python
+google_news.get_news_by_topic('BUSINESS')
+```
+
+Available topics: `WORLD`, `NATION`, `BUSINESS`, `TECHNOLOGY`, `ENTERTAINMENT`, `SPORTS`, `SCIENCE`, `HEALTH`, `POLITICS`, `CELEBRITIES`, `TV`, `MUSIC`, `MOVIES`, `THEATER`, `SOCCER`, `CYCLING`, `MOTOR SPORTS`, `TENNIS`, `COMBAT SPORTS`, `BASKETBALL`, `BASEBALL`, `FOOTBALL`, `SPORTS BETTING`, `WATER SPORTS`, `HOCKEY`, `GOLF`, `CRICKET`, `RUGBY`, `ECONOMY`, `PERSONAL FINANCE`, `FINANCE`, `DIGITAL CURRENCIES`, `MOBILE`, `ENERGY`, `GAMING`, `INTERNET SECURITY`, `GADGETS`, `VIRTUAL REALITY`, `ROBOTICS`, `NUTRITION`, `PUBLIC HEALTH`, `MENTAL HEALTH`, `MEDICINE`, `SPACE`, `WILDLIFE`, `ENVIRONMENT`, `NEUROSCIENCE`, `PHYSICS`, `GEOLOGY`, `PALEONTOLOGY`, `SOCIAL SCIENCES`, `EDUCATION`, `JOBS`, `ONLINE EDUCATION`, `HIGHER EDUCATION`, `VEHICLES`, `ARTS-DESIGN`, `BEAUTY`, `FOOD`, `TRAVEL`, `SHOPPING`, `HOME`, `OUTDOORS`, `FASHION`.
 
 ### Get news by geo location
 
-* `GNews.get_news_by_location(location)`
-* location can be name of city/state/country
+```python
+google_news.get_news_by_location('New York')
+```
+
+Location can be the name of a city, state, or country.
 
 ### Get news by site
 
-* `GNews.get_news_by_site(site)`
-* site should be in the format of: `"cnn.com"`
+```python
+google_news.get_news_by_site('cnn.com')
+```
+
+Site should be in the format `"domain.com"`.
 
 ### Results specification
-All parameters are optional and can be passed during initialization. Here’s a list of the available parameters:
 
-- **language**: The language in which to return results (default: 'en').
-- **country**: The country code for the headlines (default: 'US').
-- **period**: The time period for which you want news.
-- **start_date**: Date after which results must have been published.
-- **end_date**: Date before which results must have been published.
-- **max_results**: The maximum number of results to return (default: 100).
-- **exclude_websites**: A list of websites to exclude from results.
-- **proxy**: A dictionary specifying the proxy settings used to route requests. The dictionary should contain a single key-value pair where the key is the protocol (`http` or `https`) and the value is the proxy address. Example:
-```python
-# Example with only HTTP proxy
-  proxy = {
-      'http': 'http://your_proxy_address',
-  }
-  
-# Example with only HTTPS proxy
-  proxy = {
-      'https': 'http://your_proxy_address',
-  }
-```
-  
+All parameters are optional and can be passed during initialization:
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `language` | Language in which to return results | `'en'` |
+| `country` | Country code for headlines | `'US'` |
+| `period` | Time period for news (e.g., `'7d'`) | `None` |
+| `start_date` | Date after which results must have been published | `None` |
+| `end_date` | Date before which results must have been published | `None` |
+| `max_results` | Maximum number of results to return | `100` |
+| `exclude_websites` | List of websites to exclude from results | `[]` |
+| `proxy` | Proxy settings for routing requests | `None` |
+
 #### Example Initialization
+
 ```python
 from gnews import GNews
 
-# Initialize GNews with various parameters, including proxy
 google_news = GNews(
     language='en',
     country='US',
     period='7d',
-    start_date=None,
-    end_date=None,
     max_results=10,
     exclude_websites=['yahoo.com', 'cnn.com'],
-    proxy={
-        'https': 'https://your_proxy_address'
-    }
+    proxy={'https': 'https://your_proxy_address'}
 )
 ```
 
-* Or change it to an existing object
+You can also update parameters on an existing object:
 
 ```python
-google_news.period = '7d'  # News from last 7 days
-google_news.max_results = 10  # number of responses across a keyword
-google_news.country = 'United States'  # News from a specific country 
-google_news.language = 'english'  # News in a specific language
-google_news.exclude_websites = ['yahoo.com', 'cnn.com']  # Exclude news from specific website i.e Yahoo.com and CNN.com
-google_news.start_date = (2020, 1, 1) # Search from 1st Jan 2020
-google_news.end_date = (2020, 3, 1) # Search until 1st March 2020
+google_news.period = '7d'            # News from last 7 days
+google_news.max_results = 10         # Limit number of responses
+google_news.country = 'United States'  # News from a specific country
+google_news.language = 'english'     # News in a specific language
+google_news.exclude_websites = ['yahoo.com', 'cnn.com']
+google_news.start_date = (2020, 1, 1)  # Search from 1st Jan 2020
+google_news.end_date = (2020, 3, 1)    # Search until 1st March 2020
 ```
 
-The format of the timeframe is a string comprised of a number, followed by a letter representing the time operator. For
-example 1y would signify 1 year. Full list of operators below:
+**Time period format:** A number followed by a letter: `h` (hours), `d` (days), `m` (months), `y` (years). Examples: `12h`, `7d`, `6m`, `1y`.
 
+**Date format:** `start_date` and `end_date` accept either a `datetime` object or a tuple `(YYYY, MM, DD)`.
+
+**Proxy format:** A dictionary with protocol as key and proxy address as value:
+```python
+proxy = {'http': 'http://your_proxy_address'}
+proxy = {'https': 'https://your_proxy_address'}
 ```
- - h = hours (eg: 12h)
- - d = days (eg: 7d)
- - m = months (eg: 6m)
- - y = years (eg: 1y)
- ```
- 
-Setting the start and end dates can be done by passing in either a datetime or a tuple in the form (YYYY, MM, DD).
-
 ### Supported Countries
 
 ```python
@@ -307,66 +306,242 @@ print(google_news.AVAILABLE_LANGUAGES)
 
 ### Article Properties
 
-- Get news returns the list with following keys: `title`, `published_date`, `description`, `url`, `publisher`.
+Each news result contains the following fields:
 
-| Properties   | Description                                    | Example                                                                                                                                                                                                                                                                             |
-|--------------|------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| title        | Title of the article                           | IMF Staff and Pakistan Reach Staff-Level Agreement on the Pending Reviews Under the Extended Fund Facility                                                                                                                                                                                                   |
-| url         | Google news link to article                    | [Article Link](http://news.google.com/news/url?sa=t&fd=R&ct2=us&usg=AFQjCNGNR4Qg8LGbjszT1yt2s2lMXvvufQ&clid=c3a7d30bb8a4878e06b80cf16b898331&cid=52779522121279&ei=VQU7WYjiFoLEhQHIs4HQCQ&url=https://www.theguardian.com/commentisfree/2017/jun/07/why-dont-unicorns-exist-google) |
-| published date      | Published date                                 | Wed, 07 Jun 2017 07:01:30 GMT                                                                                                                                                                                                                                                       |
-| description  | Short description of article                   | IMF Staff and Pakistan Reach Staff-Level Agreement on the Pending Reviews Under the Extended Fund Facility ...                                                                                                                                                                                                                  |
-| publisher    | Publisher of article                           | The Guardian                                                                                                                                                                                                                                                                        |                                                                                                                                                        |
+| Property | Description |
+|----------|-------------|
+| `title` | Title of the article |
+| `url` | Google news link to the article |
+| `published date` | Publication date |
+| `description` | Short description of the article |
+| `publisher` | Publisher of the article |
 
 ## Getting full article
 
-* To read a full article you can either:
-    * Navigate to the url directly in your browser, or
-    * Use `newspaper3k` library to scrape the article
-* The article url, needed for both methods, is accessed as `article['url']`.
+Use the `newspaper3k` library to scrape the full article content:
 
-#### Using newspaper3k
-
-1. Install the library - `pip3 install newspaper3k`.
-2. Use `get_full_article` method from `GNews`, that creates an `newspaper.article.Article` object from the url.
+1. Install: `pip3 install newspaper3k`
+2. Fetch the article:
 
 ```python
 from gnews import GNews
 
 google_news = GNews()
 json_resp = google_news.get_news('Pakistan')
-article = google_news.get_full_article(
-    json_resp[0]['url'])  # newspaper3k instance, you can access newspaper3k all attributes in article
+article = google_news.get_full_article(json_resp[0]['url'])
+
+# Access article properties
+article.title    # Article title
+article.text     # Full article text
+article.images   # Set of image URLs
+article.authors  # List of authors
 ```
 
-This new object contains `title`, `text` (full article) or `images` attributes. Examples:
+See full `newspaper3k` documentation [here](https://newspaper.readthedocs.io/en/latest/user_guide/quickstart.html#parsing-an-article).
+
+---
+
+## Real-World Examples
+
+### 1. Building a News Bot
+
+Create a simple bot that fetches top news and formats summaries for posting to Slack, Discord, or other platforms.
 
 ```python
-article.title 
+from gnews import GNews
+
+def fetch_and_format_news(topic, max_results=5):
+    '''Fetch top news for a topic and format as a message.'''
+    google_news = GNews(language='en', max_results=max_results)
+    articles = google_news.get_news(topic)
+
+    messages = []
+    for i, article in enumerate(articles, 1):
+        msg = f\"{i}. {article['title']}\n   {article['url']}\"
+        messages.append(msg)
+
+    return '\n\n'.join(messages)
+
+if __name__ == '__main__':
+    news_digest = fetch_and_format_news('Python Programming')
+    print(news_digest)
 ```
 
-> IMF Staff and Pakistan Reach Staff-Level Agreement on the Pending Reviews Under the Extended Fund Facility'
+### 2. Market Sentiment Analysis
+
+Analyze financial news headlines to gauge market sentiment using a keyword-based approach.
 
 ```python
-article.text 
+from gnews import GNews
+
+def analyze_market_sentiment(ticker, max_results=20):
+    '''Fetch news for a stock ticker and perform basic sentiment analysis.'''
+    google_news = GNews(language='en', country='US', max_results=max_results)
+    articles = google_news.get_news(ticker)
+
+    positive_keywords = ['surge', 'growth', 'profit', 'gain', 'rise', 'bullish', 'record high']
+    negative_keywords = ['fall', 'loss', 'decline', 'drop', 'crash', 'bearish', 'recession']
+
+    positive_count = 0
+    negative_count = 0
+
+    for article in articles:
+        title = article['title'].lower()
+        if any(kw in title for kw in positive_keywords):
+            positive_count += 1
+        elif any(kw in title for kw in negative_keywords):
+            negative_count += 1
+
+    total = positive_count + negative_count or 1
+    sentiment_score = (positive_count - negative_count) / total
+
+    print(fNews Sentiment for {ticker}:)
+    print(f  Positive: {positive_count} | Negative: {negative_count})
+    print(f  Sentiment Score: {sentiment_score:+.2f})
+    return sentiment_score
+
+if __name__ == '__main__':
+    analyze_market_sentiment('Apple Inc')
 ```
 
-> End-of-Mission press releases include statements of IMF staff teams that convey preliminary findings after a mission. The views expressed are those of the IMF staff and do not necessarily represent the views of the IMF’s Executive Board.\n\nIMF staff and the Pakistani authorities have reached an agreement on a package of measures to complete second to fifth reviews of the authorities’ reform program supported by the IMF Extended Fund Facility (EFF) ..... (full article)
+### 3. Research Data Collection
+
+Collect and save news articles as JSON for academic research or data analysis pipelines.
 
 ```python
-article.images
+from gnews import GNews
+import json
+from datetime import datetime
+
+def collect_research_data(keywords, output_file='research_data.json'):
+    '''Collect news articles for research and save to a JSON file.'''
+    google_news = GNews(language='en', max_results=50)
+    all_articles = []
+
+    for keyword in keywords:
+        articles = google_news.get_news(keyword)
+        for article in articles:
+            all_articles.append({
+                'keyword': keyword,
+                'title': article['title'],
+                'url': article['url'],
+                'published_date': article['published date'],
+                'publisher': article['publisher'],
+                'description': article['description'],
+                'collected_at': datetime.now().isoformat()
+            })
+
+    with open(output_file, 'w', encoding='utf-8') as f:
+        json.dump(all_articles, f, indent=2, ensure_ascii=False)
+
+    print(fCollected {len(all_articles)} articles -> {output_file})
+    return all_articles
+
+if __name__ == '__main__':
+    keywords = ['climate change', 'renewable energy', 'carbon emissions']
+    collect_research_data(keywords)
 ```
 
-> `{'https://www.imf.org/~/media/Images/IMF/Live-Page/imf-live-rgb-h.ashx?la=en', 'https://www.imf.org/-/media/Images/IMF/Data/imf-logo-eng-sep2019-update.ashx', 'https://www.imf.org/-/media/Images/IMF/Data/imf-seal-shadow-sep2019-update.ashx', 'https://www.imf.org/-/media/Images/IMF/Social/TW-Thumb/twitter-seal.ashx', 'https://www.imf.org/assets/imf/images/footer/IMF_seal.png'}
-`
+### 4. News Monitoring Dashboard
+
+Build a monitoring system that tracks specific topics and flags new articles as they appear.
 
 ```python
-article.authors
+from gnews import GNews
+import time
+
+class NewsMonitor:
+    '''Monitor news for specific topics and flag new articles.'''
+
+    def __init__(self, topics, interval=300):
+        self.google_news = GNews(language='en', max_results=10)
+        self.topics = topics
+        self.interval = interval  # seconds between checks
+        self.seen_urls = {topic: set() for topic in topics}
+
+    def check_for_new_articles(self):
+        '''Check each topic for new articles since the last check.'''
+        for topic in self.topics:
+            articles = self.google_news.get_news(topic)
+            new_articles = [
+                a for a in articles if a['url'] not in self.seen_urls[topic]
+            ]
+
+            if new_articles:
+                print(f
+🔔 {len(new_articles)} new article(s) for '{topic}':)
+                for article in new_articles:
+                    print(f  - {article['title']})
+                    self.seen_urls[topic].add(article['url'])
+            else:
+                print(f  No new articles for '{topic}')
+
+    def run(self, iterations=5):
+        '''Run the monitor for a given number of iterations.'''
+        print(fStarting News Monitor (topics: {self.topics}))
+        for i in range(iterations):
+            print(f
+--- Check {i + 1}/{iterations} ---)
+            self.check_for_new_articles()
+            if i < iterations - 1:
+                time.sleep(self.interval)
+
+if __name__ == '__main__':
+    monitor = NewsMonitor(topics=['Artificial Intelligence', 'Space Exploration'])
+    monitor.run(iterations=3)
 ```
 
-> `[]`
+### 5. Multi-language News Aggregation
 
-Read full documentation for `newspaper3k`
-[newspaper3k](https://newspaper.readthedocs.io/en/latest/user_guide/quickstart.html#parsing-an-article)
+Aggregate news about the same topic from multiple languages and countries for a global perspective.
+
+```python
+from gnews import GNews
+
+def aggregate_multilingual_news(keyword, language_country_pairs):
+    '''Fetch news for a keyword across multiple languages and countries.'''
+    all_results = {}
+
+    for language, country in language_country_pairs:
+        try:
+            google_news = GNews(language=language, country=country, max_results=5)
+            articles = google_news.get_news(keyword)
+            all_results[f{language}_{country}] = [
+                {
+                    'title': a['title'],
+                    'url': a['url'],
+                    'publisher': a['publisher']
+                }
+                for a in articles
+            ]
+            print(f  {language}/{country}: {len(articles)} articles found)
+        except Exception as e:
+            print(f  {language}/{country}: Error - {e})
+
+    return all_results
+
+if __name__ == '__main__':
+    keyword = 'Climate Change'
+    pairs = [
+        ('en', 'US'),      # English / United States
+        ('fr', 'FR'),      # French / France
+        ('de', 'DE'),      # German / Germany
+        ('es-419', 'AR'),  # Spanish / Argentina
+        ('ja', 'JP'),      # Japanese / Japan
+    ]
+
+    print(fAggregating news for: '{keyword}')
+    results = aggregate_multilingual_news(keyword, pairs)
+
+    for region, articles in results.items():
+        print(f
+--- {region} ---)
+        for a in articles[:3]:
+            print(f  {a['title']})
+```
+
+---
+
 <!-- ToDo -->
 
 ## Todo
@@ -389,8 +564,7 @@ See the [open issues](https://github.com/ranahaani/GNews/issues) for a list of p
 
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any
-contributions you make are **greatly appreciated**.
+Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
