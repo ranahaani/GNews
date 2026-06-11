@@ -1,7 +1,6 @@
 import requests
 from gnews.exceptions import NetworkError, InvalidConfigError
-
-SEARCHAPI_BASE_URL = "https://www.searchapi.io/api/v1/search"
+from gnews.utils.constants import SEARCHAPI_BASE_URL
 
 
 class SearchApiBackend:
