@@ -371,6 +371,73 @@ article.authors
 
 Read full documentation for `newspaper3k`
 [newspaper3k](https://newspaper.readthedocs.io/en/latest/user_guide/quickstart.html#parsing-an-article)
+
+## SearchApi Integration
+
+GNews supports [SearchApi](https://www.searchapi.io/google-news?utm_source=github&utm_medium=sponsorship&utm_campaign=google_news_api&utm_content=ranahaani_GNews) as an optional backend. When a `searchapi_key` is provided, GNews uses SearchApi instead of the default Google News RSS feed.
+
+**Benefits over RSS:**
+- Resolved article URLs (fixes broken redirect links, see [#62](https://github.com/ranahaani/GNews/issues/62))
+- Pagination beyond the ~100-result RSS cap
+- Richer article data: `thumbnail`, `favicon`, `iso_date`, `rank`, `snippet`
+- No IP blocks or rate limits from Google
+
+### Setup
+
+```shell
+pip install gnews
+```
+
+Get a free API key at [searchapi.io](https://www.searchapi.io/google-news?utm_source=github&utm_medium=sponsorship&utm_campaign=google_news_api&utm_content=ranahaani_GNews).
+
+### Usage
+
+```python
+from gnews import GNews
+
+# Pass your SearchApi key to enable the SearchApi backend
+google_news = GNews(searchapi_key="YOUR_SEARCHAPI_KEY")
+
+# All existing methods work as before
+articles = google_news.get_news("artificial intelligence")
+print(articles[0])
+```
+
+```
+{
+  'title': 'OpenAI announces new model',
+  'description': 'Article snippet from SearchApi...',
+  'published date': '2 hours ago',
+  'iso_date': '2026-06-11T10:00:00Z',
+  'url': 'https://techcrunch.com/2026/06/11/openai-new-model',
+  'publisher': 'TechCrunch',
+  'thumbnail': 'data:image/jpeg;base64,...',
+  'favicon': 'data:image/png;base64,...',
+  'rank': 1
+}
+```
+
+### Pagination
+
+```python
+google_news = GNews(searchapi_key="YOUR_KEY", max_results=50)
+
+# Get page 2 results (breaks past the ~100 RSS cap)
+articles = google_news.get_news("Python", page=2)
+```
+
+### Additional article fields (SearchApi backend only)
+
+| Field | Description |
+|---|---|
+| `iso_date` | Absolute ISO 8601 publish date |
+| `thumbnail` | Article image (base64) |
+| `favicon` | Publisher logo (base64) |
+| `rank` | Position in search results |
+| `snippet` | Article preview text |
+
+> The RSS backend (default, no API key required) continues to work exactly as before. The SearchApi backend is fully opt-in.
+
 <!-- ToDo -->
 
 ## Todo
