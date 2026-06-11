@@ -30,17 +30,6 @@ class SearchApiBackend:
 
         return self._fetch(params, max_results)
 
-    def get_top_news(self, language: str = "en", country: str = "US",
-                     max_results: int = 10) -> list:
-        params = {
-            "engine": "google_news",
-            "q": "",
-            "hl": language,
-            "gl": country,
-            "api_key": self._api_key,
-        }
-        return self._fetch(params, max_results)
-
     def _fetch(self, params: dict, max_results: int) -> list:
         try:
             response = requests.get(SEARCHAPI_BASE_URL, params=params)

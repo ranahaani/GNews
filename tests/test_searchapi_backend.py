@@ -180,29 +180,5 @@ class TestSearchApiGetNews(unittest.TestCase):
         self.assertIn("tbs", call_params)
 
 
-class TestSearchApiGetTopNews(unittest.TestCase):
-    def setUp(self):
-        self.backend = SearchApiBackend("test-key")
-
-    @patch("gnews.backends.searchapi.requests.get")
-    def test_returns_list(self, mock_get):
-        mock_get.return_value = MagicMock(
-            status_code=200,
-            json=lambda: MOCK_RESPONSE
-        )
-        results = self.backend.get_top_news()
-        self.assertIsInstance(results, list)
-
-    @patch("gnews.backends.searchapi.requests.get")
-    def test_uses_empty_query(self, mock_get):
-        mock_get.return_value = MagicMock(
-            status_code=200,
-            json=lambda: MOCK_EMPTY_RESPONSE
-        )
-        self.backend.get_top_news()
-        call_params = mock_get.call_args[1]["params"]
-        self.assertEqual(call_params.get("q", ""), "")
-
-
 if __name__ == "__main__":
     unittest.main()

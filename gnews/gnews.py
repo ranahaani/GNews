@@ -275,12 +275,6 @@ class GNews:
 
     @docstring_parameter(standard_output)
     def get_top_news(self):
-        if self._searchapi:
-            return self._searchapi.get_top_news(
-                language=self._language,
-                country=self._country,
-                max_results=self._max_results,
-            )
         query = "?"
         return self._get_news(query)
 
