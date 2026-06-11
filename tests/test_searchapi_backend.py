@@ -93,7 +93,7 @@ class TestSearchApiMapArticle(unittest.TestCase):
         raw = {"position": 1, "title": "T", "link": "https://x.com", "source": "S",
                "date": "now", "iso_date": "2026-01-01T00:00:00Z"}
         article = self.backend._map_article(raw)
-        self.assertEqual(article["snippet"], "")
+        self.assertEqual(article["description"], "")
         self.assertEqual(article["thumbnail"], "")
         self.assertEqual(article["favicon"], "")
 
@@ -119,8 +119,8 @@ class TestSearchApiGetNews(unittest.TestCase):
             json=lambda: MOCK_RESPONSE
         )
         results = self.backend.get_news("test query")
-        required = {"title", "url", "publisher", "description", "published date", "iso_date",
-                    "thumbnail", "favicon", "rank"}
+        required = {"title", "url", "publisher", "description", "published date",
+                    "iso_date", "thumbnail", "favicon", "rank"}
         for article in results:
             for key in required:
                 self.assertIn(key, article, f"Missing key: {key}")
@@ -168,6 +168,16 @@ class TestSearchApiGetNews(unittest.TestCase):
         self.assertEqual(call_params["gl"], "FR")
         self.assertEqual(call_params["page"], 2)
         self.assertEqual(call_params["engine"], "google_news")
+
+    @patch("gnews.backends.searchapi.requests.get")
+    def test_request_has_timeout(self, mock_get):
+        mock_get.return_value = MagicMock(
+            status_code=200,
+            json=lambda: MOCK_EMPTY_RESPONSE
+        )
+        self.backend.get_news("test")
+        _, kwargs = mock_get.call_args
+        self.assertEqual(kwargs.get("timeout"), 10)
 
     @patch("gnews.backends.searchapi.requests.get")
     def test_sends_date_range_when_provided(self, mock_get):

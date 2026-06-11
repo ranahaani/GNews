@@ -11,7 +11,7 @@ class SearchApiBackend:
 
     def get_news(self, query: str, language: str = "en", country: str = "US",
                  start_date: str = None, end_date: str = None,
-                 max_results: int = 10, page: int = 1) -> list:
+                 max_results: int = 10, page: int = 1) -> list[dict]:
         params = {
             "engine": "google_news",
             "q": query,
@@ -30,9 +30,9 @@ class SearchApiBackend:
 
         return self._fetch(params, max_results)
 
-    def _fetch(self, params: dict, max_results: int) -> list:
+    def _fetch(self, params: dict, max_results: int) -> list[dict]:
         try:
-            response = requests.get(SEARCHAPI_BASE_URL, params=params)
+            response = requests.get(SEARCHAPI_BASE_URL, params=params, timeout=10)
             if response.status_code != 200:
                 raise NetworkError(f"SearchApi returned {response.status_code}: {response.text}")
             data = response.json()
@@ -48,7 +48,6 @@ class SearchApiBackend:
         return {
             "title": item.get("title", ""),
             "description": item.get("snippet", ""),
-            "snippet": item.get("snippet", ""),
             "published date": item.get("date", ""),
             "iso_date": item.get("iso_date", ""),
             "url": item.get("link", ""),

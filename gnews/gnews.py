@@ -214,7 +214,7 @@ class GNews:
                        "{'href': link to publisher's website," + indent2 + "'title': name of the publisher}}")
 
     @docstring_parameter(standard_output)
-    def get_news(self, key):
+    def get_news(self, key, page=1):
         if key:
             if self._searchapi:
                 return self._searchapi.get_news(
@@ -224,6 +224,7 @@ class GNews:
                     start_date=self.start_date,
                     end_date=self.end_date,
                     max_results=self._max_results,
+                    page=page,
                 )
             if self._max_results > 100:
                 return self._get_news_more_than_100(key)
