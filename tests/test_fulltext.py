@@ -77,4 +77,4 @@ class TestGetFullArticle(unittest.TestCase):
     @patch("trafilatura.extract", return_value="Some article text")
     def test_fetch_called_with_correct_url(self, mock_extract, mock_fetch):
         self.gnews.get_full_article(self.url)
-        mock_fetch.call_args[0][0] == self.url
+        self.assertEqual(mock_fetch.call_args[0][0], self.url)

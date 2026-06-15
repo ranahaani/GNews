@@ -30,6 +30,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
+          pip install "trafilatura>=1.6" "lxml_html_clean>=0.3"
 
       - name: Run test cases
         run: |

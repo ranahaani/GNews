@@ -22,11 +22,7 @@ setup(
     packages=find_packages(),
     install_requires=requirements,
     extras_require={
-        "fulltext": ["trafilatura>=1.6", "lxml_html_clean"],
-    entry_points={
-        "console_scripts": [
-            "gnews=gnews.cli:main",
-        ],
+        "fulltext": ["trafilatura>=1.6", "lxml_html_clean>=0.3"],
     },
     url='https://github.com/ranahaani/GNews/',
     project_urls={
