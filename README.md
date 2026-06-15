@@ -6,6 +6,9 @@
 [![Download][download-sheild]][download-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
+<br />
+<br />
+
 <!-- SPONSOR -->
 <a href="https://www.searchapi.io/google-news?utm_source=github&utm_medium=sponsorship&utm_campaign=google_news_api&utm_content=ranahaani_GNews">
   <img src="https://github.com/ranahaani/GNews/raw/master/imgs/searchapi-banner.png" alt="Sponsored by SearchApi — Google News API" width="100%">
