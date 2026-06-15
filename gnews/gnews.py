@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+import csv
+import json
 import logging
 import urllib.request
 import datetime
@@ -303,6 +307,21 @@ class GNews:
             key = "site:{}".format(site)
             return self.get_news(key)
         raise InvalidConfigError("Site domain cannot be empty.")
+
+    def save_to_json(self, articles: list[dict], path: str) -> str:
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(articles, f, ensure_ascii=False, indent=2)
+        return path
+
+    def save_to_csv(self, articles: list[dict], path: str) -> str:
+        if not articles:
+            open(path, "w").close()
+            return path
+        with open(path, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=articles[0].keys())
+            writer.writeheader()
+            writer.writerows(articles)
+        return path
 
     def _get_news(self, query):
         url = BASE_URL + query + self._ceid()
