@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import requests
 from gnews.exceptions import NetworkError, InvalidConfigError
 from gnews.utils.constants import SEARCHAPI_BASE_URL
