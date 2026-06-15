@@ -21,6 +21,11 @@ setup(
     long_description_content_type="text/markdown",
     packages=find_packages(),
     install_requires=requirements,
+    entry_points={
+        "console_scripts": [
+            "gnews=gnews.cli:main",
+        ],
+    },
     url='https://github.com/ranahaani/GNews/',
     project_urls={
         'Documentation': 'https://github.com/ranahaani/GNews/blob/master/README.md',
