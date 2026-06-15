@@ -75,6 +75,7 @@
             <li><a href="#getting-full-article">Getting Full Article 📰</a></li>
             <li><a href="#export-results">Export Results 💾</a></li>
             <li><a href="#cli-usage">CLI Usage 💻</a></li>
+            <li><a href="#async-support">Async Support ⚡</a></li>
          </ul>
       </li>
       <li><a href="#searchapi-integration">SearchApi Integration 🔍</a></li>
@@ -493,6 +494,39 @@ articles = google_news.get_news("Python", page=2)
 
 <!-- ToDo -->
 
+## Async Support
+
+All search methods have async equivalents — no new dependencies required:
+
+```python
+import asyncio
+from gnews import GNews
+
+g = GNews(max_results=10)
+
+# Single async query
+articles = asyncio.run(g.get_news_async("AI"))
+
+# Fetch multiple topics concurrently
+async def main():
+    ai, python, pakistan = await asyncio.gather(
+        g.get_news_async("AI"),
+        g.get_news_async("Python"),
+        g.get_news_async("Pakistan"),
+    )
+    return ai, python, pakistan
+
+asyncio.run(main())
+```
+
+| Async method | Sync equivalent |
+|---|---|
+| `get_news_async(key, page=1)` | `get_news()` |
+| `get_top_news_async()` | `get_top_news()` |
+| `get_news_by_topic_async(topic)` | `get_news_by_topic()` |
+| `get_news_by_location_async(location)` | `get_news_by_location()` |
+| `get_news_by_site_async(site)` | `get_news_by_site()` |
+
 ## Todo
 
 - Save to MongoDB
@@ -500,7 +534,7 @@ articles = google_news.get_news("Python", page=2)
 - ~~Save to JSON~~ ✅
 - ~~Save to .CSV file~~ ✅
 - ~~More than 100 articles~~ ✅
-- Async support
+- ~~Async support~~ ✅
 - FastAPI wrapper
 
 <!-- ROADMAP -->

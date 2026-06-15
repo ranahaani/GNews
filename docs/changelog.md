@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.7.0 (2026-06-15)
+
+### Added
+- Async methods: `get_news_async()`, `get_top_news_async()`, `get_news_by_topic_async()`, `get_news_by_location_async()`, `get_news_by_site_async()`
+- Works with both RSS and SearchApi backends
+- No new dependencies — uses stdlib `asyncio`
+
 ## 0.6.0 (2026-06-15)
 
 ### Added
