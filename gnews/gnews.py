@@ -21,14 +21,23 @@ from gnews.exceptions import (
 )
 from gnews.backends.searchapi import SearchApiBackend
 
-logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO,
-                    datefmt='%m/%d/%Y %I:%M:%S %p')
 logger = logging.getLogger(__name__)
+logger.addHandler(logging.NullHandler())
 
 
 class GNews:
-    def __init__(self, language="en", country="US", max_results=100, period=None, start_date=None, end_date=None,
-                 exclude_websites=None, proxy=None, searchapi_key=None):
+    def __init__(
+        self,
+        language: str = "en",
+        country: str = "US",
+        max_results: int = 100,
+        period: str | None = None,
+        start_date: tuple | datetime.datetime | None = None,
+        end_date: tuple | datetime.datetime | None = None,
+        exclude_websites: list[str] | None = None,
+        proxy: dict | None = None,
+        searchapi_key: str | None = None,
+    ) -> None:
         """
         Initialize the GNews client with configuration options.
 
@@ -59,7 +68,7 @@ class GNews:
         self._proxy = proxy if proxy else None
         self._searchapi = SearchApiBackend(searchapi_key) if searchapi_key else None
 
-    def _ceid(self):
+    def _ceid(self) -> str:
         time_query = ''
         if self._start_date or self._end_date:
             if inspect.stack()[2][3] != 'get_news':
@@ -162,7 +171,7 @@ class GNews:
     def country(self, country):
         self._country = AVAILABLE_COUNTRIES.get(country, country)
 
-    def get_full_article(self, url):
+    def get_full_article(self, url: str):
         """
         Download and parse a full article using newspaper3k.
         """
@@ -184,13 +193,13 @@ class GNews:
         return article
 
     @staticmethod
-    def _clean(html):
+    def _clean(html: str) -> str:
         soup = Soup(html, features="html.parser")
         text = soup.get_text()
         text = text.replace('\xa0', ' ')
         return text
 
-    def _process(self, item):
+    def _process(self, item: dict) -> dict | None:
         url = process_url(item, self._exclude_websites, self._proxy)
         if url:
             title = item.get("title", "")
@@ -218,7 +227,7 @@ class GNews:
                        "{'href': link to publisher's website," + indent2 + "'title': name of the publisher}}")
 
     @docstring_parameter(standard_output)
-    def get_news(self, key, page=1):
+    def get_news(self, key: str, page: int = 1) -> list[dict]:
         if key:
             if self._searchapi:
                 return self._searchapi.get_news(
@@ -237,7 +246,7 @@ class GNews:
             return self._get_news(query)
         raise InvalidConfigError("Search key cannot be empty.")
 
-    def _get_news_more_than_100(self, key):
+    def _get_news_more_than_100(self, key: str) -> list[dict]:
         articles = []
         seen_urls = set()
         earliest_date = None
@@ -279,12 +288,12 @@ class GNews:
         return articles
 
     @docstring_parameter(standard_output)
-    def get_top_news(self):
+    def get_top_news(self) -> list[dict]:
         query = "?"
         return self._get_news(query)
 
     @docstring_parameter(standard_output, ', '.join(TOPICS), ', '.join(SECTIONS.keys()))
-    def get_news_by_topic(self, topic: str):
+    def get_news_by_topic(self, topic: str) -> list[dict]:
         topic = topic.upper()
         if topic in TOPICS:
             query = '/headlines/section/topic/' + topic + '?'
@@ -295,14 +304,14 @@ class GNews:
         raise InvalidConfigError(f"Invalid topic '{topic}'. Must be one of {list(TOPICS) + list(SECTIONS.keys())}.")
 
     @docstring_parameter(standard_output)
-    def get_news_by_location(self, location: str):
+    def get_news_by_location(self, location: str) -> list[dict]:
         if location:
             query = '/headlines/section/geo/' + location + '?'
             return self._get_news(query)
         raise InvalidConfigError("Location cannot be empty.")
 
     @docstring_parameter(standard_output)
-    def get_news_by_site(self, site: str):
+    def get_news_by_site(self, site: str) -> list[dict]:
         if site:
             key = "site:{}".format(site)
             return self.get_news(key)
@@ -323,7 +332,7 @@ class GNews:
             writer.writerows(articles)
         return path
 
-    def _get_news(self, query):
+    def _get_news(self, query: str) -> list[dict]:
         url = BASE_URL + query + self._ceid()
         try:
             if self._proxy:
