@@ -305,6 +305,7 @@ AVAILABLE_COUNTRIES = {
 
 GOOGLE_NEWS_URL = 'https://news.google.com'
 BASE_URL = "{0}/rss".format(GOOGLE_NEWS_URL)
+SEARCHAPI_BASE_URL = "https://www.searchapi.io/api/v1/search"
 
 GOOGLE_NEWS_REGEX = f'^http(s)?://(www.)?news.google.com*'
 

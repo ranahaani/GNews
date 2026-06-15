@@ -15,6 +15,7 @@ from gnews.exceptions import (
     InvalidConfigError,
     NetworkError,
 )
+from gnews.backends.searchapi import SearchApiBackend
 
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO,
                     datefmt='%m/%d/%Y %I:%M:%S %p')
@@ -23,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 class GNews:
     def __init__(self, language="en", country="US", max_results=100, period=None, start_date=None, end_date=None,
-                 exclude_websites=None, proxy=None):
+                 exclude_websites=None, proxy=None, searchapi_key=None):
         """
         Initialize the GNews client with configuration options.
 
@@ -52,6 +53,7 @@ class GNews:
         self.start_date = start_date
         self._exclude_websites = exclude_websites if exclude_websites and isinstance(exclude_websites, list) else []
         self._proxy = proxy if proxy else None
+        self._searchapi = SearchApiBackend(searchapi_key) if searchapi_key else None
 
     def _ceid(self):
         time_query = ''
@@ -212,8 +214,18 @@ class GNews:
                        "{'href': link to publisher's website," + indent2 + "'title': name of the publisher}}")
 
     @docstring_parameter(standard_output)
-    def get_news(self, key):
+    def get_news(self, key, page=1):
         if key:
+            if self._searchapi:
+                return self._searchapi.get_news(
+                    query=key,
+                    language=self._language,
+                    country=self._country,
+                    start_date=self.start_date,
+                    end_date=self.end_date,
+                    max_results=self._max_results,
+                    page=page,
+                )
             if self._max_results > 100:
                 return self._get_news_more_than_100(key)
             key = "%20".join(key.split(" "))
