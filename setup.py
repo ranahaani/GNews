@@ -21,6 +21,9 @@ setup(
     long_description_content_type="text/markdown",
     packages=find_packages(),
     install_requires=requirements,
+    extras_require={
+        "fulltext": ["trafilatura>=1.6", "lxml_html_clean"],
+    },
     url='https://github.com/ranahaani/GNews/',
     project_urls={
         'Documentation': 'https://github.com/ranahaani/GNews/blob/master/README.md',

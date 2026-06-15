@@ -171,26 +171,24 @@ class GNews:
     def country(self, country):
         self._country = AVAILABLE_COUNTRIES.get(country, country)
 
-    def get_full_article(self, url: str):
-        """
-        Download and parse a full article using newspaper3k.
-        """
+    def get_full_article(self, url: str) -> dict:
         try:
-            import newspaper
+            import trafilatura
         except ImportError as e:
-            raise InvalidConfigError(
-                "get_full_article() requires the `newspaper3k` library. "
-                "Install it via `pip install newspaper3k`."
+            raise ImportError(
+                "get_full_article() requires trafilatura. "
+                "Install it with: pip install gnews[fulltext]"
             ) from e
 
-        try:
-            article = newspaper.Article(url="%s" % url, language=self._language)
-            article.download()
-            article.parse()
-        except Exception as error:
-            raise NetworkError(f"An error occurred while fetching the article: {error}") from error
+        downloaded = trafilatura.fetch_url(url)
+        if not downloaded:
+            raise NetworkError(f"Could not download article from {url}")
 
-        return article
+        text = trafilatura.extract(downloaded, include_comments=False, include_tables=False)
+        if not text:
+            raise NetworkError(f"Could not extract article text from {url}")
+
+        return {"text": text, "url": url}
 
     @staticmethod
     def _clean(html: str) -> str:
