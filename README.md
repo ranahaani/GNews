@@ -5,6 +5,7 @@
 [![MIT License][license-shield]][license-url]
 [![Download][download-sheild]][download-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
+[![Docs][docs-shield]][docs-url]
 
 <br />
 <br />
@@ -568,5 +569,9 @@ Project Link: [https://github.com/ranahaani/GNews](https://github.com/ranahaani/
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 
 [linkedin-url]: https://linkedin.com/in/ranahaani
+
+[docs-shield]: https://img.shields.io/readthedocs/gnews?style=for-the-badge
+
+[docs-url]: https://gnews.readthedocs.io/en/latest/
 
 [demo-gif]: https://github.com/ranahaani/GNews/raw/master/imgs/gnews.gif
