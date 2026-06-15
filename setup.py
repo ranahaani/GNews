@@ -21,10 +21,8 @@ setup(
     long_description_content_type="text/markdown",
     packages=find_packages(),
     install_requires=requirements,
-    entry_points={
-        "console_scripts": [
-            "gnews=gnews.cli:main",
-        ],
+    extras_require={
+        "fulltext": ["trafilatura>=1.6", "lxml_html_clean>=0.3"],
     },
     url='https://github.com/ranahaani/GNews/',
     project_urls={
@@ -36,10 +34,11 @@ setup(
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
+        'Programming Language :: Python :: 3.14',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
     ],
