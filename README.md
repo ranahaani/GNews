@@ -76,6 +76,7 @@
             <li><a href="#export-results">Export Results 💾</a></li>
             <li><a href="#cli-usage">CLI Usage 💻</a></li>
             <li><a href="#async-support">Async Support ⚡</a></li>
+            <li><a href="#url-resolution">URL Resolution 🔗</a></li>
          </ul>
       </li>
       <li><a href="#searchapi-integration">SearchApi Integration 🔍</a></li>
@@ -125,6 +126,13 @@ To also enable full article text extraction:
 
 ```shell
 pip install gnews[fulltext]
+```
+
+To enable real article URL resolution (resolves Google News redirect URLs):
+
+```shell
+pip install gnews[playwright]
+playwright install chromium
 ```
 ### 2. Setting Up GNews for Local Development
 
@@ -527,6 +535,36 @@ asyncio.run(main())
 | `get_news_by_location_async(location)` | `get_news_by_location()` |
 | `get_news_by_site_async(site)` | `get_news_by_site()` |
 
+## URL Resolution
+
+By default, Google News RSS returns redirect URLs (`news.google.com/rss/articles/...`) instead of real article URLs. Google requires JavaScript execution to resolve them — plain HTTP requests cannot follow these redirects.
+
+Install the optional Playwright extra to get real article URLs automatically:
+
+```shell
+pip install gnews[playwright]
+playwright install chromium  # one-time setup
+```
+
+Once installed, URL resolution is automatic — no code changes needed:
+
+```python
+from gnews import GNews
+
+g = GNews(max_results=5)
+articles = g.get_news("AI")
+
+# With gnews[playwright] installed:
+print(articles[0]['url'])  # https://www.politico.com/news/...
+
+# Without gnews[playwright]:
+print(articles[0]['url'])  # https://news.google.com/rss/articles/...
+```
+
+If resolution fails for a specific article (paywall, timeout, consent gate), GNews falls back to the Google URL silently — it never crashes.
+
+> **Note:** For production use without Playwright, the [SearchApi backend](#searchapi-integration) always returns real article URLs with zero setup beyond an API key.
+
 ## Todo
 
 - Save to MongoDB
@@ -535,6 +573,7 @@ asyncio.run(main())
 - ~~Save to .CSV file~~ ✅
 - ~~More than 100 articles~~ ✅
 - ~~Async support~~ ✅
+- ~~Real article URL resolution~~ ✅
 - FastAPI wrapper
 
 <!-- ROADMAP -->

@@ -27,6 +27,7 @@ Supports 141+ countries and 41+ languages.
    usage/cli
    usage/fulltext
    usage/async
+   usage/url-resolution
 
 .. toctree::
    :maxdepth: 2

@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='gnews',
-    version='0.7.1',
+    version='0.8.0',
     # setup_requires=['setuptools_scm'],
     # use_scm_version={
     #     "local_scheme": "no-local-version"
@@ -23,6 +23,7 @@ setup(
     install_requires=requirements,
     extras_require={
         "fulltext": ["trafilatura>=1.6", "lxml_html_clean>=0.3"],
+        "playwright": ["playwright>=1.40"],
     },
     entry_points={
         "console_scripts": [
