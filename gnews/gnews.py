@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import asyncio
 import csv
+import functools
 import json
 import logging
 import urllib.request
@@ -314,6 +316,25 @@ class GNews:
             key = "site:{}".format(site)
             return self.get_news(key)
         raise InvalidConfigError("Site domain cannot be empty.")
+
+    async def _run_in_executor(self, func, *args):
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(None, functools.partial(func, *args))
+
+    async def get_news_async(self, key: str, page: int = 1) -> list[dict]:
+        return await self._run_in_executor(self.get_news, key, page)
+
+    async def get_top_news_async(self) -> list[dict]:
+        return await self._run_in_executor(self.get_top_news)
+
+    async def get_news_by_topic_async(self, topic: str) -> list[dict]:
+        return await self._run_in_executor(self.get_news_by_topic, topic)
+
+    async def get_news_by_location_async(self, location: str) -> list[dict]:
+        return await self._run_in_executor(self.get_news_by_location, location)
+
+    async def get_news_by_site_async(self, site: str) -> list[dict]:
+        return await self._run_in_executor(self.get_news_by_site, site)
 
     def save_to_json(self, articles: list[dict], path: str) -> str:
         with open(path, "w", encoding="utf-8") as f:
