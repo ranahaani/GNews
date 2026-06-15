@@ -26,6 +26,7 @@ Supports 141+ countries and 41+ languages.
    usage/export
    usage/cli
    usage/fulltext
+   usage/async
 
 .. toctree::
    :maxdepth: 2

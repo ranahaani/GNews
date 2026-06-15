@@ -94,6 +94,41 @@ article = g.get_full_article("https://example.com/article")
 
 ---
 
+#### get_news_async(key, page=1)
+
+Async version of `get_news()`.
+
+```python
+articles = await g.get_news_async("OpenAI")
+articles = await g.get_news_async("Python", page=2)
+```
+
+---
+
+#### get_top_news_async()
+
+Async version of `get_top_news()`.
+
+---
+
+#### get_news_by_topic_async(topic)
+
+Async version of `get_news_by_topic()`.
+
+---
+
+#### get_news_by_location_async(location)
+
+Async version of `get_news_by_location()`.
+
+---
+
+#### get_news_by_site_async(site)
+
+Async version of `get_news_by_site()`.
+
+---
+
 #### save_to_json(articles, path)
 
 Save articles to a JSON file.
