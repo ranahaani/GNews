@@ -24,13 +24,15 @@ def _resolve_with_playwright(url: str) -> str | None:
         return None
 
     try:
+        # Convert RSS URL to article URL for Playwright to follow JS redirect
+        navigate_url = url.replace('/rss/articles/', '/articles/').split('?')[0]
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True, args=["--no-sandbox", "--disable-dev-shm-usage"])
             context = browser.new_context(
                 user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
             )
             page = context.new_page()
-            page.goto(url, wait_until="domcontentloaded", timeout=15000)
+            page.goto(navigate_url, wait_until="domcontentloaded", timeout=15000)
             try:
                 page.wait_for_url(
                     lambda u: "news.google.com" not in u,
