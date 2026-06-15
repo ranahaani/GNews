@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.8.0 (2026-06-15)
+
+### Added
+- Real article URL resolution via Playwright (`pip install gnews[playwright]`)
+- `resolve_url()` utility function for manual URL resolution
+- Automatic fallback to Google URL when Playwright not installed or resolution fails
+- `playwright>=1.40` optional extra
+
+### Fixed
+- Google News redirect URLs no longer returned as-is when Playwright is available
+
 ## 0.7.0 (2026-06-15)
 
 ### Added
