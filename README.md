@@ -72,8 +72,11 @@
             <li><a href="#supported-languages">Supported Languages 🌍</a></li>
             <li><a href="#article-properties">Article Properties 📝</a></li>
             <li><a href="#getting-full-article">Getting Full Article 📰</a></li>
+            <li><a href="#export-results">Export Results 💾</a></li>
+            <li><a href="#cli-usage">CLI Usage 💻</a></li>
          </ul>
       </li>
+      <li><a href="#searchapi-integration">SearchApi Integration 🔍</a></li>
       <li><a href="#todo">To Do 📋</a></li>
       <li><a href="#roadmap">Roadmap 🛣️</a></li>
       <li><a href="#contributing">Contributing 🤝</a></li>
@@ -114,6 +117,12 @@ To install the package and start using it in your own projects, follow these ste
 
 ``` shell
 pip install gnews
+```
+
+To also enable full article text extraction:
+
+```shell
+pip install gnews[fulltext]
 ```
 ### 2. Setting Up GNews for Local Development
 
@@ -314,66 +323,107 @@ print(google_news.AVAILABLE_LANGUAGES)
 
 ### Article Properties
 
-- Get news returns the list with following keys: `title`, `published_date`, `description`, `url`, `publisher`.
+- Get news returns a list of articles with the following keys:
 
-| Properties   | Description                                    | Example                                                                                                                                                                                                                                                                             |
-|--------------|------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| title        | Title of the article                           | IMF Staff and Pakistan Reach Staff-Level Agreement on the Pending Reviews Under the Extended Fund Facility                                                                                                                                                                                                   |
-| url         | Google news link to article                    | [Article Link](http://news.google.com/news/url?sa=t&fd=R&ct2=us&usg=AFQjCNGNR4Qg8LGbjszT1yt2s2lMXvvufQ&clid=c3a7d30bb8a4878e06b80cf16b898331&cid=52779522121279&ei=VQU7WYjiFoLEhQHIs4HQCQ&url=https://www.theguardian.com/commentisfree/2017/jun/07/why-dont-unicorns-exist-google) |
-| published date      | Published date                                 | Wed, 07 Jun 2017 07:01:30 GMT                                                                                                                                                                                                                                                       |
-| description  | Short description of article                   | IMF Staff and Pakistan Reach Staff-Level Agreement on the Pending Reviews Under the Extended Fund Facility ...                                                                                                                                                                                                                  |
-| publisher    | Publisher of article                           | The Guardian                                                                                                                                                                                                                                                                        |                                                                                                                                                        |
+**RSS backend (default):**
+
+| Field | Description | Example |
+|-------|-------------|---------|
+| `title` | Article title | `"Pakistan PM calls for ceasefire"` |
+| `description` | Short summary | `"Pakistan's prime minister said..."` |
+| `published date` | Published date (RFC 2822) | `"Wed, 07 Jun 2026 07:01:30 GMT"` |
+| `url` | Direct article URL | `"https://bbc.com/news/..."` |
+| `publisher` | Publisher name | `"BBC News"` |
+
+**SearchApi backend (additional fields):**
+
+| Field | Description | Example |
+|-------|-------------|---------|
+| `iso_date` | ISO 8601 publish date | `"2026-06-07T07:01:30Z"` |
+| `thumbnail` | Article image (base64) | `"data:image/jpeg;base64,..."` |
+| `favicon` | Publisher logo (base64) | `"data:image/png;base64,..."` |
+| `rank` | Position in search results | `1` |
 
 ## Getting full article
 
-* To read a full article you can either:
-    * Navigate to the url directly in your browser, or
-    * Use `newspaper3k` library to scrape the article
-* The article url, needed for both methods, is accessed as `article['url']`.
+First install the optional dependency:
 
-#### Using newspaper3k
+```shell
+pip install gnews[fulltext]
+```
 
-1. Install the library - `pip3 install newspaper3k`.
-2. Use `get_full_article` method from `GNews`, that creates an `newspaper.article.Article` object from the url.
+Then use `get_full_article()`:
 
 ```python
 from gnews import GNews
 
 google_news = GNews()
-json_resp = google_news.get_news('Pakistan')
-article = google_news.get_full_article(
-    json_resp[0]['url'])  # newspaper3k instance, you can access newspaper3k all attributes in article
+articles = google_news.get_news(‘Pakistan’)
+article = google_news.get_full_article(articles[0][‘url’])
+
+print(article[‘text’])   # full article text
+print(article[‘url’])    # original URL
 ```
 
-This new object contains `title`, `text` (full article) or `images` attributes. Examples:
+> **Note:** Some sites block automated requests (paywalls, Cloudflare). `get_full_article()` will raise a `NetworkError` in those cases.
+
+## Export Results
+
+Save articles directly to JSON or CSV:
 
 ```python
-article.title 
+from gnews import GNews
+
+g = GNews(max_results=10)
+articles = g.get_news("artificial intelligence")
+
+# Save to JSON
+g.save_to_json(articles, "news.json")
+
+# Save to CSV
+g.save_to_csv(articles, "news.csv")
 ```
 
-> IMF Staff and Pakistan Reach Staff-Level Agreement on the Pending Reviews Under the Extended Fund Facility'
+Both methods return the output file path. No extra dependencies required.
 
-```python
-article.text 
+## CLI Usage
+
+GNews includes a command-line interface out of the box:
+
+```shell
+# Search news
+gnews search "artificial intelligence"
+gnews search "Pakistan" --lang ur --country PK --max 5
+
+# Top headlines
+gnews top
+gnews top --max 10
+
+# By topic
+gnews topic TECHNOLOGY
+gnews topic BUSINESS --max 5
+
+# By site
+gnews site bbc.com
+gnews site cnn.com --max 3
+
+# By location
+gnews location Pakistan
+gnews location India --max 5
+
+# JSON output (pipe-friendly)
+gnews search "OpenAI" --json
+gnews top --json | python3 -m json.tool
 ```
 
-> End-of-Mission press releases include statements of IMF staff teams that convey preliminary findings after a mission. The views expressed are those of the IMF staff and do not necessarily represent the views of the IMF’s Executive Board.\n\nIMF staff and the Pakistani authorities have reached an agreement on a package of measures to complete second to fifth reviews of the authorities’ reform program supported by the IMF Extended Fund Facility (EFF) ..... (full article)
+**Options available on all commands:**
 
-```python
-article.images
-```
-
-> `{'https://www.imf.org/~/media/Images/IMF/Live-Page/imf-live-rgb-h.ashx?la=en', 'https://www.imf.org/-/media/Images/IMF/Data/imf-logo-eng-sep2019-update.ashx', 'https://www.imf.org/-/media/Images/IMF/Data/imf-seal-shadow-sep2019-update.ashx', 'https://www.imf.org/-/media/Images/IMF/Social/TW-Thumb/twitter-seal.ashx', 'https://www.imf.org/assets/imf/images/footer/IMF_seal.png'}
-`
-
-```python
-article.authors
-```
-
-> `[]`
-
-Read full documentation for `newspaper3k`
-[newspaper3k](https://newspaper.readthedocs.io/en/latest/user_guide/quickstart.html#parsing-an-article)
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--lang` | `en` | Language code |
+| `--country` | `US` | Country code |
+| `--max` | `10` | Max results |
+| `--json` | off | Output as JSON |
 
 ## SearchApi Integration
 
@@ -437,7 +487,6 @@ articles = google_news.get_news("Python", page=2)
 | `thumbnail` | Article image (base64) |
 | `favicon` | Publisher logo (base64) |
 | `rank` | Position in search results |
-| `snippet` | Article preview text |
 
 > The RSS backend (default, no API key required) continues to work exactly as before. The SearchApi backend is fully opt-in.
 
@@ -447,9 +496,11 @@ articles = google_news.get_news("Python", page=2)
 
 - Save to MongoDB
 - Save to SQLite
-- Save to JSON
-- Save to .CSV file
-- More than 100 articles
+- ~~Save to JSON~~ ✅
+- ~~Save to .CSV file~~ ✅
+- ~~More than 100 articles~~ ✅
+- Async support
+- FastAPI wrapper
 
 <!-- ROADMAP -->
 
