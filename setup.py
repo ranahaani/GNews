@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='gnews',
-    version='0.9.0',
+    version='0.8.1',
     # setup_requires=['setuptools_scm'],
     # use_scm_version={
     #     "local_scheme": "no-local-version"

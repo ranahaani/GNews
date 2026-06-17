@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.9.0 (2026-06-18)
+## 0.8.1 (2026-06-18)
 
 ### Fixed
 - Proxy now correctly forwarded to Playwright during URL resolution — previously Playwright launched Chromium without any proxy, bypassing the user's configured proxy entirely
