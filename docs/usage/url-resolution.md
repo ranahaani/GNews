@@ -61,14 +61,34 @@ articles = g.get_news("AI")
 print(articles[0]['url'])  # always a real URL
 ```
 
+## Proxy support
+
+If your environment requires a proxy, pass it to `GNews` — it will be used for both RSS fetching **and** Playwright URL resolution:
+
+```python
+g = GNews(
+    max_results=5,
+    proxy={"https": "http://myproxy.example.com:8080"}
+)
+articles = g.get_news("artificial intelligence")
+```
+
+Prior to 0.9.0, the proxy was applied to RSS fetching but silently bypassed during Playwright URL resolution. This is now fixed.
+
 ## Manual resolution
 
-You can also resolve individual URLs directly:
+You can also resolve individual URLs directly, with optional proxy:
 
 ```python
 from gnews.utils.utils import resolve_url
 
 google_url = "https://news.google.com/rss/articles/CBMi..."
+
+# Without proxy
 real_url = resolve_url(google_url)
+
+# With proxy
+real_url = resolve_url(google_url, proxies={"https": "http://myproxy:8080"})
+
 print(real_url)
 ```

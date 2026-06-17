@@ -17,7 +17,7 @@ def country_mapping(country):
     return AVAILABLE_COUNTRIES.get(country)
 
 
-def _resolve_with_playwright(url: str) -> str | None:
+def _resolve_with_playwright(url: str, proxies: dict | None = None) -> str | None:
     try:
         from playwright.sync_api import sync_playwright, TimeoutError as PWTimeout
     except ImportError:
@@ -26,10 +26,20 @@ def _resolve_with_playwright(url: str) -> str | None:
     try:
         # Convert RSS URL to article URL for Playwright to follow JS redirect
         navigate_url = url.replace('/rss/articles/', '/articles/').split('?')[0]
+
+        # Convert urllib-style proxy dict {"https": "http://host:port"}
+        # to Playwright proxy format {"server": "http://host:port"}
+        playwright_proxy = None
+        if proxies:
+            server = proxies.get("https") or proxies.get("http")
+            if server:
+                playwright_proxy = {"server": server}
+
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True, args=["--no-sandbox", "--disable-dev-shm-usage"])
             context = browser.new_context(
-                user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+                user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+                proxy=playwright_proxy,
             )
             page = context.new_page()
             page.goto(navigate_url, wait_until="domcontentloaded", timeout=15000)
@@ -48,12 +58,12 @@ def _resolve_with_playwright(url: str) -> str | None:
         return None
 
 
-def resolve_url(url: str) -> str:
+def resolve_url(url: str, proxies: dict | None = None) -> str:
     if "news.google.com" not in url:
         return url
     try:
         from playwright.sync_api import sync_playwright  # noqa: F401
-        resolved = _resolve_with_playwright(url)
+        resolved = _resolve_with_playwright(url, proxies=proxies)
         return resolved if resolved else url
     except ImportError:
         return url
@@ -66,7 +76,7 @@ def process_url(item, exclude_websites, proxies=None):
         return
     url = item.get('link')
     if re.match(GOOGLE_NEWS_REGEX, url):
-        resolved = resolve_url(url)
+        resolved = resolve_url(url, proxies=proxies)
         if resolved != url:
             return resolved
         # fallback: try HEAD redirect (may still work in some environments)

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.0 (2026-06-18)
+
+### Fixed
+- Proxy now correctly forwarded to Playwright during URL resolution — previously Playwright launched Chromium without any proxy, bypassing the user's configured proxy entirely
+- `resolve_url()` and `_resolve_with_playwright()` now accept a `proxies` parameter
+- `process_url()` now passes `proxies` through to `resolve_url()`
+- urllib-style proxy dict (`{"https": "http://host:port"}`) is automatically converted to Playwright's format (`{"server": "http://host:port"}`)
+
 ## 0.8.0 (2026-06-15)
 
 ### Added
