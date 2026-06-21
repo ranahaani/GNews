@@ -13,8 +13,13 @@ class GNews(
     exclude_websites: list[str] | None = None,
     proxy: dict | None = None,
     searchapi_key: str | None = None,
+    max_retries: int = 3,
+    retry_backoff_base: float = 1.0,
+    retry_backoff_max: float = 60.0,
 )
 ```
+
+**Retry behaviour** — HTTP 429 responses are retried with capped exponential backoff plus uniform jitter. Set `max_retries=0` to disable. See [Retries & Backoff](../usage/retries.md) for the formula and tuning guide.
 
 ### Methods
 

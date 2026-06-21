@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.8.2 (2026-06-19)
+
+### Added
+- `max_retries`, `retry_backoff_base`, `retry_backoff_max` constructor parameters on `GNews`. HTTP 429 responses now retry with capped exponential backoff plus uniform jitter instead of raising on the first hit. Defaults: 3 retries, base 1.0s, cap 60.0s. Set `max_retries=0` to restore the previous immediate-raise behaviour.
+- `_fetch_feed()` and `_sleep()` extracted as testable seams so retry policy can be unit tested without real HTTP or wall-clock waits.
+- New usage guide: `usage/retries`.
+
+### Changed
+- `_get_news_more_than_100()` warning and docstring now spell out that any configured `start_date`, `end_date`, or `period` is discarded when paginating past 100 results, that the rolling window walks backward in 7-day chunks anchored on the earliest parsed `published_date`, and that per-call `seen_urls` dedup does not persist across calls. Helps callers building precise temporal pipelines pick the right `max_results`.
+
 ## 0.8.1 (2026-06-18)
 
 ### Fixed

@@ -1,7 +1,7 @@
 project = "GNews"
 copyright = "2026, Muhammad Abdullah"
 author = "Muhammad Abdullah"
-release = "0.6.0"
+release = "0.8.2"
 
 extensions = [
     "myst_parser",
