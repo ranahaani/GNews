@@ -242,6 +242,9 @@ All parameters are optional and can be passed during initialization. Here’s a 
 - **end_date**: Date before which results must have been published.
 - **max_results**: The maximum number of results to return (default: 100).
 - **exclude_websites**: A list of websites to exclude from results.
+- **max_retries**: Retry attempts on HTTP 429 from Google News (default: `3`). Set to `0` to disable retries.
+- **retry_backoff_base**: Base seconds for exponential backoff between retries (default: `1.0`). Effective delay is `min(retry_backoff_max, retry_backoff_base * 2 ** attempt)` plus uniform jitter in `[0, retry_backoff_base)`.
+- **retry_backoff_max**: Cap (in seconds) for any single backoff delay (default: `60.0`).
 - **proxy**: A dictionary specifying the proxy settings used to route requests. The dictionary should contain a single key-value pair where the key is the protocol (`http` or `https`) and the value is the proxy address. Example:
 ```python
 # Example with only HTTP proxy
