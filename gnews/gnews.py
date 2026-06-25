@@ -5,6 +5,8 @@ import csv
 import functools
 import json
 import logging
+import random
+import time
 import urllib.request
 import datetime
 import inspect
@@ -39,6 +41,9 @@ class GNews:
         exclude_websites: list[str] | None = None,
         proxy: dict | None = None,
         searchapi_key: str | None = None,
+        max_retries: int = 3,
+        retry_backoff_base: float = 1.0,
+        retry_backoff_max: float = 60.0,
     ) -> None:
         """
         Initialize the GNews client with configuration options.
@@ -51,7 +56,19 @@ class GNews:
         :param end_date: Date before which results must have been published
         :param exclude_websites: List of websites to exclude from results
         :param proxy: Proxy settings as a dict {protocol: address}
+        :param searchapi_key: Optional SearchAPI key to enable the paid backend
+        :param max_retries: Maximum retry attempts on HTTP 429 responses from Google News.
+            Set to 0 to disable retries and raise immediately. Defaults to 3.
+        :param retry_backoff_base: Base seconds for exponential backoff between retries.
+            Actual wait is ``min(retry_backoff_max, retry_backoff_base * 2**attempt)``
+            plus uniform jitter in ``[0, retry_backoff_base)``. Defaults to 1.0.
+        :param retry_backoff_max: Maximum seconds any single backoff wait may reach.
+            Caps the exponential growth. Defaults to 60.0.
         """
+        if max_retries < 0:
+            raise InvalidConfigError("max_retries must be >= 0.")
+        if retry_backoff_base <= 0 or retry_backoff_max <= 0:
+            raise InvalidConfigError("retry_backoff_base and retry_backoff_max must be > 0.")
         self.countries = tuple(AVAILABLE_COUNTRIES),
         self.languages = tuple(AVAILABLE_LANGUAGES),
 
@@ -69,6 +86,9 @@ class GNews:
         self._exclude_websites = exclude_websites if exclude_websites and isinstance(exclude_websites, list) else []
         self._proxy = proxy if proxy else None
         self._searchapi = SearchApiBackend(searchapi_key) if searchapi_key else None
+        self._max_retries = max_retries
+        self._retry_backoff_base = retry_backoff_base
+        self._retry_backoff_max = retry_backoff_max
 
     def _ceid(self) -> str:
         time_query = ''
@@ -247,12 +267,37 @@ class GNews:
         raise InvalidConfigError("Search key cannot be empty.")
 
     def _get_news_more_than_100(self, key: str) -> list[dict]:
+        """Walk past the Google News ~100-result ceiling using rolling date windows.
+
+        Caveats (callers building precise temporal pipelines should know):
+
+        * Any ``start_date``, ``end_date``, or ``period`` configured on the client is
+          **discarded** before pagination begins. Date filters apply only when
+          ``max_results <= 100``.
+        * The walker steps backward in 7-day windows anchored on the earliest
+          ``published_date`` seen so far. Results returned may extend significantly
+          earlier than any date you intended to filter on.
+        * Articles whose ``published date`` cannot be parsed are skipped for window
+          anchoring but still returned, which can stall the window at the previous
+          earliest date.
+        * Per-call de-duplication is in-memory (``seen_urls``) and does not persist
+          across calls; callers needing cross-run dedup must layer their own.
+
+        If you need strict date precision, keep ``max_results <= 100`` and call
+        multiple times with explicit windows instead.
+        """
         articles = []
         seen_urls = set()
         earliest_date = None
 
         if self._start_date or self._end_date or self._period:
-            warnings.warn("Searches for over 100 articles ignore date ranges.", category=UserWarning)
+            warnings.warn(
+                "Searches for over 100 articles ignore date ranges; "
+                "any start_date, end_date, or period set on the client will be cleared. "
+                "Keep max_results <= 100 if you need precise temporal filtering.",
+                category=UserWarning,
+                stacklevel=2,
+            )
 
         self._start_date = None
         self._end_date = None
@@ -351,20 +396,46 @@ class GNews:
             writer.writerows(articles)
         return path
 
+    def _backoff_delay(self, attempt: int) -> float:
+        """Exponential backoff with uniform jitter, capped at retry_backoff_max."""
+        capped = min(self._retry_backoff_max, self._retry_backoff_base * (2 ** attempt))
+        jitter = random.uniform(0, self._retry_backoff_base)
+        return capped + jitter
+
+    def _sleep(self, seconds: float) -> None:
+        """Indirection for tests to patch sleep without touching time.sleep globally."""
+        time.sleep(seconds)
+
+    def _fetch_feed(self, url: str):
+        if self._proxy:
+            proxy_handler = urllib.request.ProxyHandler(self._proxy)
+            return feedparser.parse(url, agent=USER_AGENT, handlers=[proxy_handler])
+        return feedparser.parse(url, agent=USER_AGENT)
+
     def _get_news(self, query: str) -> list[dict]:
         url = BASE_URL + query + self._ceid()
-        try:
-            if self._proxy:
-                proxy_handler = urllib.request.ProxyHandler(self._proxy)
-                feed_data = feedparser.parse(url, agent=USER_AGENT, handlers=[proxy_handler])
-            else:
-                feed_data = feedparser.parse(url, agent=USER_AGENT)
-
-            if feed_data.status == 429:
-                raise RateLimitError("Rate limit exceeded while fetching news.")
-            return [item for item in map(self._process, feed_data.entries[:self._max_results]) if item]
-
-        except RateLimitError:
-            raise
-        except Exception as err:
-            raise NetworkError(f"Failed to fetch or parse news feed: {err}") from err
+        attempts = self._max_retries + 1
+        last_error: RateLimitError | None = None
+        for attempt in range(attempts):
+            try:
+                feed_data = self._fetch_feed(url)
+                if feed_data.status == 429:
+                    last_error = RateLimitError(
+                        f"Rate limit exceeded while fetching news (attempt {attempt + 1}/{attempts})."
+                    )
+                    if attempt < attempts - 1:
+                        delay = self._backoff_delay(attempt)
+                        logger.warning(
+                            "Google News returned 429; backing off %.2fs before retry %d/%d",
+                            delay, attempt + 2, attempts,
+                        )
+                        self._sleep(delay)
+                        continue
+                    raise last_error
+                return [item for item in map(self._process, feed_data.entries[:self._max_results]) if item]
+            except RateLimitError:
+                raise
+            except Exception as err:
+                raise NetworkError(f"Failed to fetch or parse news feed: {err}") from err
+        # unreachable, but appease static checkers
+        raise last_error if last_error else NetworkError("Failed to fetch news feed.")
