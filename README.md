@@ -100,7 +100,8 @@
 
 🚩 GNews is A Happy and lightweight Python Package that searches Google News RSS Feed and returns a usable JSON
 response \
-🚩 As well as you can fetch full article (**No need to write scrappers for articles fetching anymore**)
+🚩 As well as you can fetch full article (**No need to write scrappers for articles fetching anymore**) \
+🚩 Scraping a lot of articles and your IP keeps getting blocked? Route GNews requests through [Swiftproxy](https://www.swiftproxy.net/?ref=GNews) residential proxies to keep pulling full articles without getting rate-limited. GNews users get 10% off with code `PROXY90`.
 
 Google News cover across **141+ countries** with **41+ languages**. On the bottom left side of the Google News page you
 may find a `Language & region` section where you can find all of the supported combinations.
