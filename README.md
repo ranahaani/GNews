@@ -16,6 +16,12 @@
 </a>
 <p align="center"><sub>Sponsored by <a href="https://www.searchapi.io/google-news?utm_source=github&utm_medium=sponsorship&utm_campaign=google_news_api&utm_content=ranahaani_GNews">SearchApi</a></sub></p>
 
+<!-- SPONSOR: SWIFTPROXY -->
+<a href="https://www.swiftproxy.net/?ref=GNews">
+  <img src="https://github.com/ranahaani/GNews/raw/master/imgs/swiftproxy-banner.png" alt="Swiftproxy — Residential and ISP Proxies for Web Scraping" width="100%">
+</a>
+<p align="center"><sub><a href="https://www.swiftproxy.net/?ref=GNews">Try Swiftproxy</a> — residential & ISP proxies for reliable web scraping. Get 10% off with code <b>PROXY90</b>.</sub></p>
+
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
