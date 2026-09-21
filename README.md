@@ -80,6 +80,7 @@
          </ul>
       </li>
       <li><a href="#searchapi-integration">SearchApi Integration 🔍</a></li>
+      <li><a href="#using-gnews-behind-a-proxy">Using GNews Behind a Proxy 🛡️</a></li>
       <li><a href="#todo">To Do 📋</a></li>
       <li><a href="#roadmap">Roadmap 🛣️</a></li>
       <li><a href="#contributing">Contributing 🤝</a></li>
@@ -94,7 +95,13 @@
 
 🚩 GNews is A Happy and lightweight Python Package that searches Google News RSS Feed and returns a usable JSON
 response \
-🚩 As well as you can fetch full article (**No need to write scrappers for articles fetching anymore**)
+🚩 As well as you can fetch full article (**No need to write scrappers for articles fetching anymore**) \
+🚩 Scraping a lot of articles and your IP keeps getting blocked? Route GNews requests through [RapidProxy](https://www.rapidproxy.io/?ref=gnews&utm_source=github&utm_medium=readme&utm_campaign=gnews) residential proxies to keep pulling full articles without getting rate-limited. GNews users get 10% off with code `RAPID10`.
+
+<a href="https://www.rapidproxy.io/?ref=gnews&utm_source=github&utm_medium=readme&utm_campaign=gnews">
+  <img src="https://github.com/ranahaani/GNews/raw/master/imgs/rapidproxy-banner.png" alt="RapidProxy — Residential and ISP Proxies for Web Scraping" width="100%">
+</a>
+<p align="center"><sub><a href="https://www.rapidproxy.io/?ref=gnews&utm_source=github&utm_medium=readme&utm_campaign=gnews">Try RapidProxy</a> — 90M+ residential IPs with smart rotation, sticky sessions and non-expiring traffic, from $0.55/GB. Get 10% off with code <b>RAPID10</b>.</sub></p>
 
 Google News cover across **141+ countries** with **41+ languages**. On the bottom left side of the Google News page you
 may find a `Language & region` section where you can find all of the supported combinations.
@@ -437,6 +444,52 @@ gnews top --json | python3 -m json.tool
 | `--country` | `US` | Country code |
 | `--max` | `10` | Max results |
 | `--json` | off | Output as JSON |
+
+## Using GNews Behind a Proxy
+
+Google News rate-limits aggressively. If you are pulling more than a few hundred articles, or calling `get_full_article()` across many domains, you will eventually see HTTP 429s and blocked requests from a single IP.
+
+The fix is to route requests through rotating residential proxies. GNews accepts a standard `requests`-style proxy dict, so any provider works:
+
+```python
+from gnews import GNews
+
+google_news = GNews(
+    proxy={
+        'http': 'http://username:password@proxy-host:port',
+        'https': 'http://username:password@proxy-host:port',
+    }
+)
+
+articles = google_news.get_news('artificial intelligence')
+```
+
+### Recommended provider
+
+GNews is sponsored by [RapidProxy](https://www.rapidproxy.io/?ref=gnews&utm_source=github&utm_medium=docs&utm_campaign=gnews), which is what the maintainer uses for high-volume runs. It offers 90M+ residential IPs, smart rotation, sticky sessions and native static ISP IPs, with traffic that does not expire. Pricing starts at $0.55/GB, and the code `RAPID10` gives GNews users 10% off.
+
+```python
+from gnews import GNews
+
+RAPIDPROXY = 'http://USERNAME:PASSWORD@gate.rapidproxy.io:PORT'
+
+google_news = GNews(
+    proxy={'http': RAPIDPROXY, 'https': RAPIDPROXY},
+    max_retries=3,
+)
+
+articles = google_news.get_news('artificial intelligence')
+full = google_news.get_full_article(articles[0]['url'])
+```
+
+Replace `USERNAME`, `PASSWORD` and the gateway host with the values from your RapidProxy dashboard. Sticky sessions are useful when you want consecutive requests to keep the same exit IP; rotating sessions are better for spreading a large crawl across many IPs.
+
+### Tips
+
+- Keep `max_retries` at 3 or higher so transient 429s are retried on a fresh IP.
+- Use sticky sessions when fetching an article body, since some sites tie the session to the IP that loaded the page.
+- Residential IPs are slower than datacenter IPs. Increase concurrency rather than expecting each request to be fast.
+- If you would rather skip proxies entirely, the [SearchApi backend](#searchapi-integration) handles blocking on their side.
 
 ## SearchApi Integration
 
