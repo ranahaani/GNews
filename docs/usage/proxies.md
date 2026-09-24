@@ -15,8 +15,8 @@ from gnews import GNews
 
 google_news = GNews(
     proxy={
-        'http': 'http://username:password@proxy-host:port',
-        'https': 'http://username:password@proxy-host:port',
+        'http': 'http://YOUR_USERNAME:YOUR_PASSWORD@YOUR_PROXY_HOST:YOUR_PORT',
+        'https': 'http://YOUR_USERNAME:YOUR_PASSWORD@YOUR_PROXY_HOST:YOUR_PORT',
     }
 )
 
@@ -32,7 +32,7 @@ It provides 90M+ residential IPs with smart rotation, sticky sessions, and nativ
 ```python
 from gnews import GNews
 
-RAPIDPROXY = 'http://USERNAME:PASSWORD@gate.rapidproxy.io:PORT'
+RAPIDPROXY = 'http://YOUR_USERNAME:YOUR_PASSWORD@YOUR_PROXY_HOST:YOUR_PORT'
 
 google_news = GNews(
     proxy={'http': RAPIDPROXY, 'https': RAPIDPROXY},
@@ -44,7 +44,7 @@ full = google_news.get_full_article(articles[0]['url'])
 print(full.title)
 ```
 
-Replace `USERNAME`, `PASSWORD` and the gateway host with the values from your RapidProxy dashboard.
+Replace `YOUR_USERNAME`, `YOUR_PASSWORD`, `YOUR_PROXY_HOST` and `YOUR_PORT` with the values generated in your RapidProxy dashboard.
 
 ## Rotating vs sticky sessions
 

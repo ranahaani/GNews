@@ -456,8 +456,8 @@ from gnews import GNews
 
 google_news = GNews(
     proxy={
-        'http': 'http://username:password@proxy-host:port',
-        'https': 'http://username:password@proxy-host:port',
+        'http': 'http://YOUR_USERNAME:YOUR_PASSWORD@YOUR_PROXY_HOST:YOUR_PORT',
+        'https': 'http://YOUR_USERNAME:YOUR_PASSWORD@YOUR_PROXY_HOST:YOUR_PORT',
     }
 )
 
@@ -471,7 +471,7 @@ GNews is sponsored by [RapidProxy](https://www.rapidproxy.io/?ref=gnews&utm_sour
 ```python
 from gnews import GNews
 
-RAPIDPROXY = 'http://USERNAME:PASSWORD@gate.rapidproxy.io:PORT'
+RAPIDPROXY = 'http://YOUR_USERNAME:YOUR_PASSWORD@YOUR_PROXY_HOST:YOUR_PORT'
 
 google_news = GNews(
     proxy={'http': RAPIDPROXY, 'https': RAPIDPROXY},
@@ -482,7 +482,7 @@ articles = google_news.get_news('artificial intelligence')
 full = google_news.get_full_article(articles[0]['url'])
 ```
 
-Replace `USERNAME`, `PASSWORD` and the gateway host with the values from your RapidProxy dashboard. Sticky sessions are useful when you want consecutive requests to keep the same exit IP; rotating sessions are better for spreading a large crawl across many IPs.
+Replace `YOUR_USERNAME`, `YOUR_PASSWORD`, `YOUR_PROXY_HOST` and `YOUR_PORT` with the values generated in your RapidProxy dashboard. Sticky sessions are useful when you want consecutive requests to keep the same exit IP; rotating sessions are better for spreading a large crawl across many IPs.
 
 ### Tips
 
