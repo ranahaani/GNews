@@ -10,6 +10,13 @@ GNews Documentation
 A lightweight Python package that searches Google News and returns structured article data.
 Supports 141+ countries and 41+ languages.
 
+.. image:: https://github.com/ranahaani/GNews/raw/master/imgs/rapidproxy-banner.png
+   :target: https://www.rapidproxy.io/?ref=gnews&utm_source=readthedocs&utm_medium=docs&utm_campaign=gnews
+   :alt: RapidProxy - Residential and ISP Proxies for Web Scraping
+   :width: 100%
+
+Sponsored by `RapidProxy <https://www.rapidproxy.io/?ref=gnews&utm_source=readthedocs&utm_medium=docs&utm_campaign=gnews>`_ — 90M+ residential IPs, smart rotation, non-expiring traffic, from $0.55/GB. GNews users get 10% off with code ``RAPID10``. See :doc:`usage/proxies`.
+
 .. toctree::
    :maxdepth: 2
    :caption: Getting Started
@@ -29,6 +36,7 @@ Supports 141+ countries and 41+ languages.
    usage/async
    usage/url-resolution
    usage/retries
+   usage/proxies
 
 .. toctree::
    :maxdepth: 2
