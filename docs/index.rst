@@ -17,12 +17,22 @@ Supports 141+ countries and 41+ languages.
 
 Sponsored by `RapidProxy <https://www.rapidproxy.io/?ref=gnews&utm_source=readthedocs&utm_medium=docs&utm_campaign=gnews>`_ — 90M+ residential IPs, smart rotation, non-expiring traffic, from $0.55/GB. GNews users get 10% off with code ``RAPID10``. See :doc:`usage/proxies`.
 
+.. admonition:: Related: gnews-agent
+
+   `gnews-agent <https://github.com/ranahaani/gnews-agent>`_ (PyPI: ``gnews-agent``) is a persistent, semantic news layer for AI agents, built on GNews. ``pip install gnews-agent``. See :doc:`gnews-agent`.
+
 .. toctree::
    :maxdepth: 2
    :caption: Getting Started
 
    installation
    quickstart
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Related
+
+   gnews-agent
 
 .. toctree::
    :maxdepth: 2
