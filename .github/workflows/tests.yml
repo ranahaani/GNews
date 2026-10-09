@@ -34,4 +34,28 @@ jobs:
 
       - name: Run test cases
         run: |
-          python -m pytest tests/test_gnews.py tests/test_searchapi_backend.py tests/test_exceptions.py tests/test_export.py tests/test_logging.py tests/test_fulltext.py -v
+          python -m pytest tests/test_gnews.py tests/test_searchapi_backend.py tests/test_exceptions.py tests/test_export.py tests/test_logging.py tests/test_fulltext.py tests/test_readthedocs_trigger.py -v
+
+  docs:
+    name: Build documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          # Same interpreter as .readthedocs.yaml.
+          python-version: "3.11"
+
+      - name: Install documentation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r docs/requirements.txt
+          pip install .
+
+      - name: Build docs
+        run: |
+          sphinx-build -W --keep-going -b html docs docs/_build/html
+          test -f docs/_build/html/usage/proxies.html
