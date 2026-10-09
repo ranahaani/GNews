@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.8.3 (unreleased)
+## 0.8.3 (2026-10-09)
 
 ### Added
 - Native proxy support: `GNews(proxy=...)` now also accepts a single proxy URL string (`"http://USER:PASS@HOST:PORT"`), applied to both HTTP and HTTPS.
