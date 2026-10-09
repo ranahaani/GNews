@@ -1,3 +1,5 @@
+# Read the Docs build configuration.
+# https://docs.readthedocs.com/platform/stable/config-file/v2.html
 version: 2
 
 build:
@@ -7,8 +9,14 @@ build:
 
 sphinx:
   configuration: docs/conf.py
+  # Match a local `sphinx-build -W` run so broken references fail the hosted build.
+  fail_on_warning: true
 
 python:
   install:
+    # Sphinx, the RTD theme, and MyST (required for the Markdown pages).
     - requirements: docs/requirements.txt
-    - requirements: requirements.txt
+    # Install the package itself so autodoc/viewcode can import gnews.
+    # setup.py pulls runtime dependencies from requirements.txt.
+    - method: pip
+      path: .

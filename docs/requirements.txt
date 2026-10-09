@@ -1,3 +1,4 @@
 sphinx>=7.0
 sphinx-rtd-theme>=2.0
+# MyST parses the Markdown sources under docs/ (including usage/proxies.md).
 myst-parser>=2.0

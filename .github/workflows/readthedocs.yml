@@ -1,0 +1,41 @@
+# Build https://gnews.readthedocs.io when master or a release tag moves.
+# The GitHub → Read the Docs webhook has stopped firing, so this calls the
+# RTD API directly. It does nothing when READTHEDOCS_TOKEN is not configured.
+name: Trigger Read the Docs
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - "**"
+  release:
+    types:
+      - published
+  # Manual run after the READTHEDOCS_TOKEN secret is added.
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Read the Docs version slug to build
+        required: false
+        default: latest
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  trigger:
+    name: Trigger documentation build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Trigger Read the Docs build
+        env:
+          READTHEDOCS_TOKEN: ${{ secrets.READTHEDOCS_TOKEN }}
+          # Empty on push events. On release events this is the published tag.
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RTD_VERSION: ${{ github.event_name == 'workflow_dispatch' && inputs.version || '' }}
+        run: python3 .github/scripts/trigger_readthedocs.py
