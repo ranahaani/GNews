@@ -16,6 +16,8 @@
 </a>
 <p align="center"><sub>Sponsored by <a href="https://www.searchapi.io/google-news?utm_source=github&utm_medium=sponsorship&utm_campaign=google_news_api&utm_content=ranahaani_GNews">SearchApi</a></sub></p>
 
+> **Related: [gnews-agent](https://github.com/ranahaani/gnews-agent)** — persistent, semantic news intelligence for AI agents, built on GNews. Fetch, dedupe, embed, and query articles from Python, a CLI, or an MCP server. `pip install gnews-agent` · [guide](#related-gnews-agent)
+
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
@@ -81,6 +83,7 @@
       </li>
       <li><a href="#searchapi-integration">SearchApi Integration 🔍</a></li>
       <li><a href="#using-gnews-behind-a-proxy">Using GNews Behind a Proxy 🛡️</a></li>
+      <li><a href="#related-gnews-agent">Related: gnews-agent</a></li>
       <li><a href="#todo">To Do 📋</a></li>
       <li><a href="#roadmap">Roadmap 🛣️</a></li>
       <li><a href="#contributing">Contributing 🤝</a></li>
@@ -620,6 +623,27 @@ print(articles[0]['url'])  # https://news.google.com/rss/articles/...
 If resolution fails for a specific article (paywall, timeout, consent gate), GNews falls back to the Google URL silently — it never crashes.
 
 > **Note:** For production use without Playwright, the [SearchApi backend](#searchapi-integration) always returns real article URLs with zero setup beyond an API key.
+
+## Related: gnews-agent
+
+[gnews-agent](https://github.com/ranahaani/gnews-agent) ([PyPI: `gnews-agent`](https://pypi.org/project/gnews-agent/)) is the sibling package for agents. GNews returns articles. gnews-agent keeps them: it fetches through GNews, deduplicates by title and publisher, embeds the text, and stores it (SQLite + Chroma by default) so later queries are semantic rather than another live search. The same operations — ingest, search, timeline, brief, sentiment, and stats — are available as a Python library, a CLI, and an MCP server for Claude, Cursor, and other clients.
+
+It depends on GNews (`gnews>=0.8.2`) and installs it for you. `ingest`, `search`, `timeline`, and `stats` need no API key. `brief` and `sentiment` call an LLM.
+
+```shell
+pip install gnews-agent
+```
+
+```python
+from gnews_agent import NewsMemory
+
+memory = NewsMemory()
+memory.ingest("OpenAI", method="get_news")
+results = memory.search("GPT-5 safety", days=7)
+print(results)
+```
+
+Optional extras cover an OpenAI embedding backend (`gnews-agent[openai]`), full-article text (`gnews-agent[fulltext]`), and alternate vector stores. The [gnews-agent README](https://github.com/ranahaani/gnews-agent#readme) documents the CLI, the MCP server, and the Claude Code skill. A shorter guide is in these docs: [gnews-agent](https://gnews.readthedocs.io/en/latest/gnews-agent.html).
 
 ## Todo
 
