@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.8.3 (unreleased)
+
+### Added
+- Native proxy support: `GNews(proxy=...)` now also accepts a single proxy URL string (`"http://USER:PASS@HOST:PORT"`), applied to both HTTP and HTTPS.
+- `GNEWS_PROXY_URL` environment variable is used when no `proxy` argument is given.
+- `get_full_article()` now routes through the configured proxy (previously it ignored it).
+- `GNews.proxy` read-only property.
+- "Using GNews Behind a Proxy" guide updated, with RapidProxy as the documented default provider.
+
+### Changed
+- Invalid proxy values (non-dict/non-string, or a URL without a scheme) raise `InvalidConfigError`. Existing dict-based configs are unchanged.
+
 ## 0.8.2 (2026-06-19)
 
 ### Added
