@@ -10,6 +10,7 @@ import time
 import urllib.request
 import datetime
 import inspect
+import os
 import warnings
 
 import feedparser
@@ -39,7 +40,7 @@ class GNews:
         start_date: tuple | datetime.datetime | None = None,
         end_date: tuple | datetime.datetime | None = None,
         exclude_websites: list[str] | None = None,
-        proxy: dict | None = None,
+        proxy: dict | str | None = None,
         searchapi_key: str | None = None,
         max_retries: int = 3,
         retry_backoff_base: float = 1.0,
@@ -55,7 +56,12 @@ class GNews:
         :param start_date: Date after which results must have been published
         :param end_date: Date before which results must have been published
         :param exclude_websites: List of websites to exclude from results
-        :param proxy: Proxy settings as a dict {protocol: address}
+        :param proxy: Proxy to route all requests through (RSS feed, URL resolution and
+            ``get_full_article``). Either a dict ``{"http": url, "https": url}`` or a single
+            proxy URL string such as ``"http://USER:PASS@HOST:PORT"``, which is used for both
+            schemes. If omitted, GNews falls back to the ``GNEWS_PROXY_URL`` environment
+            variable. See the "Using GNews Behind a Proxy" guide (RapidProxy is the documented
+            default provider).
         :param searchapi_key: Optional SearchAPI key to enable the paid backend
         :param max_retries: Maximum retry attempts on HTTP 429 responses from Google News.
             Set to 0 to disable retries and raise immediately. Defaults to 3.
@@ -84,11 +90,39 @@ class GNews:
         self.end_date = end_date
         self.start_date = start_date
         self._exclude_websites = exclude_websites if exclude_websites and isinstance(exclude_websites, list) else []
-        self._proxy = proxy if proxy else None
+        self._proxy = self._normalize_proxy(proxy)
         self._searchapi = SearchApiBackend(searchapi_key) if searchapi_key else None
         self._max_retries = max_retries
         self._retry_backoff_base = retry_backoff_base
         self._retry_backoff_max = retry_backoff_max
+
+    PROXY_ENV_VAR = "GNEWS_PROXY_URL"
+
+    @classmethod
+    def _normalize_proxy(cls, proxy: dict | str | None) -> dict | None:
+        """Return a ``{"http": ..., "https": ...}`` dict, or ``None`` for no proxy.
+
+        Accepts a dict (returned as-is, for backwards compatibility), a single proxy URL
+        string, or ``None`` (falls back to the ``GNEWS_PROXY_URL`` environment variable).
+        """
+        if proxy is None:
+            proxy = os.environ.get(cls.PROXY_ENV_VAR) or None
+        if not proxy:
+            return None
+        if isinstance(proxy, str):
+            proxy = proxy.strip()
+            if "://" not in proxy:
+                raise InvalidConfigError(
+                    "proxy URL must include a scheme, e.g. 'http://USER:PASS@HOST:PORT'."
+                )
+            return {"http": proxy, "https": proxy}
+        if isinstance(proxy, dict):
+            return proxy
+        raise InvalidConfigError("proxy must be a dict, a proxy URL string, or None.")
+
+    @property
+    def proxy(self) -> dict | None:
+        return self._proxy
 
     def _ceid(self) -> str:
         time_query = ''
@@ -202,7 +236,10 @@ class GNews:
                 "Install it with: pip install gnews[fulltext]"
             ) from e
 
-        downloaded = trafilatura.fetch_url(url)
+        if self._proxy:
+            downloaded = self._download_via_proxy(url)
+        else:
+            downloaded = trafilatura.fetch_url(url)
         if not downloaded:
             raise NetworkError(f"Could not download article from {url}")
 
@@ -211,6 +248,23 @@ class GNews:
             raise NetworkError(f"Could not extract article text from {url}")
 
         return {"text": text, "url": url}
+
+    def _download_via_proxy(self, url: str) -> str | None:
+        """Fetch ``url`` through the configured proxy (trafilatura.fetch_url has no proxy arg)."""
+        import requests
+
+        try:
+            resp = requests.get(
+                url,
+                proxies=self._proxy,
+                headers={"User-Agent": USER_AGENT},
+                timeout=30,
+            )
+        except requests.RequestException as err:
+            raise NetworkError(f"Could not download article from {url}: {err}") from err
+        if resp.status_code >= 400:
+            return None
+        return resp.text
 
     @staticmethod
     def _clean(html: str) -> str:

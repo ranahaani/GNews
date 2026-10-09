@@ -11,7 +11,7 @@ class GNews(
     start_date: tuple | datetime | None = None,
     end_date: tuple | datetime | None = None,
     exclude_websites: list[str] | None = None,
-    proxy: dict | None = None,
+    proxy: dict | str | None = None,  # or GNEWS_PROXY_URL env var
     searchapi_key: str | None = None,
     max_retries: int = 3,
     retry_backoff_base: float = 1.0,
