@@ -52,6 +52,18 @@ print(full['text'][:200])
 
 Replace `YOUR_USERNAME`, `YOUR_PASSWORD`, `YOUR_PROXY_HOST` and `YOUR_PORT` with the values generated in your RapidProxy dashboard.
 
+### Proxy-Seller
+
+[Proxy-Seller](https://proxy-seller.com/?partner=B5C45244DC484560) offers datacenter IPv4 and IPv6, ISP, residential, and mobile proxies. The promo code `GNEWS` gives GNews readers 15% off.
+
+```python
+from gnews import GNews
+
+google_news = GNews(proxy='http://USER:PASS@HOST:PORT')
+
+articles = google_news.get_news('artificial intelligence')
+```
+
 ## Rotating vs sticky sessions
 
 Use **rotating** sessions for the search call itself. Each request goes out from a different IP, which is exactly what you want when spreading a large crawl.
